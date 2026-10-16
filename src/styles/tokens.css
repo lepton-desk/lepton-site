@@ -1,24 +1,7 @@
 /* The plate world: a bubble-chamber print (silver-grey ground, graphite tracks), grease-pencil
    notes, and paper tables like a particle data booklet. Shared by the landing page and the docs. */
 
-/* Archivo, cut to the weights (400–850) and widths (62–100%) the site uses, Latin plus the six
-   letters Turkish adds (ğ Ğ ı İ ş Ş). One face, with no unicode-range: split into ranged faces,
-   Chrome on Linux resolved the system fallback once per font description, ~100 ms of the first
-   layout and ~150 ms later first paint (measured in traces). */
-@font-face {
-	font-family: 'Archivo';
-	src: url('/fonts/archivo-latin.woff2') format('woff2');
-	font-weight: 400 850;
-	font-stretch: 62% 100%;
-	font-display: swap;
-}
-@font-face {
-	font-family: 'Kalam';
-	src: url('/fonts/kalam.woff2') format('woff2');
-	font-weight: 700;
-	font-display: swap;
-}
-/* The fallback while the faces above are still loading: an installed sans picked by its own name.
+/* The fallback while the web faces (faces.css, faces-docs.css) are still loading: an installed sans picked by its own name.
    With nothing after them in the stacks, Chrome fell back to its default font, looked up through
    the system's font matcher once per font description in the first layout; this face is matched
    by name instead (measured with the fonts arriving after the first layout: lookups 110 → 44 ms,
@@ -32,13 +15,6 @@
 	font-family: 'Plate Fallback';
 	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
 		url('/fonts/archivo-latin.woff2') format('woff2');
-}
-/* JetBrains Mono, weights 400–700 and only the characters the site's code and CLI output use. */
-@font-face {
-	font-family: 'JetBrains Mono';
-	src: url('/fonts/jbmono.woff2') format('woff2');
-	font-weight: 400 700;
-	font-display: swap;
 }
 
 :root {

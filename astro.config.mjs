@@ -31,6 +31,9 @@ export default defineConfig({
 			expressiveCode: { themes: [plateTheme] },
 			head: [
 				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/archivo-latin.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
+				// Code is on every docs page; unpreloaded, JetBrains Mono was requested 100–150 ms
+				// after Archivo and arrived after the first paint (measured).
+				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/jbmono.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
 			],
 			sidebar: [
 				{

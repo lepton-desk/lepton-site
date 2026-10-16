@@ -1,0 +1,29 @@
+/* The docs' faces: the landing page's (faces.css) as `optional`. With `swap`, text was set again
+   when Archivo arrived after the first paint — the docs pages' layout shift (measured with the
+   fonts 300 ms late: CLS 0.19 → 0). A font that misses Chrome's short wait is used from the next
+   page on, from the cache. */
+
+/* Archivo, cut to the weights (400–850) and widths (62–100%) the site uses, Latin plus the six
+   letters Turkish adds (ğ Ğ ı İ ş Ş). One face, with no unicode-range: split into ranged faces,
+   Chrome on Linux resolved the system fallback once per font description, ~100 ms of the first
+   layout and ~150 ms later first paint (measured in traces). */
+@font-face {
+	font-family: 'Archivo';
+	src: url('/fonts/archivo-latin.woff2') format('woff2');
+	font-weight: 400 850;
+	font-stretch: 62% 100%;
+	font-display: optional;
+}
+@font-face {
+	font-family: 'Kalam';
+	src: url('/fonts/kalam.woff2') format('woff2');
+	font-weight: 700;
+	font-display: optional;
+}
+/* JetBrains Mono, weights 400–700 and only the characters the site's code and CLI output use. */
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('/fonts/jbmono.woff2') format('woff2');
+	font-weight: 400 700;
+	font-display: optional;
+}
