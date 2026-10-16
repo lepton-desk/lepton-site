@@ -18,6 +18,16 @@
 	font-weight: 700;
 	font-display: swap;
 }
+/* The fallback while the faces above are still loading: an installed sans picked by its own name.
+   With nothing after them in the stacks, Chrome fell back to its default font, looked up through
+   the system's font matcher once per font description in the first layout; this face is matched
+   by name instead (measured with the fonts arriving after the first layout: lookups 110 → 44 ms,
+   that layout's task 96 → 64 ms). What remains is one lookup per description that Chrome makes
+   for any face still loading, whatever the stack says. */
+@font-face {
+	font-family: 'Plate Fallback';
+	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans');
+}
 /* JetBrains Mono, weights 400–700 and only the characters the site's code and CLI output use. */
 @font-face {
 	font-family: 'JetBrains Mono';
@@ -39,13 +49,12 @@
 	--pencil-lifted: #f0b9ab;
 	--exposed: #2e3331;
 
-	/* No generic families: Archivo is served with the site, so it is the last fallback. Resolving
-	   a generic family (`sans-serif`, `monospace`) asks the system's font matcher, which on Linux
-	   cost ~90 ms of the first layout (measured in Chrome traces: first frame 375 → 273 ms
-	   median, three cores busy). */
-	--font-sans: 'Archivo';
-	--font-hand: 'Kalam', 'Archivo';
-	--font-mono: 'JetBrains Mono', 'Archivo';
+	/* No generic families: resolving one (`sans-serif`, `monospace`) asks the system's font
+	   matcher, which on Linux cost ~90 ms of the first layout (measured in Chrome traces: first
+	   frame 375 → 273 ms median, three cores busy). The last fallback is 'Plate Fallback'. */
+	--font-sans: 'Archivo', 'Plate Fallback';
+	--font-hand: 'Kalam', 'Archivo', 'Plate Fallback';
+	--font-mono: 'JetBrains Mono', 'Archivo', 'Plate Fallback';
 
 	--step--1: clamp(0.84rem, 0.8rem + 0.15vw, 0.92rem);
 	--step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
