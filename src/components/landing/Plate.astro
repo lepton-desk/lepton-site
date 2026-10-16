@@ -527,7 +527,10 @@ const isTr = text.htmlLang === 'tr';
 		font-size: var(--step-2);
 		font-stretch: 88%;
 		line-height: 1.22;
-		max-width: 30ch;
+		/* 30ch in Archivo at this stretch, as em: `ch` needs the font's metrics while styles are
+		   computed, and before the web fonts arrive that meant looking up the browser's default
+		   font in the first style pass (measured with fonts held back: that task 19 → 10 ms). */
+		max-width: 15.44em;
 	}
 
 	.notes {
