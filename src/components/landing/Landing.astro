@@ -26,3 +26,12 @@ const text = landing[Astro.props.lang];
 		<Close text={text} />
 	</main>
 </PlateLayout>
+
+<style>
+	/* Sections below the first viewport are laid out when they come near it, not before the
+	   first paint: style and layout of the whole page held the first paint back (measured). */
+	main > :global(section) {
+		content-visibility: auto;
+		contain-intrinsic-size: auto 900px;
+	}
+</style>

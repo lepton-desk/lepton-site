@@ -8,6 +8,8 @@ import { plateTheme } from './src/styles/code-theme.ts';
 // and `/tr/docs/`.
 export default defineConfig({
 	site: 'https://lepton-desk.vercel.app',
+	// Inlined, the CSS no longer stands between the HTML and the fonts it names (measured).
+	build: { inlineStylesheets: 'always' },
 	integrations: [
 		starlight({
 			title: 'Lepton',
@@ -23,7 +25,7 @@ export default defineConfig({
 			customCss: ['./src/styles/starlight.css'],
 			expressiveCode: { themes: [plateTheme] },
 			head: [
-				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/archivo.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
+				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/archivo-latin.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
 			],
 			sidebar: [
 				{

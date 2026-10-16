@@ -1,11 +1,15 @@
 /* The plate world: a bubble-chamber print (silver-grey ground, graphite tracks), grease-pencil
    notes, and paper tables like a particle data booklet. Shared by the landing page and the docs. */
 
+/* Archivo, cut to the weights (400–850) and widths (62–100%) the site uses, Latin plus the six
+   letters Turkish adds (ğ Ğ ı İ ş Ş). One face, with no unicode-range: split into ranged faces,
+   Chrome on Linux resolved the system fallback once per font description, ~100 ms of the first
+   layout and ~150 ms later first paint (measured in traces). */
 @font-face {
 	font-family: 'Archivo';
-	src: url('/fonts/archivo.woff2') format('woff2');
-	font-weight: 100 900;
-	font-stretch: 62% 125%;
+	src: url('/fonts/archivo-latin.woff2') format('woff2');
+	font-weight: 400 850;
+	font-stretch: 62% 100%;
 	font-display: swap;
 }
 @font-face {
@@ -14,10 +18,11 @@
 	font-weight: 700;
 	font-display: swap;
 }
+/* JetBrains Mono, weights 400–700 and only the characters the site's code and CLI output use. */
 @font-face {
 	font-family: 'JetBrains Mono';
 	src: url('/fonts/jbmono.woff2') format('woff2');
-	font-weight: 100 800;
+	font-weight: 400 700;
 	font-display: swap;
 }
 
@@ -34,9 +39,11 @@
 	--pencil-lifted: #f0b9ab;
 	--exposed: #2e3331;
 
-	--font-sans: 'Archivo', system-ui, sans-serif;
-	--font-hand: 'Kalam', 'Archivo', cursive;
-	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+	/* Fallbacks are the cheapest generic families: on Linux, resolving `cursive`, `system-ui` and
+	   `ui-monospace` cost 10–40 ms of the first layout each (measured in Chrome traces). */
+	--font-sans: 'Archivo', sans-serif;
+	--font-hand: 'Kalam', 'Archivo', sans-serif;
+	--font-mono: 'JetBrains Mono', monospace;
 
 	--step--1: clamp(0.84rem, 0.8rem + 0.15vw, 0.92rem);
 	--step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
