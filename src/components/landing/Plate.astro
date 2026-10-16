@@ -61,7 +61,9 @@ const isTr = text.htmlLang === 'tr';
 	// into a spiral. Each track is a row of bubbles, as on a real chamber photograph.
 	type Point = { x: number; y: number };
 	type Box = { x: number; y: number; w: number; h: number };
-	type Track = { points: Point[]; weight: number; start: number; duration: number };
+	type Dot = { x: number; y: number; r: number };
+	// `dots` are the bubbles, worked out once; `drawn` is how many are already on the canvas.
+	type Track = { points: Point[]; weight: number; start: number; duration: number; dots?: Dot[]; drawn?: number };
 
 	const plate = document.querySelector<HTMLElement>('[data-plate]');
 	const canvas = plate?.querySelector<HTMLCanvasElement>('canvas');
@@ -240,10 +242,45 @@ const isTr = text.htmlLang === 'tr';
 			}
 		};
 
+		// Bubbles never move once drawn, so a frame adds only the new ones, all of a track's in
+		// one path: redrawing every bubble each frame was 1–1.5 s of main-thread work (measured).
+		const bubbles = (track: Track): Dot[] => {
+			if (track.dots) return track.dots;
+			const rand = random(track.points.length * 31 + Math.round(track.weight * 100));
+			const dots: Dot[] = [];
+			for (let i = 0; i < track.points.length; i += track.weight < 0.7 ? 2 : 1) {
+				const p = track.points[i];
+				const r = track.weight * (0.75 + rand() * 0.75);
+				const x = p.x + (rand() - 0.5) * 0.8;
+				const y = p.y + (rand() - 0.5) * 0.8;
+				// The text column is printed over the plate: no bubble under the lettering.
+				if (masks.some((m) => inside(p, m, 12))) continue;
+				dots.push({ x, y, r });
+			}
+			track.dots = dots;
+			track.drawn = 0;
+			return dots;
+		};
+
+		const marks = () => {
+			context.strokeStyle = '#a32b17';
+			context.lineWidth = 2.2;
+			context.beginPath();
+			context.arc(vertex.x, vertex.y, 11, 0, Math.PI * 2);
+			context.stroke();
+			context.lineWidth = 1.4;
+			context.beginPath();
+			for (const [a, b] of leaders) {
+				context.moveTo(a.x, a.y);
+				context.lineTo(b.x, b.y);
+			}
+			context.stroke();
+		};
+
 		const draw = (now: number) => {
-			context.clearRect(0, 0, width, height);
 			let busy = false;
 			for (const track of tracks) {
+				const dots = bubbles(track);
 				const elapsed = still.matches ? Infinity : now - track.start;
 				if (elapsed < 0) {
 					busy = true;
@@ -251,35 +288,21 @@ const isTr = text.htmlLang === 'tr';
 				}
 				const progress = Math.min(1, elapsed / track.duration);
 				if (progress < 1) busy = true;
-				const eased = 1 - Math.pow(1 - progress, 3);
-				const shown = Math.floor(track.points.length * eased);
-				const rand = random(track.points.length * 31 + Math.round(track.weight * 100));
+				const target = Math.floor(dots.length * (1 - Math.pow(1 - progress, 3)));
+				const from = track.drawn ?? 0;
+				if (target <= from) continue;
 				context.fillStyle = track.weight < 0.7 ? 'rgba(27, 29, 28, 0.38)' : 'rgba(27, 29, 28, 0.88)';
-				for (let i = 0; i < shown; i += track.weight < 0.7 ? 2 : 1) {
-					const p = track.points[i];
-					const r = track.weight * (0.75 + rand() * 0.75);
-					const jx = (rand() - 0.5) * 0.8;
-					const jy = (rand() - 0.5) * 0.8;
-					// The text column is printed over the plate: no bubble under the lettering.
-					if (masks.some((m) => inside(p, m, 12))) continue;
-					context.beginPath();
-					context.arc(p.x + jx, p.y + jy, r, 0, Math.PI * 2);
-					context.fill();
-				}
-			}
-			context.strokeStyle = '#a32b17';
-			context.lineWidth = 2.2;
-			context.beginPath();
-			context.arc(vertex.x, vertex.y, 11, 0, Math.PI * 2);
-			context.stroke();
-			context.lineWidth = 1.4;
-			for (const [a, b] of leaders) {
 				context.beginPath();
-				context.moveTo(a.x, a.y);
-				context.lineTo(b.x, b.y);
-				context.stroke();
+				for (let i = from; i < target; i++) {
+					const d = dots[i];
+					context.moveTo(d.x + d.r, d.y);
+					context.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+				}
+				context.fill();
+				track.drawn = target;
 			}
 			if (busy) frame = requestAnimationFrame((time) => draw(time - origin));
+			else marks();
 		};
 
 		let origin = performance.now();
@@ -287,28 +310,46 @@ const isTr = text.htmlLang === 'tr';
 			cancelAnimationFrame(frame);
 			frame = requestAnimationFrame((time) => draw(time - origin));
 		};
-
-		const settle = () => {
-			layout();
+		// Starts over: a new layout clears the canvas, and every track is drawn again.
+		const redraw = () => {
+			context.clearRect(0, 0, width, height);
+			for (const track of tracks) {
+				track.dots = undefined;
+				track.drawn = 0;
+			}
 			start();
 		};
-		settle();
-		document.fonts?.ready.then(() => {
-			const kept = tracks.slice(13);
+
+		// The notes and the lettering are measured, so lay out once the fonts are in (or after
+		// a short wait, if they never report).
+		let laidOut = false;
+		const begin = () => {
+			if (laidOut) return;
+			laidOut = true;
+			origin = performance.now();
 			layout();
-			tracks.push(...kept);
-			start();
-		});
+			redraw();
+		};
+		document.fonts?.ready.then(begin);
+		window.setTimeout(begin, 800);
 
 		let resizing = 0;
+		let size = '';
 		new ResizeObserver(() => {
+			// The observer also fires once on start, and on height-only changes from fonts.
+			const now = `${plate.clientWidth}x${plate.clientHeight}`;
+			if (!laidOut || now === size) {
+				size = now;
+				return;
+			}
+			size = now;
 			clearTimeout(resizing);
 			resizing = window.setTimeout(() => {
 				const kept = tracks.slice(13);
 				layout();
 				tracks.push(...kept.map((track) => ({ ...track, start: -Infinity })));
 				origin = performance.now() - 10000;
-				start();
+				redraw();
 			}, 120);
 		}).observe(plate);
 
