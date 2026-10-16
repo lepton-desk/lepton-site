@@ -10,6 +10,11 @@ export default defineConfig({
 	site: 'https://lepton-desk.vercel.app',
 	// Inlined, the CSS no longer stands between the HTML and the fonts it names (measured).
 	build: { inlineStylesheets: 'always' },
+	// No module script file on the landing page: a deferred module delays DOMContentLoaded, and
+	// Chrome's first style pass waited for it (measured under load: first commit 237 → 175 ms
+	// median). So prefetch is off (Starlight turns it on for every page) and the plate's script
+	// is small enough to be inlined.
+	prefetch: false,
 	integrations: [
 		starlight({
 			title: 'Lepton',
@@ -47,5 +52,6 @@ export default defineConfig({
 	],
 	vite: {
 		plugins: [tailwindcss()],
+		build: { assetsInlineLimit: 12288 },
 	},
 });

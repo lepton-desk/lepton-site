@@ -18,18 +18,70 @@ const text = landing[Astro.props.lang];
 <PlateLayout text={text}>
 	<Plate text={text} />
 	<main>
-		<Engines text={text} />
-		<EventDiagram text={text} />
-		<CodeSample text={text} />
-		<CliRun text={text} />
-		<StatusTable text={text} />
-		<Close text={text} />
+		{/*
+		  The sections below the first viewport arrive after the first frame. With scripting on,
+		  a <noscript> body is kept as text, not parsed into elements, so the first frame only
+		  pays for the plate; the script below then adds one section per task. Parsing, styling
+		  and laying out these sections before the first frame pushed it past Chrome's surface
+		  deadline under load (measured: first commit 179 ms without them, 215–256 ms with).
+		  Without scripting the browser shows them as they are, and the text is in the HTML.
+		*/}
+		<noscript data-later><Engines text={text} /></noscript>
+		<noscript data-later><EventDiagram text={text} /></noscript>
+		<noscript data-later><CodeSample text={text} /></noscript>
+		<noscript data-later><CliRun text={text} /></noscript>
+		<noscript data-later><StatusTable text={text} /></noscript>
+		<noscript data-later><Close text={text} /></noscript>
 	</main>
 </PlateLayout>
 
+<script is:inline>
+	(() => {
+		const later = [...document.querySelectorAll('noscript[data-later]')];
+		const next = () => {
+			const block = later.shift();
+			if (!block) {
+				// A link to a later section (#status) lands once it exists. The sections around it
+				// start at their estimated height and settle as they render, so the scroll repeats
+				// until it holds for 3 frames. Instant: a smooth scroll restarted every frame
+				// never arrived (left 444 px off on a phone, measured).
+				const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+				if (!target) return;
+				let frames = 0;
+				let held = 0;
+				let last = Number.NaN;
+				const settle = () => {
+					target.scrollIntoView({ behavior: 'instant' });
+					const top = target.getBoundingClientRect().top;
+					held = Math.abs(top - last) < 1 ? held + 1 : 0;
+					last = top;
+					if (held < 3 && ++frames < 120) requestAnimationFrame(settle);
+				};
+				settle();
+				return;
+			}
+			block.insertAdjacentHTML('beforebegin', block.textContent ?? '');
+			block.remove();
+			setTimeout(next, 0);
+		};
+		// After the first frame. A page that gets no animation frames has no frame to protect:
+		// hidden, or "visible" but occluded (measured in an embedded view: no frame in 1 s while
+		// visibilityState said visible), so a timer starts it anyway.
+		let started = false;
+		const start = () => {
+			if (started) return;
+			started = true;
+			setTimeout(next, 0);
+		};
+		if (document.visibilityState === 'hidden') start();
+		else requestAnimationFrame(start);
+		setTimeout(start, 1000);
+		document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && start());
+	})();
+</script>
+
 <style>
-	/* Sections below the first viewport are laid out when they come near it, not before the
-	   first paint: style and layout of the whole page held the first paint back (measured). */
+	/* Sections below the first viewport are laid out when they come near it. */
 	main > :global(section) {
 		content-visibility: auto;
 		contain-intrinsic-size: auto 900px;

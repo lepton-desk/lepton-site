@@ -22,38 +22,40 @@ const { copy, copied, command = 'npm create lepton-app' } = Astro.props;
 </div>
 
 <script>
-	for (const strip of document.querySelectorAll<HTMLElement>('[data-command-strip]')) {
-		const button = strip.querySelector<HTMLButtonElement>('button[data-copy]');
-		const label = strip.querySelector<HTMLElement>('.label');
-		const status = strip.querySelector<HTMLElement>('.status');
-		if (!button || !label || !status) continue;
-		let reset = 0;
-		button.addEventListener('click', async () => {
-			const text = button.dataset.copy ?? '';
-			try {
-				await navigator.clipboard.writeText(text);
-			} catch {
+	// One listener for every strip, including those added after the first frame.
+	const resets = new WeakMap<HTMLButtonElement, number>();
+	document.addEventListener('click', async (event) => {
+		const button = (event.target as Element | null)?.closest<HTMLButtonElement>('button[data-copy]');
+		const strip = button?.closest<HTMLElement>('[data-command-strip]');
+		const label = strip?.querySelector<HTMLElement>('.label');
+		const status = strip?.querySelector<HTMLElement>('.status');
+		if (!button || !strip || !label || !status) return;
+		try {
+			await navigator.clipboard.writeText(button.dataset.copy ?? '');
+		} catch {
+			const code = strip.querySelector('code');
+			if (code) {
 				const range = document.createRange();
-				const code = strip.querySelector('code');
-				if (code) {
-					range.selectNodeContents(code);
-					getSelection()?.removeAllRanges();
-					getSelection()?.addRange(range);
-				}
-				return;
+				range.selectNodeContents(code);
+				getSelection()?.removeAllRanges();
+				getSelection()?.addRange(range);
 			}
-			label.textContent = button.dataset.done ?? '';
-			status.textContent = button.dataset.done ?? '';
-			button.classList.add('done');
-			window.dispatchEvent(new CustomEvent('lepton:copied'));
-			clearTimeout(reset);
-			reset = window.setTimeout(() => {
+			return;
+		}
+		label.textContent = button.dataset.done ?? '';
+		status.textContent = button.dataset.done ?? '';
+		button.classList.add('done');
+		window.dispatchEvent(new CustomEvent('lepton:copied'));
+		clearTimeout(resets.get(button));
+		resets.set(
+			button,
+			window.setTimeout(() => {
 				label.textContent = button.dataset.label ?? '';
 				status.textContent = '';
 				button.classList.remove('done');
-			}, 1800);
-		});
-	}
+			}, 1800),
+		);
+	});
 </script>
 
 <style>

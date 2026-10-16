@@ -321,7 +321,8 @@ const isTr = text.htmlLang === 'tr';
 		};
 
 		// The notes and the lettering are measured, so lay out once the fonts are in (or after
-		// a short wait, if they never report).
+		// a short wait, if they never report), and not before the first frame: drawn inside it,
+		// the tracks' first draw was 9 ms of that frame under load (measured).
 		let laidOut = false;
 		const begin = () => {
 			if (laidOut) return;
@@ -330,7 +331,8 @@ const isTr = text.htmlLang === 'tr';
 			layout();
 			redraw();
 		};
-		document.fonts?.ready.then(begin);
+		const painted = new Promise((resolve) => requestAnimationFrame(() => window.setTimeout(resolve, 0)));
+		Promise.all([document.fonts?.ready, painted]).then(begin);
 		window.setTimeout(begin, 800);
 
 		let resizing = 0;
@@ -375,10 +377,14 @@ const isTr = text.htmlLang === 'tr';
 		min-height: max(40rem, 100svh);
 		margin: var(--frame);
 		border: 1px solid var(--ink);
-		background:
-			radial-gradient(ellipse 70% 60% at 62% 48%, var(--plate-hi) 0%, transparent 70%),
-			radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgb(27 29 28 / 0.12) 100%),
-			var(--plate);
+		/* The ground is these two gradients over var(--plate), rendered by Chrome at 64 px and
+		   stretched (both are sized in % of the box, so the shape holds; at most 3/255 off):
+		     radial-gradient(ellipse 70% 60% at 62% 48%, var(--plate-hi) 0%, transparent 70%),
+		     radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgb(27 29 28 / 0.12) 100%)
+		   Painted as gradients they were two thirds of the first frame's raster (98 → 20 ms,
+		   measured), which under load kept the page off Lighthouse's resized surface long enough
+		   for Chrome to hold its frames for a second. */
+		background: var(--plate) url('./plate-ground.png') 0 0 / 100% 100%;
 		overflow: hidden;
 		isolation: isolate;
 		display: grid;

@@ -39,11 +39,13 @@
 	--pencil-lifted: #f0b9ab;
 	--exposed: #2e3331;
 
-	/* Fallbacks are the cheapest generic families: on Linux, resolving `cursive`, `system-ui` and
-	   `ui-monospace` cost 10–40 ms of the first layout each (measured in Chrome traces). */
-	--font-sans: 'Archivo', sans-serif;
-	--font-hand: 'Kalam', 'Archivo', sans-serif;
-	--font-mono: 'JetBrains Mono', monospace;
+	/* No generic families: Archivo is served with the site, so it is the last fallback. Resolving
+	   a generic family (`sans-serif`, `monospace`) asks the system's font matcher, which on Linux
+	   cost ~90 ms of the first layout (measured in Chrome traces: first frame 375 → 273 ms
+	   median, three cores busy). */
+	--font-sans: 'Archivo';
+	--font-hand: 'Kalam', 'Archivo';
+	--font-mono: 'JetBrains Mono', 'Archivo';
 
 	--step--1: clamp(0.84rem, 0.8rem + 0.15vw, 0.92rem);
 	--step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
