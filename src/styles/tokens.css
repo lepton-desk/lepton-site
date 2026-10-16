@@ -23,10 +23,15 @@
    the system's font matcher once per font description in the first layout; this face is matched
    by name instead (measured with the fonts arriving after the first layout: lookups 110 → 44 ms,
    that layout's task 96 → 64 ms). What remains is one lookup per description that Chrome makes
-   for any face still loading, whatever the stack says. */
+   for any face still loading, whatever the stack says. The last source is Archivo's own file
+   (fetched once, measured): on a system with none of these fonts the face stays valid instead
+   of being looked up as a system family per description (simulated with names that do not
+   exist: lookups 215 → ~125 ms, the same as with no fallback face but for one lookup per
+   missing name; with a name installed, unchanged). */
 @font-face {
 	font-family: 'Plate Fallback';
-	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans');
+	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
+		url('/fonts/archivo-latin.woff2') format('woff2');
 }
 /* JetBrains Mono, weights 400–700 and only the characters the site's code and CLI output use. */
 @font-face {
