@@ -1,0 +1,28 @@
+---
+import PlateLayout from '../../layouts/PlateLayout.astro';
+import { landing, type Lang } from '../../i18n/landing';
+import Plate from './Plate.astro';
+import Engines from './Engines.astro';
+import EventDiagram from './EventDiagram.astro';
+import CodeSample from './CodeSample.astro';
+import CliRun from './CliRun.astro';
+import StatusTable from './StatusTable.astro';
+import Close from './Close.astro';
+
+interface Props {
+	lang: Lang;
+}
+const text = landing[Astro.props.lang];
+---
+
+<PlateLayout text={text}>
+	<Plate text={text} />
+	<main>
+		<Engines text={text} />
+		<EventDiagram text={text} />
+		<CodeSample text={text} />
+		<CliRun text={text} />
+		<StatusTable text={text} />
+		<Close text={text} />
+	</main>
+</PlateLayout>

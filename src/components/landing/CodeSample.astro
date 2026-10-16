@@ -1,0 +1,142 @@
+---
+// A command end to end, from the files `lepton new` writes: the Zig handler, the page's call,
+// and the permission that lets it through. The Zig is the template's own, comments trimmed.
+import { Code } from 'astro:components';
+import type { LandingText } from '../../i18n/landing';
+import { plateTheme } from '../../styles/code-theme';
+import Fiducials from './Fiducials.astro';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const c = text.code;
+
+const zig = `pub const commands = core.webviewRegistry.checkedWith(
+    AppState,
+    &.{
+        .{ .name = "app.name", .run = &appName },
+    },
+    core.webviewRegistry.pluginCommands(@import("lepton_plugins").all),
+    core.webviewRegistry.permissionList(@import("build_options").permissions),
+);
+
+/// \`app.name\`: the product's name, as UTF-8.
+fn appName(state: *AppState, _: []const u8, out: []u8) core.webviewRegistry.HandlerError!usize {
+    if (state.product.len > out.len) return error.TooLarge;
+    @memcpy(out[0..state.product.len], state.product);
+    return state.product.len;
+}`;
+
+const ts = `import { invoke } from "@lepton-desk/api/core";
+
+const bytes = await invoke("app.name");
+const name = new TextDecoder().decode(bytes);`;
+
+const config = `{
+  "productName": "hello-lepton",
+  "renderPath": "webview",
+  "permissions": ["app.name"]
+}`;
+---
+
+<section class="code" aria-labelledby="code-title">
+	<Fiducials />
+	<div class="lead">
+		<h2 id="code-title">{c.claim}</h2>
+		<p>{c.body}</p>
+	</div>
+	<div class="prints">
+		<figure class="print zig">
+			<figcaption>{c.zigCaption}</figcaption>
+			<Code code={zig} lang="zig" theme={plateTheme} />
+		</figure>
+		<figure class="print ts">
+			<figcaption>{c.tsCaption}</figcaption>
+			<Code code={ts} lang="ts" theme={plateTheme} />
+		</figure>
+		<figure class="print config">
+			<figcaption>{c.configCaption}</figcaption>
+			<Code code={config} lang="json" theme={plateTheme} />
+		</figure>
+	</div>
+</section>
+
+<style>
+	.code {
+		position: relative;
+		padding: var(--space-6) var(--gutter);
+		margin: 0 var(--frame);
+		border-inline: 1px solid rgb(27 29 28 / 0.25);
+	}
+	.lead {
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: var(--space-5);
+		align-items: end;
+		margin-bottom: var(--space-5);
+	}
+	h2 {
+		margin: 0;
+		font-size: var(--step-3);
+		font-stretch: 66%;
+		font-weight: 800;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+	.lead p {
+		margin: 0;
+		max-width: 52ch;
+		font-size: var(--step-1);
+		line-height: 1.45;
+		color: var(--ink-soft);
+	}
+	.prints {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		grid-template-areas: 'zig ts' 'zig config';
+		gap: var(--space-4);
+	}
+	.zig {
+		grid-area: zig;
+	}
+	.ts {
+		grid-area: ts;
+	}
+	.config {
+		grid-area: config;
+	}
+	.print {
+		margin: 0;
+		min-width: 0;
+		background: var(--paper);
+		border: 1px solid rgb(27 29 28 / 0.3);
+		box-shadow: 0 1px 1px rgb(27 29 28 / 0.12), 0 18px 32px -24px rgb(27 29 28 / 0.55);
+	}
+	figcaption {
+		padding: var(--space-2) var(--space-3);
+		border-bottom: 1px solid rgb(27 29 28 / 0.2);
+		font-family: var(--font-hand);
+		font-weight: 700;
+		color: var(--pencil);
+	}
+	.print :global(pre) {
+		margin: 0;
+		padding: var(--space-3);
+		overflow-x: auto;
+		font-family: var(--font-mono);
+		font-size: 0.86rem;
+		line-height: 1.6;
+		background: transparent !important;
+		scrollbar-color: var(--ink-faint) transparent;
+	}
+	@media (max-width: 60rem) {
+		.lead,
+		.prints {
+			grid-template-columns: 1fr;
+		}
+		.prints {
+			grid-template-areas: 'ts' 'config' 'zig';
+		}
+	}
+</style>

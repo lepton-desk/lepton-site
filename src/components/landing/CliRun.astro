@@ -1,0 +1,107 @@
+---
+// Real CLI output, unedited apart from shortened paths (see src/data/cli.ts).
+import { leptonNew, leptonPackage } from '../../data/cli';
+import type { LandingText } from '../../i18n/landing';
+import Fiducials from './Fiducials.astro';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const c = text.cli;
+const sizeNote =
+	text.htmlLang === 'tr'
+		? '173 852 bayt: uygulamanın kendisi. WebKit sistemden gelir.'
+		: '173,852 bytes: the app itself. WebKit comes from the system.';
+---
+
+<section class="cli" aria-labelledby="cli-title">
+	<Fiducials tone="paper" />
+	<h2 id="cli-title">{c.claim}</h2>
+	<p class="body">{c.body}</p>
+	<div class="runs">
+		<figure class="run">
+			<figcaption><code>$ {c.caption}</code></figcaption>
+			<pre>{leptonNew}</pre>
+		</figure>
+		<figure class="run package">
+			<figcaption><code>$ {c.packageCaption}</code></figcaption>
+			<pre>{leptonPackage}</pre>
+			<p class="hand">{sizeNote}</p>
+		</figure>
+	</div>
+</section>
+
+<style>
+	.cli {
+		position: relative;
+		padding: var(--space-6) var(--gutter);
+		margin: 0 var(--frame);
+		background: var(--ink);
+		color: var(--paper);
+	}
+	h2 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--step-3);
+		font-stretch: 66%;
+		font-weight: 800;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+	.body {
+		margin: 0 0 var(--space-5);
+		max-width: 56ch;
+		font-size: var(--step-1);
+		line-height: 1.45;
+		color: #c9cbc4;
+	}
+	.runs {
+		display: grid;
+		grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+		gap: var(--space-4);
+		align-items: start;
+	}
+	.run {
+		margin: 0;
+		min-width: 0;
+		border-top: 1px solid rgb(242 241 235 / 0.35);
+	}
+	figcaption {
+		padding: var(--space-2) 0;
+		font-family: var(--font-mono);
+		font-size: 0.82rem;
+		color: var(--pencil-lifted);
+		overflow-wrap: anywhere;
+	}
+	pre {
+		margin: 0;
+		padding: var(--space-2) 0 var(--space-3);
+		overflow-x: auto;
+		font-family: var(--font-mono);
+		font-size: clamp(0.72rem, 0.62rem + 0.35vw, 0.9rem);
+		line-height: 1.55;
+		color: var(--paper);
+		scrollbar-color: #6b716c transparent;
+	}
+	.package pre {
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+	}
+	.hand {
+		margin: var(--space-2) 0 0;
+		font-family: var(--font-hand);
+		font-weight: 700;
+		font-size: var(--step-1);
+		line-height: 1.25;
+		color: var(--pencil-lifted);
+	}
+	::selection {
+		background: var(--pencil-soft);
+		color: var(--paper);
+	}
+	@media (max-width: 60rem) {
+		.runs {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,117 @@
+---
+// The one command a visitor needs, with a copy button. Copying tells the plate to fire a
+// new track from the vertex (`lepton:copied`).
+interface Props {
+	copy: string;
+	copied: string;
+	command?: string;
+}
+const { copy, copied, command = 'npm create lepton-app' } = Astro.props;
+---
+
+<div class="strip" data-command-strip>
+	<code class="cmd"><span class="prompt" aria-hidden="true">$</span>{command}</code>
+	<button type="button" class="copy" data-copy={command} data-label={copy} data-done={copied}>
+		<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+			<rect x="5" y="5" width="8.5" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"></rect>
+			<path d="M3 10.5V3a1 1 0 0 1 1-1h6.5" fill="none" stroke="currentColor" stroke-width="1.5"></path>
+		</svg>
+		<span class="label">{copy}</span>
+	</button>
+	<span class="status visually-hidden" role="status"></span>
+</div>
+
+<script>
+	for (const strip of document.querySelectorAll<HTMLElement>('[data-command-strip]')) {
+		const button = strip.querySelector<HTMLButtonElement>('button[data-copy]');
+		const label = strip.querySelector<HTMLElement>('.label');
+		const status = strip.querySelector<HTMLElement>('.status');
+		if (!button || !label || !status) continue;
+		let reset = 0;
+		button.addEventListener('click', async () => {
+			const text = button.dataset.copy ?? '';
+			try {
+				await navigator.clipboard.writeText(text);
+			} catch {
+				const range = document.createRange();
+				const code = strip.querySelector('code');
+				if (code) {
+					range.selectNodeContents(code);
+					getSelection()?.removeAllRanges();
+					getSelection()?.addRange(range);
+				}
+				return;
+			}
+			label.textContent = button.dataset.done ?? '';
+			status.textContent = button.dataset.done ?? '';
+			button.classList.add('done');
+			window.dispatchEvent(new CustomEvent('lepton:copied'));
+			clearTimeout(reset);
+			reset = window.setTimeout(() => {
+				label.textContent = button.dataset.label ?? '';
+				status.textContent = '';
+				button.classList.remove('done');
+			}, 1800);
+		});
+	}
+</script>
+
+<style>
+	.strip {
+		display: inline-flex;
+		align-items: stretch;
+		max-width: 100%;
+		background: var(--ink);
+		color: var(--paper);
+		box-shadow: 0 1px 1px rgb(27 29 28 / 0.25), 0 10px 28px -14px rgb(27 29 28 / 0.6);
+	}
+	.cmd {
+		display: flex;
+		align-items: center;
+		gap: 0.75em;
+		padding: 0.85em 1.1em;
+		font-family: var(--font-mono);
+		font-size: clamp(0.95rem, 0.88rem + 0.3vw, 1.15rem);
+		white-space: nowrap;
+		overflow-x: auto;
+		user-select: all;
+	}
+	.prompt {
+		color: var(--pencil-soft);
+		user-select: none;
+	}
+	.copy {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5em;
+		padding: 0 1.1em;
+		border: 0;
+		border-left: 1px solid rgb(242 241 235 / 0.18);
+		background: transparent;
+		color: inherit;
+		font: 600 var(--step--1) / 1 var(--font-sans);
+		letter-spacing: 0.04em;
+		text-transform: uppercase;
+		cursor: pointer;
+		transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
+	}
+	.copy:hover {
+		background: var(--exposed);
+	}
+	.copy.done {
+		color: var(--pencil-lifted);
+	}
+	.copy:focus-visible {
+		outline-color: var(--paper);
+		outline-offset: -4px;
+	}
+	@media (max-width: 30rem) {
+		.label {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+		}
+	}
+</style>

@@ -1,0 +1,105 @@
+---
+// "No browser in the box": the engines, as a track list — what runs today, what is planned.
+import type { LandingText } from '../../i18n/landing';
+import StatusMark from './StatusMark.astro';
+import Fiducials from './Fiducials.astro';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const e = text.engine;
+---
+
+<section class="claim" aria-labelledby="engines-title">
+	<Fiducials />
+	<div class="lead">
+		<h2 id="engines-title">{e.claim}</h2>
+		<p>{e.body}</p>
+	</div>
+	<ol class="engines">
+		{
+			e.rows.map((row) => (
+				<li class:list={['engine', row.status]}>
+					<span class="name">{row.name}</span>
+					<span class="where" lang="en">{row.where}</span>
+					<StatusMark status={row.status} label={text.status.labels[row.status]} />
+					<span class="note">{row.note}</span>
+				</li>
+			))
+		}
+	</ol>
+</section>
+
+<style>
+	.claim {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+		gap: var(--space-5);
+		padding: var(--space-6) var(--gutter);
+		margin: 0 var(--frame);
+		border-inline: 1px solid rgb(27 29 28 / 0.25);
+	}
+	h2 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--step-3);
+		font-stretch: 66%;
+		font-weight: 800;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+	.lead p {
+		margin: 0;
+		max-width: 38ch;
+		color: var(--ink-soft);
+		font-size: var(--step-1);
+		line-height: 1.45;
+	}
+	.engines {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-top: 2px solid var(--ink);
+	}
+	.engine {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		grid-template-areas: 'name mark' 'where where' 'note note';
+		gap: 0.15rem var(--space-3);
+		padding: var(--space-3) 0;
+		border-bottom: 1px solid rgb(27 29 28 / 0.3);
+	}
+	.name {
+		grid-area: name;
+		font-size: var(--step-2);
+		font-stretch: 75%;
+		font-weight: 750;
+		line-height: 1.1;
+	}
+	.where {
+		grid-area: where;
+		font-size: var(--step--1);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+	.engine :global(.mark) {
+		grid-area: mark;
+		align-self: center;
+	}
+	.note {
+		grid-area: note;
+		color: var(--ink-soft);
+		max-width: 60ch;
+	}
+	.planned .name {
+		color: var(--ink-soft);
+	}
+	@media (max-width: 52rem) {
+		.claim {
+			grid-template-columns: 1fr;
+			gap: var(--space-4);
+		}
+	}
+</style>

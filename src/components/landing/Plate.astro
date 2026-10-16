@@ -1,0 +1,555 @@
+---
+// The first viewport: one bubble-chamber plate. The tracks are drawn on a canvas as rows of
+// bubbles from a single vertex, the core; grease-pencil notes name what each track is, each
+// placed beside its track and tied to it with a short leader.
+import Logo from '../Logo.astro';
+import Actions from './Actions.astro';
+import { githubUrl, type LandingText } from '../../i18n/landing';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const t = text.plate;
+const n = text.nav;
+const isTr = text.htmlLang === 'tr';
+---
+
+<header class="plate" data-plate>
+	<canvas class="tracks" aria-hidden="true"></canvas>
+	<span class="fid tl" aria-hidden="true"></span><span class="fid tr" aria-hidden="true"></span>
+	<span class="fid bl" aria-hidden="true"></span><span class="fid br" aria-hidden="true"></span>
+
+	<nav class="index" aria-label="Lepton Desk">
+		<a class="home" href={isTr ? '/tr/' : '/'}>
+			<Logo size={28} wordmark={false} />
+			<span class="brand">Lepton <span class="desk">Desk</span></span>
+		</a>
+		<span class="plate-id">{t.id}</span>
+		<ul>
+			<li><a href={t.docsHref}>{n.docs}</a></li>
+			<li class="wide"><a href="#status">{n.status}</a></li>
+			<li><a href={githubUrl}>{n.github}</a></li>
+		</ul>
+		<p class="langs">
+			<a href="/" hreflang="en" lang="en" aria-current={isTr ? undefined : 'page'}>EN</a>
+			<a href="/tr/" hreflang="tr" lang="tr" aria-current={isTr ? 'page' : undefined}>TR</a>
+		</p>
+	</nav>
+
+	<div class="event" data-event>
+		<h1>Lepton</h1>
+		<p class="offer">{t.offer}</p>
+		<Actions copy={t.copy} copied={t.copied} docs={t.docs} docsHref={t.docsHref} github={t.github} />
+	</div>
+
+	<ul class="notes" aria-hidden="true">
+		<li class="note" data-note="core">{t.notes.core}</li>
+		<li class="note" data-note="ipc">{t.notes.ipc}</li>
+		<li class="note" data-note="engine">{t.notes.engine}</li>
+		<li class="note" data-note="platform">{t.notes.platform}</li>
+	</ul>
+
+	<div class="scale" aria-hidden="true">
+		<span class="bar"></span><span>{t.scale}</span>
+	</div>
+</header>
+
+<script>
+	// Tracks are simulated, not drawn by hand: a charged particle in a magnetic field curves
+	// with a radius proportional to its momentum, and as it loses energy the curve tightens
+	// into a spiral. Each track is a row of bubbles, as on a real chamber photograph.
+	type Point = { x: number; y: number };
+	type Box = { x: number; y: number; w: number; h: number };
+	type Track = { points: Point[]; weight: number; start: number; duration: number };
+
+	const plate = document.querySelector<HTMLElement>('[data-plate]');
+	const canvas = plate?.querySelector<HTMLCanvasElement>('canvas');
+	const context = canvas?.getContext('2d');
+	const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+	function random(seed: number) {
+		let s = seed >>> 0;
+		return () => {
+			s = (s * 1664525 + 1013904223) >>> 0;
+			return s / 4294967296;
+		};
+	}
+
+	function simulate(origin: Point, angle: number, momentum: number, charge: number, loss: number, steps: number, scale: number): Point[] {
+		const points: Point[] = [{ ...origin }];
+		let { x, y } = origin;
+		let heading = angle;
+		let p = momentum;
+		for (let i = 0; i < steps && p > 0.04; i++) {
+			const step = 2.2 * scale;
+			x += Math.cos(heading) * step;
+			y += Math.sin(heading) * step;
+			heading += (charge * 0.9 * step) / (p * 220 * scale);
+			p *= 1 - loss;
+			points.push({ x, y });
+		}
+		return points;
+	}
+
+	const inside = (p: Point, b: Box, pad = 0) => p.x >= b.x - pad && p.x <= b.x + b.w + pad && p.y >= b.y - pad && p.y <= b.y + b.h + pad;
+	const overlaps = (a: Box, b: Box) => a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
+	const boxOf = (element: Element, root: DOMRect): Box => {
+		const r = element.getBoundingClientRect();
+		return { x: r.left - root.left, y: r.top - root.top, w: r.width, h: r.height };
+	};
+
+	if (plate && canvas && context) {
+		let tracks: Track[] = [];
+		let products: Track[] = [];
+		let leaders: [Point, Point][] = [];
+		let masks: Box[] = [];
+		let bounds: Box = { x: 0, y: 0, w: 0, h: 0 };
+		let width = 0;
+		let height = 0;
+		let vertex: Point = { x: 0, y: 0 };
+		let scale = 1;
+		let frame = 0;
+		let fired = 0;
+
+		// The last point of a track still well inside the plate, then a fraction along that.
+		const along = (track: Track, fraction: number) => {
+			let last = 0;
+			track.points.forEach((p, i) => {
+				if (p.x > 40 && p.x < width - 40 && p.y > 90 && p.y < height - 50) last = i;
+			});
+			return track.points[Math.max(1, Math.floor(last * fraction))];
+		};
+
+		const layout = () => {
+			const ratio = Math.min(window.devicePixelRatio || 1, 2);
+			const root = plate.getBoundingClientRect();
+			width = plate.clientWidth;
+			height = plate.clientHeight;
+			canvas.width = Math.round(width * ratio);
+			canvas.height = Math.round(height * ratio);
+			context.setTransform(ratio, 0, 0, ratio, 0, 0);
+			const narrow = width < 760;
+			// The lettering's own boxes, line by line: not the column, not its padding.
+			masks = [];
+			for (const element of plate.querySelectorAll('[data-event] > *')) {
+				const range = document.createRange();
+				range.selectNodeContents(element);
+				for (const r of range.getClientRects()) {
+					if (r.width > 0 && r.height > 0) masks.push({ x: r.left - root.left, y: r.top - root.top, w: r.width, h: r.height });
+				}
+			}
+			if (masks.length > 0) {
+				const left = Math.min(...masks.map((b) => b.x));
+				const top = Math.min(...masks.map((b) => b.y));
+				bounds = {
+					x: left,
+					y: top,
+					w: Math.max(...masks.map((b) => b.x + b.w)) - left,
+					h: Math.max(...masks.map((b) => b.y + b.h)) - top,
+				};
+			}
+			vertex = narrow ? { x: width * 0.6, y: Math.max(150, bounds.y * 0.48) } : { x: width * 0.72, y: height * 0.48 };
+			scale = narrow ? 0.58 : Math.min(1.25, Math.max(0.8, width / 1440));
+			const rand = random(7);
+			const beams: Track[] = [];
+			for (let i = 0; i < 9; i++) {
+				const y0 = height * (0.08 + i * 0.105) + (rand() - 0.5) * 10;
+				const tilt = -0.035;
+				const end = i === 4 ? vertex : { x: width + 40, y: y0 + tilt * (width + 40) };
+				const start = i === 4 ? { x: -40, y: vertex.y - tilt * (vertex.x + 40) } : { x: -40, y: y0 };
+				const points: Point[] = [];
+				const count = Math.ceil(Math.hypot(end.x - start.x, end.y - start.y) / 3);
+				for (let k = 0; k <= count; k++) {
+					points.push({ x: start.x + ((end.x - start.x) * k) / count, y: start.y + ((end.y - start.y) * k) / count });
+				}
+				beams.push({ points, weight: 0.55, start: 0, duration: 900 });
+			}
+			products = [
+				{ points: simulate(vertex, -1.05, 1.0, 1, 0.0105, 900, scale), weight: 1.25, start: 380, duration: 1700 },
+				{ points: simulate(vertex, -0.45, 3.2, -1, 0.0012, 520, scale), weight: 0.95, start: 420, duration: 1200 },
+				{ points: simulate(vertex, 1.3, 2.4, 1, 0.0016, 520, scale), weight: 0.9, start: 460, duration: 1200 },
+				{ points: simulate(vertex, -1.9, 0.9, -1, 0.012, 700, scale), weight: 1.1, start: 520, duration: 1500 },
+			];
+			tracks = [...beams, ...products];
+			placeNotes(root);
+		};
+
+		// Each note tries spots around its anchor and takes the one that covers the fewest
+		// bubbles, never the text column, the index strip, the scale or another note.
+		const placeNotes = (root: DOMRect) => {
+			const anchors: Record<string, Point> = {
+				core: vertex,
+				ipc: products[0].points[Math.floor(products[0].points.length * 0.07)],
+				engine: along(products[1], 0.6),
+				platform: along(products[2], 0.55),
+			};
+			const blocked: Box[] = masks.map((m) => ({ x: m.x - 12, y: m.y - 12, w: m.w + 24, h: m.h + 24 }));
+			const index = plate.querySelector('.index');
+			if (index) blocked.push(boxOf(index, root));
+			const scaleBar = plate.querySelector('.scale');
+			if (scaleBar) {
+				const range = document.createRange();
+				range.selectNodeContents(scaleBar);
+				const r = range.getBoundingClientRect();
+				blocked.push({ x: r.left - root.left, y: r.top - root.top, w: r.width, h: r.height });
+			}
+			const ink = products.flatMap((track) => track.points.filter((_, i) => i % 3 === 0));
+			leaders = [];
+			for (const note of plate.querySelectorAll<HTMLElement>('[data-note]')) {
+				const at = anchors[note.dataset.note ?? ''];
+				if (!at) continue;
+				const w = note.offsetWidth;
+				const h = note.offsetHeight;
+				let best: Box | undefined;
+				let bestScore = Infinity;
+				for (const d of [22, 40, 62, 90, 130]) {
+					for (const [dx, dy] of [[1, -1], [1, 1], [-1, -1], [-1, 1], [0, 1], [0, -1]]) {
+						const box: Box = {
+							x: dx > 0 ? at.x + d : dx < 0 ? at.x - d - w : at.x - w / 2,
+							y: dy > 0 ? at.y + d : at.y - d - h,
+							w,
+							h,
+						};
+						if (box.x < 16 || box.y < 0 || box.x + w > width - 16 || box.y + h > height - 12) continue;
+						if (blocked.some((b) => overlaps(box, b))) continue;
+						const covered = ink.filter((p) => inside(p, box, 4)).length;
+						const score = covered * 10 + d;
+						if (score < bestScore) {
+							bestScore = score;
+							best = box;
+						}
+					}
+				}
+				if (!best) {
+					note.style.visibility = 'hidden';
+					continue;
+				}
+				note.style.visibility = '';
+				note.style.transform = `translate(${best.x}px, ${best.y}px)`;
+				blocked.push(best);
+				const edge = { x: Math.min(Math.max(at.x, best.x), best.x + best.w), y: Math.min(Math.max(at.y, best.y + best.h / 2), best.y + best.h) };
+				const reach = Math.hypot(edge.x - at.x, edge.y - at.y);
+				const from = note.dataset.note === 'core' ? 13 : 4;
+				if (reach > from + 6) {
+					leaders.push([
+						{ x: at.x + ((edge.x - at.x) * from) / reach, y: at.y + ((edge.y - at.y) * from) / reach },
+						{ x: edge.x - ((edge.x - at.x) * 4) / reach, y: edge.y - ((edge.y - at.y) * 4) / reach },
+					]);
+				}
+			}
+		};
+
+		const draw = (now: number) => {
+			context.clearRect(0, 0, width, height);
+			let busy = false;
+			for (const track of tracks) {
+				const elapsed = still.matches ? Infinity : now - track.start;
+				if (elapsed < 0) {
+					busy = true;
+					continue;
+				}
+				const progress = Math.min(1, elapsed / track.duration);
+				if (progress < 1) busy = true;
+				const eased = 1 - Math.pow(1 - progress, 3);
+				const shown = Math.floor(track.points.length * eased);
+				const rand = random(track.points.length * 31 + Math.round(track.weight * 100));
+				context.fillStyle = track.weight < 0.7 ? 'rgba(27, 29, 28, 0.38)' : 'rgba(27, 29, 28, 0.88)';
+				for (let i = 0; i < shown; i += track.weight < 0.7 ? 2 : 1) {
+					const p = track.points[i];
+					const r = track.weight * (0.75 + rand() * 0.75);
+					const jx = (rand() - 0.5) * 0.8;
+					const jy = (rand() - 0.5) * 0.8;
+					// The text column is printed over the plate: no bubble under the lettering.
+					if (masks.some((m) => inside(p, m, 12))) continue;
+					context.beginPath();
+					context.arc(p.x + jx, p.y + jy, r, 0, Math.PI * 2);
+					context.fill();
+				}
+			}
+			context.strokeStyle = '#a32b17';
+			context.lineWidth = 2.2;
+			context.beginPath();
+			context.arc(vertex.x, vertex.y, 11, 0, Math.PI * 2);
+			context.stroke();
+			context.lineWidth = 1.4;
+			for (const [a, b] of leaders) {
+				context.beginPath();
+				context.moveTo(a.x, a.y);
+				context.lineTo(b.x, b.y);
+				context.stroke();
+			}
+			if (busy) frame = requestAnimationFrame((time) => draw(time - origin));
+		};
+
+		let origin = performance.now();
+		const start = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame((time) => draw(time - origin));
+		};
+
+		const settle = () => {
+			layout();
+			start();
+		};
+		settle();
+		document.fonts?.ready.then(() => {
+			const kept = tracks.slice(13);
+			layout();
+			tracks.push(...kept);
+			start();
+		});
+
+		let resizing = 0;
+		new ResizeObserver(() => {
+			clearTimeout(resizing);
+			resizing = window.setTimeout(() => {
+				const kept = tracks.slice(13);
+				layout();
+				tracks.push(...kept.map((track) => ({ ...track, start: -Infinity })));
+				origin = performance.now() - 10000;
+				start();
+			}, 120);
+		}).observe(plate);
+
+		window.addEventListener('lepton:copied', () => {
+			fired += 1;
+			const rand = random(fired * 97 + 13);
+			const now = performance.now() - origin;
+			tracks.push({
+				points: simulate(vertex, rand() * Math.PI * 2, 0.7 + rand() * 0.8, rand() > 0.5 ? 1 : -1, 0.011, 800, scale),
+				weight: 1.15,
+				start: now,
+				duration: 1100,
+			});
+			if (tracks.length > 21) tracks.splice(13, 1);
+			start();
+		});
+	}
+</script>
+
+<style>
+	.plate {
+		position: relative;
+		min-height: max(40rem, 100svh);
+		margin: var(--frame);
+		border: 1px solid var(--ink);
+		background:
+			radial-gradient(ellipse 70% 60% at 62% 48%, var(--plate-hi) 0%, transparent 70%),
+			radial-gradient(ellipse 120% 100% at 50% 50%, transparent 55%, rgb(27 29 28 / 0.12) 100%),
+			var(--plate);
+		overflow: hidden;
+		isolation: isolate;
+		display: grid;
+		grid-template-rows: auto 1fr auto;
+	}
+	.tracks {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -1;
+	}
+	.fid {
+		position: absolute;
+		width: 22px;
+		height: 22px;
+	}
+	.fid::before,
+	.fid::after {
+		content: '';
+		position: absolute;
+		background: var(--ink);
+	}
+	.fid::before {
+		left: 10px;
+		width: 2px;
+		height: 100%;
+	}
+	.fid::after {
+		top: 10px;
+		height: 2px;
+		width: 100%;
+	}
+	.tl {
+		left: 14px;
+		top: 76px;
+	}
+	.tr {
+		right: 14px;
+		top: 76px;
+	}
+	.bl {
+		left: 14px;
+		bottom: 14px;
+	}
+	.br {
+		right: 14px;
+		bottom: 14px;
+	}
+
+	.index {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
+		padding: var(--space-3) var(--gutter);
+		border-bottom: 1px solid rgb(27 29 28 / 0.35);
+	}
+	.home {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+	}
+	.brand {
+		font-stretch: 70%;
+		font-weight: 800;
+		font-size: 1.35rem;
+		letter-spacing: -0.01em;
+		line-height: 1;
+		white-space: nowrap;
+	}
+	.desk {
+		font-weight: 500;
+		color: var(--ink-soft);
+	}
+	.plate-id {
+		font-size: var(--step--1);
+		font-stretch: 80%;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+	.index ul {
+		display: flex;
+		gap: var(--space-4);
+		margin: 0 0 0 auto;
+		padding: 0;
+		list-style: none;
+		font-weight: 600;
+		font-stretch: 85%;
+		letter-spacing: 0.02em;
+	}
+	.index ul a {
+		text-decoration: none;
+		padding-block: 0.3em;
+		background: linear-gradient(var(--pencil), var(--pencil)) no-repeat 0 100% / 0 2px;
+		transition: background-size 320ms var(--ease-out);
+	}
+	.index ul a:hover {
+		background-size: 100% 2px;
+	}
+	.langs {
+		display: flex;
+		margin: 0;
+		border: 1.5px solid var(--ink);
+		font-size: var(--step--1);
+		font-weight: 650;
+		letter-spacing: 0.06em;
+	}
+	.langs a {
+		padding: 0.3em 0.6em;
+		text-decoration: none;
+		transition: background-color 240ms var(--ease-out);
+	}
+	.langs a:hover {
+		background: var(--plate-hi);
+	}
+	.langs a[aria-current] {
+		background: var(--ink);
+		color: var(--paper);
+	}
+
+	.event {
+		align-self: center;
+		padding: var(--space-5) var(--gutter);
+		max-width: none;
+	}
+	h1 {
+		margin: 0 0 var(--space-2);
+		font-size: clamp(4.5rem, 14vw, 12.5rem);
+		font-stretch: 62%;
+		font-weight: 850;
+		line-height: 0.86;
+		letter-spacing: -0.03em;
+		margin-left: -0.04em;
+		padding-bottom: 0.08em;
+	}
+	.offer {
+		margin: 0 0 var(--space-4);
+		font-size: var(--step-2);
+		font-stretch: 88%;
+		line-height: 1.22;
+		max-width: 30ch;
+	}
+
+	.notes {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.note {
+		position: absolute;
+		left: 0;
+		top: 0;
+		max-width: 15rem;
+		font-family: var(--font-hand);
+		font-weight: 700;
+		font-size: var(--step-1);
+		line-height: 1.15;
+		color: var(--pencil);
+		pointer-events: none;
+	}
+
+	.scale {
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
+		padding: 0 var(--gutter) var(--space-3);
+		font-size: var(--step--1);
+		color: var(--ink-soft);
+	}
+	.bar {
+		width: 7rem;
+		height: 8px;
+		border: 1.5px solid var(--ink);
+		border-top: 0;
+		background: repeating-linear-gradient(90deg, var(--ink) 0 1.5px, transparent 1.5px 14px);
+		background-size: 100% 4px;
+		background-repeat: no-repeat;
+		background-position: bottom;
+	}
+
+	@media (max-width: 60rem) {
+		.plate-id {
+			display: none;
+		}
+	}
+	@media (max-width: 47.5rem) {
+		.index {
+			gap: var(--space-2) var(--space-3);
+			flex-wrap: wrap;
+			justify-content: space-between;
+		}
+		.index ul {
+			order: 3;
+			width: 100%;
+			margin: 0;
+			gap: var(--space-4);
+			font-size: var(--step--1);
+		}
+		.event {
+			max-width: none;
+			align-self: end;
+			padding-top: 46svh;
+		}
+		.note {
+			max-width: 10.5rem;
+			font-size: 1.02rem;
+		}
+		.tl,
+		.tr {
+			top: 128px;
+		}
+	}
+</style>

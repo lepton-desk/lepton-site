@@ -1,0 +1,202 @@
+---
+// The architecture as an event reconstruction: the Zig core is the vertex, and three tracks
+// leave it — to your page, to the system's web engine, to the desktop. Each track is named in
+// grease pencil beside it, with a short leader, as a physicist marks a plate.
+import type { LandingText } from '../../i18n/landing';
+import Fiducials from './Fiducials.astro';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const e = text.event;
+
+// SVG text does not wrap: break a note into lines of at most `max` characters.
+function lines(note: string, max: number): string[] {
+	const out: string[] = [];
+	let line = '';
+	for (const word of note.split(' ')) {
+		if (line && (line + ' ' + word).length > max) {
+			out.push(line);
+			line = word;
+		} else {
+			line = line ? `${line} ${word}` : word;
+		}
+	}
+	if (line) out.push(line);
+	return out;
+}
+
+interface Label {
+	x: number;
+	y: number;
+	anchor: 'start' | 'middle' | 'end';
+	name: string;
+	note: string;
+	max: number;
+	leader?: [number, number, number, number];
+	core?: boolean;
+}
+
+const wide = {
+	view: '0 0 1200 470',
+	vertex: [600, 210] as const,
+	tracks: [
+		'M600 210 C 470 270, 270 300, 70 260',
+		'M600 210 C 740 260, 940 300, 1130 270',
+		'M600 210 C 640 110, 760 50, 850 80 C 930 108, 905 190, 845 182 C 805 177, 808 135, 842 140 C 862 143, 860 165, 846 164',
+	],
+	labels: [
+		{ x: 70, y: 318, anchor: 'start', name: e.page, note: e.pageNote, max: 34, leader: [80, 272, 80, 296] },
+		{ x: 1130, y: 328, anchor: 'end', name: e.system, note: e.systemNote, max: 34, leader: [1120, 282, 1120, 306] },
+		{ x: 932, y: 140, anchor: 'start', name: e.engine, note: e.engineNote, max: 26, leader: [902, 146, 926, 134] },
+		{ x: 600, y: 300, anchor: 'middle', name: e.core, note: e.coreNote, max: 40, leader: [600, 224, 600, 276], core: true },
+		{ x: 560, y: 120, anchor: 'end', name: e.frames, note: e.framesNote, max: 30, leader: [588, 198, 566, 160] },
+	] as Label[],
+};
+
+const tall = {
+	view: '0 0 400 1070',
+	vertex: [200, 470] as const,
+	tracks: [
+		'M200 470 C 160 380, 100 290, 50 196',
+		'M200 470 C 170 620, 120 780, 70 940',
+		'M200 470 C 260 420, 340 390, 356 430 C 372 472, 330 494, 312 474 C 298 458, 314 440, 330 448',
+	],
+	labels: [
+		{ x: 20, y: 50, anchor: 'start', name: e.page, note: e.pageNote, max: 26, leader: [52, 186, 52, 170] },
+		{ x: 112, y: 966, anchor: 'start', name: e.system, note: e.systemNote, max: 24, leader: [78, 948, 104, 958] },
+		{ x: 390, y: 270, anchor: 'end', name: e.engine, note: e.engineNote, max: 20, leader: [346, 392, 354, 366] },
+		{ x: 236, y: 566, anchor: 'start', name: e.core, note: e.coreNote, max: 15, leader: [210, 483, 236, 540], core: true },
+		{ x: 236, y: 776, anchor: 'start', name: e.frames, note: e.framesNote, max: 15, leader: [204, 485, 232, 750] },
+	] as Label[],
+};
+const plates = [
+	{ id: 'wide', ...wide },
+	{ id: 'tall', ...tall },
+];
+---
+
+<section class="event" aria-labelledby="event-title">
+	<Fiducials />
+	<h2 id="event-title">{e.claim}</h2>
+	<p class="body">{e.body}</p>
+
+	<figure class="reconstruction">
+		{
+			plates.map((plate) => (
+				<svg class:list={['plate-svg', plate.id]} viewBox={plate.view} role="img" aria-labelledby={`event-desc-${plate.id}`}>
+					<desc id={`event-desc-${plate.id}`}>
+						{e.core}: {e.coreNote}. {e.page}: {e.pageNote}. {e.engine}: {e.engineNote}. {e.system}: {e.systemNote}. {e.frames}: {e.framesNote}.
+					</desc>
+					{plate.tracks.map((d, i) => (
+						<path d={d} class:list={['track', i === 2 && 'curl']} />
+					))}
+					<circle cx={plate.vertex[0]} cy={plate.vertex[1]} r="13" class="vertex" />
+					{plate.labels.map((label) => (
+						<g class:list={['label', label.core && 'core']} aria-hidden="true">
+							{label.leader && <line x1={label.leader[0]} y1={label.leader[1]} x2={label.leader[2]} y2={label.leader[3]} class="leader" />}
+							<text x={label.x} y={label.y} text-anchor={label.anchor} class="name">
+								{label.name}
+							</text>
+							<text x={label.x} y={label.y + 30} text-anchor={label.anchor} class="hand">
+								{lines(label.note, label.max).map((line, i) => (
+									<tspan x={label.x} dy={i === 0 ? 0 : 27}>
+										{line}
+									</tspan>
+								))}
+							</text>
+						</g>
+					))}
+				</svg>
+			))
+		}
+	</figure>
+</section>
+
+<style>
+	.event {
+		position: relative;
+		padding: var(--space-6) var(--gutter);
+		margin: 0 var(--frame);
+		background: var(--plate-hi);
+		border: 1px solid rgb(27 29 28 / 0.25);
+	}
+	h2 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--step-3);
+		font-stretch: 66%;
+		font-weight: 800;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+	.body {
+		margin: 0 0 var(--space-4);
+		max-width: 56ch;
+		font-size: var(--step-1);
+		line-height: 1.45;
+		color: var(--ink-soft);
+	}
+	.reconstruction {
+		margin: 0;
+	}
+	.plate-svg {
+		display: block;
+		width: 100%;
+		height: auto;
+		overflow: visible;
+	}
+	.tall {
+		display: none;
+	}
+	.track {
+		fill: none;
+		stroke: var(--ink);
+		stroke-width: 4.5;
+		stroke-dasharray: 0.5 7;
+		stroke-linecap: round;
+	}
+	.curl {
+		stroke-width: 3.6;
+	}
+	.vertex {
+		fill: var(--plate-hi);
+		stroke: var(--pencil);
+		stroke-width: 3;
+	}
+	.leader {
+		stroke: var(--pencil);
+		stroke-width: 1.6;
+	}
+	.name {
+		font-family: var(--font-sans);
+		font-stretch: 78%;
+		font-weight: 750;
+		font-size: 25px;
+		fill: var(--ink);
+	}
+	.hand {
+		font-family: var(--font-hand);
+		font-weight: 700;
+		font-size: 22px;
+		fill: var(--pencil);
+	}
+	.core .name {
+		fill: var(--pencil);
+	}
+	@media (max-width: 52rem) {
+		.wide {
+			display: none;
+		}
+		.tall {
+			display: block;
+			max-width: 30rem;
+		}
+		.tall .name {
+			font-size: 26px;
+		}
+		.tall .hand {
+			font-size: 23px;
+		}
+	}
+</style>

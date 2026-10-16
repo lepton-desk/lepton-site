@@ -1,0 +1,58 @@
+/* The plate world: a bubble-chamber print (silver-grey ground, graphite tracks), grease-pencil
+   notes, and paper tables like a particle data booklet. Shared by the landing page and the docs. */
+
+@font-face {
+	font-family: 'Archivo';
+	src: url('/fonts/archivo.woff2') format('woff2');
+	font-weight: 100 900;
+	font-stretch: 62% 125%;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'Kalam';
+	src: url('/fonts/kalam.woff2') format('woff2');
+	font-weight: 700;
+	font-display: swap;
+}
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('/fonts/jbmono.woff2') format('woff2');
+	font-weight: 100 800;
+	font-display: swap;
+}
+
+:root {
+	--plate: #d5d8d0;
+	--plate-hi: #e3e5de;
+	--plate-lo: #b9bdb3;
+	--paper: #f2f1eb;
+	--ink: #1b1d1c;
+	--ink-soft: #3f4441;
+	--ink-faint: #6b716c;
+	--pencil: #a32b17;
+	--pencil-soft: #c9533e;
+	--pencil-lifted: #f0b9ab;
+	--exposed: #2e3331;
+
+	--font-sans: 'Archivo', system-ui, sans-serif;
+	--font-hand: 'Kalam', 'Archivo', cursive;
+	--font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+	--step--1: clamp(0.84rem, 0.8rem + 0.15vw, 0.92rem);
+	--step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);
+	--step-1: clamp(1.2rem, 1.1rem + 0.45vw, 1.45rem);
+	--step-2: clamp(1.5rem, 1.25rem + 1vw, 2.1rem);
+	--step-3: clamp(2.2rem, 1.6rem + 2.6vw, 4.2rem);
+	--step-4: clamp(3.4rem, 2rem + 6vw, 6rem);
+
+	--space-1: 0.375rem;
+	--space-2: 0.75rem;
+	--space-3: 1.25rem;
+	--space-4: 2rem;
+	--space-5: 3.25rem;
+	--space-6: clamp(4rem, 3rem + 5vw, 8rem);
+
+	--gutter: clamp(1rem, 0.5rem + 2.4vw, 3.5rem);
+	--frame: clamp(0.5rem, 0.2rem + 1.2vw, 1.75rem);
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}

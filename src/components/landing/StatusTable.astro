@@ -1,0 +1,165 @@
+---
+// The honest table, set like a particle data booklet page: what works, what is next, what is
+// only planned.
+import type { LandingText } from '../../i18n/landing';
+import StatusMark from './StatusMark.astro';
+import Fiducials from './Fiducials.astro';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const s = text.status;
+---
+
+<section class="status" id="status" aria-labelledby="status-title">
+	<Fiducials />
+	<div class="lead">
+		<h2 id="status-title">{s.claim}</h2>
+		<p>{s.body}</p>
+	</div>
+	<div class="sheet">
+		<table>
+			<thead>
+				<tr>
+					<th scope="col">{s.head.item}</th>
+					<th scope="col">{s.head.state}</th>
+					<th scope="col">{s.head.note}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{
+					s.rows.map((row) => (
+						<tr class={row.state}>
+							<th scope="row">{row.item}</th>
+							<td>
+								<StatusMark status={row.state} label={s.labels[row.state]} />
+							</td>
+							<td>{row.note}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</table>
+		<p class="memory">{s.memory}</p>
+	</div>
+</section>
+
+<style>
+	.status {
+		position: relative;
+		display: grid;
+		grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+		gap: var(--space-5);
+		padding: var(--space-6) var(--gutter);
+		margin: 0 var(--frame);
+		border-inline: 1px solid rgb(27 29 28 / 0.25);
+		scroll-margin-top: var(--space-3);
+	}
+	h2 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--step-3);
+		font-stretch: 66%;
+		font-weight: 800;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+	.lead p {
+		margin: 0;
+		font-size: var(--step-1);
+		color: var(--ink-soft);
+	}
+	.sheet {
+		min-width: 0;
+		padding: var(--space-4);
+		background: var(--paper);
+		border: 1px solid rgb(27 29 28 / 0.3);
+		box-shadow: 0 1px 1px rgb(27 29 28 / 0.12), 0 22px 40px -28px rgb(27 29 28 / 0.6);
+		overflow-x: auto;
+	}
+	table {
+		width: 100%;
+		border-collapse: collapse;
+		font-variant-numeric: tabular-nums;
+	}
+	thead th {
+		padding: 0 var(--space-2) var(--space-2);
+		border-bottom: 2px solid var(--ink);
+		text-align: left;
+		font-size: var(--step--1);
+		font-weight: 650;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+	tbody th,
+	td {
+		padding: var(--space-2);
+		border-bottom: 1px solid rgb(27 29 28 / 0.18);
+		text-align: left;
+		vertical-align: top;
+	}
+	tbody th {
+		font-weight: 650;
+		font-stretch: 85%;
+		white-space: nowrap;
+	}
+	td:last-child {
+		color: var(--ink-soft);
+		min-width: 18ch;
+	}
+	tr.planned th {
+		color: var(--ink-soft);
+	}
+	.memory {
+		margin: var(--space-4) 0 0;
+		font-family: var(--font-hand);
+		font-weight: 700;
+		font-size: var(--step-1);
+		line-height: 1.3;
+		color: var(--pencil);
+		max-width: 48ch;
+	}
+	@media (max-width: 60rem) {
+		.status {
+			grid-template-columns: 1fr;
+			gap: var(--space-4);
+		}
+		.sheet {
+			padding: var(--space-3);
+		}
+		thead {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			overflow: hidden;
+			clip-path: inset(50%);
+		}
+		table,
+		tbody,
+		tr,
+		tbody th,
+		td {
+			display: block;
+		}
+		tr {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			gap: var(--space-1) var(--space-2);
+			padding: var(--space-3) 0;
+			border-bottom: 1px solid rgb(27 29 28 / 0.18);
+		}
+		tbody th,
+		td {
+			padding: 0;
+			border: 0;
+		}
+		tbody th {
+			white-space: normal;
+		}
+		td:last-child {
+			grid-column: 1 / -1;
+			min-width: 0;
+		}
+	}
+</style>

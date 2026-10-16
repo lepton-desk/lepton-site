@@ -1,0 +1,82 @@
+/* The docs in the plate world. Light: a print on paper, plate-grey chrome. Dark: the film
+   negative — graphite ground, pale tracks, the grease pencil lifted for contrast. */
+@import './tokens.css';
+
+:root {
+	--sl-font: var(--font-sans);
+	--sl-font-mono: var(--font-mono);
+	--sl-content-width: 46rem;
+
+	/* dark (Starlight's default theme) */
+	--sl-color-accent-low: #3a1f19;
+	--sl-color-accent: #e07a62;
+	--sl-color-accent-high: #f4c3b5;
+	--sl-color-white: #f2f1eb;
+	--sl-color-gray-1: #e3e5de;
+	--sl-color-gray-2: #c9ccc4;
+	--sl-color-gray-3: #9aa09a;
+	--sl-color-gray-4: #6b716c;
+	--sl-color-gray-5: #3f4441;
+	--sl-color-gray-6: #262928;
+	--sl-color-black: #1b1d1c;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #f0d2c9;
+	--sl-color-accent: #a32b17;
+	--sl-color-accent-high: #6f1d10;
+	--sl-color-white: #1b1d1c;
+	--sl-color-gray-1: #262928;
+	--sl-color-gray-2: #3f4441;
+	--sl-color-gray-3: #5a605b;
+	--sl-color-gray-4: #8a908a;
+	--sl-color-gray-5: #b9bdb3;
+	--sl-color-gray-6: #d5d8d0;
+	--sl-color-gray-7: #e3e5de;
+	--sl-color-black: #f2f1eb;
+	--sl-color-bg-nav: #d5d8d0;
+	--sl-color-bg-sidebar: #e3e5de;
+}
+
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3,
+h1#_top {
+	font-stretch: 70%;
+	font-weight: 800;
+	letter-spacing: -0.01em;
+}
+h1#_top {
+	font-size: clamp(2.4rem, 1.8rem + 2.4vw, 3.6rem);
+	line-height: 0.95;
+}
+.sl-markdown-content h2 {
+	padding-top: 0.6rem;
+	border-top: 2px solid var(--sl-color-white);
+}
+.site-title {
+	font-stretch: 70%;
+	font-weight: 800;
+	font-size: 1.35rem;
+}
+.sl-markdown-content table {
+	font-variant-numeric: tabular-nums;
+}
+.sl-markdown-content th {
+	text-transform: uppercase;
+	letter-spacing: 0.06em;
+	font-size: 0.8rem;
+}
+.sl-markdown-content code:not(pre code) {
+	font-size: 0.88em;
+}
+::selection {
+	background: var(--sl-color-accent);
+	color: var(--sl-color-black);
+}
+:focus-visible {
+	outline-color: var(--sl-color-accent);
+}
+html {
+	scrollbar-color: var(--sl-color-gray-4) var(--sl-color-black);
+}

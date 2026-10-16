@@ -1,0 +1,65 @@
+---
+import Logo from '../Logo.astro';
+import Actions from './Actions.astro';
+import Fiducials from './Fiducials.astro';
+import { githubUrl, type LandingText } from '../../i18n/landing';
+
+interface Props {
+	text: LandingText;
+}
+const { text } = Astro.props;
+const c = text.close;
+---
+
+<section class="close" aria-labelledby="close-title">
+	<Fiducials />
+	<h2 id="close-title">{c.claim}</h2>
+	<p>{c.body}</p>
+	<Actions copy={text.plate.copy} copied={text.plate.copied} docs={c.docs} docsHref={text.plate.docsHref} github={c.github} />
+</section>
+
+<footer class="foot">
+	<Logo size={24} />
+	<span>{text.footer.line}</span>
+	<span>{text.footer.license}</span>
+	<a href={text.nav.otherHref} hreflang={text.nav.otherHref === '/' ? 'en' : 'tr'} lang={text.nav.otherHref === '/' ? 'en' : 'tr'}>{text.nav.otherLabel}</a>
+	<a href={githubUrl}>GitHub</a>
+</footer>
+
+<style>
+	.close {
+		position: relative;
+		padding: var(--space-6) var(--gutter);
+		margin: 0 var(--frame);
+		border: 1px solid var(--ink);
+		background:
+			radial-gradient(ellipse 60% 80% at 20% 30%, var(--plate-hi) 0%, transparent 70%),
+			var(--plate);
+	}
+	h2 {
+		margin: 0 0 var(--space-2);
+		font-size: var(--step-4);
+		font-stretch: 62%;
+		font-weight: 850;
+		line-height: 0.9;
+		letter-spacing: -0.02em;
+		max-width: 12ch;
+	}
+	.close > p {
+		margin: 0 0 var(--space-4);
+		font-size: var(--step-1);
+		color: var(--ink-soft);
+	}
+	.foot {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--space-2) var(--space-4);
+		padding: var(--space-4) calc(var(--gutter) + var(--frame)) var(--space-5);
+		font-size: var(--step--1);
+		color: var(--ink-soft);
+	}
+	.foot a {
+		color: var(--ink);
+	}
+</style>
