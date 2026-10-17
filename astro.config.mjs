@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
-import { plateTheme } from './src/styles/code-theme.ts';
+import { plateNegativeTheme, plateTheme } from './src/styles/code-theme.ts';
 import offlineDocs from './integrations/offline-docs.mjs';
 
 // The landing page lives in src/pages (`/`, `/tr/`); the docs are Starlight, under `/docs/`
@@ -36,7 +36,7 @@ export default defineConfig({
 			// live runs of a post with code (none on pages without code). Markdown is rendered again on
 			// every build (`astro build --force` in package.json): the content store under node_modules/.astro
 			// survives between Vercel builds and had kept code blocks rendered with the old option.
-			expressiveCode: { themes: [plateTheme], emitExternalStylesheet: false },
+			expressiveCode: { themes: [plateNegativeTheme, plateTheme], emitExternalStylesheet: false },
 			head: [
 				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' } },
 				// Registered after load, so it never competes with the first paint; a docs page then

@@ -4,6 +4,7 @@
 // placed beside its track and tied to it with a short leader.
 import Logo from '../Logo.astro';
 import Actions from './Actions.astro';
+import ThemeToggle from '../site/ThemeToggle.astro';
 import { githubUrl, type LandingText } from '../../i18n/landing';
 
 interface Props {
@@ -37,14 +38,7 @@ const isTr = text.htmlLang === 'tr';
 				<a href="/" hreflang="en" lang="en" aria-current={isTr ? undefined : 'page'}>EN</a>
 				<a href="/tr/" hreflang="tr" lang="tr" aria-current={isTr ? 'page' : undefined}>TR</a>
 			</p>
-			{/* An exposure: half the plate printed dark. Pressed when the page is the negative. */}
-			<button class="theme" type="button" aria-pressed="false" title={n.theme} data-theme-toggle>
-				<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-					<circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
-					<path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"></path>
-				</svg>
-				<span class="visually-hidden">{n.theme}</span>
-			</button>
+			<ThemeToggle label={n.theme} />
 		</div>
 	</nav>
 
@@ -81,22 +75,6 @@ const isTr = text.htmlLang === 'tr';
 	const context = canvas?.getContext('2d');
 	const still = matchMedia('(prefers-reduced-motion: reduce)');
 	const root = document.documentElement;
-
-	// The theme toggle. The choice is kept under Starlight's own key, so the docs open in it too;
-	// the head script applies it before the first paint.
-	const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-	const pressed = () => toggle?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
-	pressed();
-	new MutationObserver(pressed).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
-	toggle?.addEventListener('click', () => {
-		const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-		try {
-			localStorage.setItem('starlight-theme', next);
-		} catch {
-			// Storage blocked: the choice holds for this page only.
-		}
-		root.dataset.theme = next;
-	});
 
 	function random(seed: number) {
 		let s = seed >>> 0;
@@ -569,23 +547,6 @@ const isTr = text.htmlLang === 'tr';
 		background: var(--plate-hi);
 	}
 	.langs a[aria-current] {
-		background: var(--ink);
-		color: var(--paper);
-	}
-	.theme {
-		display: inline-grid;
-		place-items: center;
-		padding: 0 0.55em;
-		border: 1.5px solid var(--ink);
-		background: transparent;
-		color: inherit;
-		cursor: pointer;
-		transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
-	}
-	.theme:hover {
-		background: var(--plate-hi);
-	}
-	.theme[aria-pressed='true'] {
 		background: var(--ink);
 		color: var(--paper);
 	}

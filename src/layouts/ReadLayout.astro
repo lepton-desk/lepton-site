@@ -4,6 +4,7 @@
 import '../styles/faces-docs.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
+import '../styles/plate-dark.css';
 import Head, { type Props as HeadProps } from '../components/site/Head.astro';
 import SiteStrip from '../components/site/SiteStrip.astro';
 import { site } from '../i18n/site';
@@ -19,7 +20,7 @@ const rss = lang === 'tr' ? '/tr/blog/rss.xml' : '/blog/rss.xml';
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<Head {...props}>
+		<Head {...props} dark>
 			<link slot="head" rel="alternate" type="application/rss+xml" title={`Lepton — ${t.blogTitle}`} href={rss} />
 		</Head>
 	</head>
@@ -45,7 +46,7 @@ const rss = lang === 'tr' ? '/tr/blog/rss.xml' : '/blog/rss.xml';
 		min-height: calc(100svh - 2 * var(--frame));
 		display: flex;
 		flex-direction: column;
-		border-inline: 1px solid rgb(27 29 28 / 0.35);
+		border-inline: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
 	}
 	.foot {
 		margin-top: auto;
@@ -53,7 +54,7 @@ const rss = lang === 'tr' ? '/tr/blog/rss.xml' : '/blog/rss.xml';
 		flex-wrap: wrap;
 		gap: var(--space-2) var(--space-4);
 		padding: var(--space-4) var(--gutter);
-		border-top: 1px solid rgb(27 29 28 / 0.35);
+		border-top: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
 		font-size: var(--step--1);
 		font-weight: 600;
 		font-stretch: 85%;

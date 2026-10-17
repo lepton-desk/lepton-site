@@ -2,6 +2,7 @@
 // The index strip outside the landing page's plate: brand, Docs / Blog / GitHub, and the
 // language switch, which leads to the same page in the other language when there is one.
 import Logo from '../Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
 import { githubUrl } from '../../i18n/landing';
 import { site, type Lang } from '../../i18n/site';
 
@@ -24,10 +25,13 @@ const t = site[lang];
 		<li><a href={t.blogHref} aria-current={current === 'blog' ? 'page' : undefined}>{t.blog}</a></li>
 		<li><a href={githubUrl}>{t.github}</a></li>
 	</ul>
-	<p class="langs">
-		<a href={paths.en} hreflang="en" lang="en" aria-current={lang === 'en' ? 'page' : undefined}>EN</a>
-		<a href={paths.tr} hreflang="tr" lang="tr" aria-current={lang === 'tr' ? 'page' : undefined}>TR</a>
-	</p>
+	<div class="controls">
+		<p class="langs">
+			<a href={paths.en} hreflang="en" lang="en" aria-current={lang === 'en' ? 'page' : undefined}>EN</a>
+			<a href={paths.tr} hreflang="tr" lang="tr" aria-current={lang === 'tr' ? 'page' : undefined}>TR</a>
+		</p>
+		<ThemeToggle label={t.theme} />
+	</div>
 </nav>
 
 <style>
@@ -36,7 +40,7 @@ const t = site[lang];
 		align-items: center;
 		gap: var(--space-4);
 		padding: var(--space-3) var(--gutter);
-		border-bottom: 1px solid rgb(27 29 28 / 0.35);
+		border-bottom: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
 	}
 	.home {
 		display: inline-flex;
@@ -75,6 +79,10 @@ const t = site[lang];
 	ul a:hover,
 	ul a[aria-current] {
 		background-size: 100% 2px;
+	}
+	.controls {
+		display: flex;
+		gap: var(--space-2);
 	}
 	.langs {
 		display: flex;

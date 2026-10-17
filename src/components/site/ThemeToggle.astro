@@ -1,0 +1,59 @@
+---
+// The theme toggle, boxed like the EN|TR switch: an exposure, half the plate printed dark,
+// pressed when the page is the negative. The choice is kept under Starlight's own key, so the
+// docs open in it too; Head's script applies it before the first paint.
+interface Props {
+	label: string;
+}
+const { label } = Astro.props;
+---
+
+<button class="theme" type="button" aria-pressed="false" title={label} data-theme-toggle>
+	<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+		<circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+		<path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"></path>
+	</svg>
+	<span class="visually-hidden">{label}</span>
+</button>
+
+<script>
+	const root = document.documentElement;
+	const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const pressed = () => toggle?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+	pressed();
+	new MutationObserver(pressed).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+	toggle?.addEventListener('click', () => {
+		const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+		try {
+			localStorage.setItem('starlight-theme', next);
+		} catch {
+			// Storage blocked: the choice holds for this page only.
+		}
+		root.dataset.theme = next;
+	});
+</script>
+
+<style>
+	.theme {
+		display: inline-grid;
+		place-items: center;
+		padding: 0 0.55em;
+		border: 1.5px solid var(--ink);
+		background: transparent;
+		color: inherit;
+		cursor: pointer;
+		transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
+	}
+	.theme:hover {
+		background: var(--plate-hi);
+	}
+	.theme[aria-pressed='true'] {
+		background: var(--ink);
+		color: var(--paper);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.theme {
+			transition: none;
+		}
+	}
+</style>
