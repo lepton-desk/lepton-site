@@ -34,7 +34,7 @@ export default defineConfig({
 			// so the rest of the page waited for it and the first frame came ~540 ms in. Under Lighthouse's
 			// resize that was late enough for Chrome to hold the page's frames for a second, in 5 of 10
 			// live runs of a post with code (none on pages without code). Markdown is rendered again on
-			// every build (`astro build --force`, vercel.json): the content store under node_modules/.astro
+			// every build (`astro build --force` in package.json): the content store under node_modules/.astro
 			// survives between Vercel builds and had kept code blocks rendered with the old option.
 			expressiveCode: { themes: [plateTheme], emitExternalStylesheet: false },
 			head: [
