@@ -9,7 +9,7 @@ Lepton builds desktop applications with a **Zig core** and a **web front end**. 
 
 - Linux, with Wayland or X11
 - [Zig 0.16](https://ziglang.org/download/)
-- WPE WebKit 2.54 or newer with its `wpe-platform` API (`pkg-config wpe-webkit-2.0`) and libsoup 3
+- WPE WebKit 2.54 or newer, built with its WPE Platform API (`pkg-config wpe-webkit-2.0 wpe-platform-2.0`), and libsoup 3. The Platform API is stable and on by default since 2.54; libwpe and WPEBackend-fdo are not used on this path.
 - Node 20 or newer, and npm, pnpm, Yarn or Bun
 
 `lepton info` checks the machine and says what is missing:
@@ -17,6 +17,10 @@ Lepton builds desktop applications with a **Zig core** and a **web front end**. 
 ```sh
 npx @lepton-desk/cli info
 ```
+
+:::caution[Known issue in 0.1.4]
+The webview build still asks `pkg-config` for `wpebackend-fdo-1.0` and stops when it is not there, and `lepton info` reports it as missing, although the 2.54 path never loads it. Arch no longer packages libwpe or WPEBackend-fdo, so on a fresh Arch install the webview build fails. This is being fixed; native builds (`--target native`) are not affected.
+:::
 
 ## Create a project
 

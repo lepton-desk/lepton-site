@@ -11,7 +11,7 @@ Farklı yaptığı tek bir şey var, gerisi ondan çıkıyor: **Lepton bir taray
 
 ## Sistemde zaten olan motor
 
-Linux'ta bu motor WPE WebKit; 2.54 ile gelen `wpe-platform` API'si üzerinden. WebKitGTK kullanılmaz. Derlemede 2.52 ve öncesi için de ayrı bir yol var (`libwpe` API'si); makinede o varsa kendiliğinden seçilir, ama Lepton 2.54 üzerinde geliştiriliyor. WebKit'ten uzak durmak isteyenler için `lepton build --linux --servo` ile yerine Servo bağlanabilir; bu deneysel.
+Linux'ta bu motor WPE WebKit; 2.54'te kararlı ve varsayılan olan WPE Platform API'si üzerinden. WebKitGTK kullanılmaz. WPE'nin eski API'si, yani libwpe ve WPEBackend-fdo gibi bir arka uç, 2.54'te hâlâ bir derleme seçeneği; dağıtımlar onu geride bırakıyor: Arch, WebKit'i onsuz derliyor ve libwpe'yi artık paketlemiyor. Lepton, motorda varsa Platform API'sini kullanır; eski motorlar için libwpe API'sine giden bir yol da var, ama Lepton onunla test edilmiyor. WebKit'ten uzak durmak isteyenler için `lepton build --linux --servo` ile yerine Servo bağlanabilir; bu deneysel.
 
 macOS (WKWebView) ve Windows (WebView2) planlı, henüz yapılmadı. WebView2 Chromium tabanlı; yani Windows'ta Lepton "Chromium'suz" olmayacak. Fark şu: Windows'la birlikte gelir, uygulamanız onu taşımaz.
 

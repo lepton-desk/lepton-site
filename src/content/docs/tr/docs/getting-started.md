@@ -9,7 +9,7 @@ Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile k
 
 - Wayland ya da X11 ile Linux
 - [Zig 0.16](https://ziglang.org/download/)
-- `wpe-platform` API'siyle WPE WebKit 2.54 ya da üstü (`pkg-config wpe-webkit-2.0`) ve libsoup 3
+- WPE Platform API'siyle derlenmiş WPE WebKit 2.54 ya da üstü (`pkg-config wpe-webkit-2.0 wpe-platform-2.0`) ve libsoup 3. Platform API'si 2.54'ten beri kararlı ve varsayılan olarak açık; bu yolda libwpe ve WPEBackend-fdo kullanılmaz.
 - Node 20 ya da üstü; npm, pnpm, Yarn veya Bun
 
 `lepton info` makineyi denetler ve neyin eksik olduğunu söyler:
@@ -17,6 +17,10 @@ Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile k
 ```sh
 npx @lepton-desk/cli info
 ```
+
+:::caution[0.1.4'te bilinen sorun]
+Webview derlemesi hâlâ `pkg-config`'e `wpebackend-fdo-1.0`'ı soruyor ve bulamazsa duruyor; `lepton info` da onu eksik gösteriyor. Oysa 2.54 yolu onu hiç yüklemiyor. Arch artık libwpe ve WPEBackend-fdo paketlemiyor; bu yüzden yeni kurulmuş bir Arch'ta webview derlemesi başarısız oluyor. Düzeltiliyor; native derlemeler (`--target native`) etkilenmiyor.
+:::
 
 ## Proje oluşturun
 

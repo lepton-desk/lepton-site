@@ -11,7 +11,7 @@ What it does differently is one thing, and the rest follows from it: **Lepton do
 
 ## The engine the system already has
 
-On Linux that engine is WPE WebKit, through the `wpe-platform` API that arrived in 2.54; WebKitGTK is not used. The build also has a separate path for WebKit 2.52 and older (the `libwpe` API), chosen automatically when that is what the machine has, but 2.54 is the one Lepton is developed on. Servo can be linked instead with `lepton build --linux --servo`, for those who would rather avoid WebKit; it is experimental.
+On Linux that engine is WPE WebKit, through its WPE Platform API, which became stable and the default in 2.54; WebKitGTK is not used. WPE's older API, libwpe with a backend such as WPEBackend-fdo, is still a build option in 2.54, and distributions are leaving it behind: Arch builds WebKit without it and no longer packages libwpe. Lepton uses the Platform API whenever the engine has it; a path for the libwpe API exists for older engines, but it is not the one Lepton is tested on. Servo can be linked instead with `lepton build --linux --servo`, for those who would rather avoid WebKit; it is experimental.
 
 macOS (WKWebView) and Windows (WebView2) are planned, not built. WebView2 is Chromium-based, so on Windows Lepton will not be "Chromium-free"; the difference is that it comes with Windows and your application does not carry it.
 
