@@ -18,20 +18,7 @@ Lepton builds desktop applications with a **Zig core** and a **web front end**. 
 npx @lepton-desk/cli info
 ```
 
-### Getting WPE WebKit
-
-Not every distribution ships it, and not every one ships 2.54. Checked against the repositories on 2026-10-17:
-
-| Distribution | Package | |
-| --- | --- | --- |
-| Arch, EndeavourOS, Manjaro | `wpewebkit` | 2.54.1 |
-| openSUSE Tumbleweed | `wpewebkit-devel` | 2.54.1 |
-| Debian testing and unstable | `libwpewebkit-2.0-dev` | 2.54.1 |
-| Debian 13 (trixie) | `libwpewebkit-2.0-dev` | 2.48.3: too old |
-| Ubuntu 24.04 and later | — | not packaged |
-| Fedora | — | retired |
-
-Where the engine is missing, `lepton info` asks your package manager what it can install and prints the one command for it. *0.1.5* `lepton build`, `dev` and `run` do the same before a webview build, and on a terminal offer to run it for you; `sudo` asks for your password itself. Where no package fits, native builds (`--target native`) need no engine at all.
+Not every distribution ships WPE WebKit 2.54; [System requirements](/docs/requirements/) lists where to get it and what each platform needs.
 
 :::caution[Known issue in 0.1.4]
 0.1.4's webview build also asks for `wpebackend-fdo-1.0` and stops without it, and `lepton info` reports it missing, although the 2.54 path never loads it. Arch no longer packages it, so a fresh Arch install cannot build the webview path with 0.1.4. Fixed for 0.1.5.

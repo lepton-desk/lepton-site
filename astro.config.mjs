@@ -57,6 +57,7 @@ export default defineConfig({
 					translations: { tr: 'Başla' },
 					items: [
 						{ slug: 'docs/getting-started' },
+						{ slug: 'docs/requirements' },
 						{ slug: 'docs/cli' },
 						{ slug: 'docs/configuration' },
 					],

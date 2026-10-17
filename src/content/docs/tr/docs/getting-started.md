@@ -18,20 +18,7 @@ Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile k
 npx @lepton-desk/cli info
 ```
 
-### WPE WebKit'i edinmek
-
-Her dağıtım onu paketlemiyor, paketleyenlerin hepsi de 2.54'ü değil. 2026-10-17'de depolara karşı denetlendi:
-
-| Dağıtım | Paket | |
-| --- | --- | --- |
-| Arch, EndeavourOS, Manjaro | `wpewebkit` | 2.54.1 |
-| openSUSE Tumbleweed | `wpewebkit-devel` | 2.54.1 |
-| Debian testing ve unstable | `libwpewebkit-2.0-dev` | 2.54.1 |
-| Debian 13 (trixie) | `libwpewebkit-2.0-dev` | 2.48.3: çok eski |
-| Ubuntu 24.04 ve sonrası | — | paketlenmemiş |
-| Fedora | — | kaldırılmış |
-
-Motor yoksa `lepton info` paket yöneticinize neyi kurabileceğini sorar ve bunun için tek komutu yazar. *0.1.5* `lepton build`, `dev` ve `run` de webview derlemesinden önce aynısını yapar ve terminaldeyseniz komutu sizin için çalıştırmayı önerir; parolanızı `sudo` kendisi sorar. Uygun paket yoksa native derlemeler (`--target native`) hiç motor istemez.
+Her dağıtım WPE WebKit 2.54'ü paketlemiyor; nereden edinileceği ve her platformun neye ihtiyaç duyduğu [Sistem gereksinimleri](/tr/docs/requirements/) sayfasında.
 
 :::caution[0.1.4'te bilinen sorun]
 0.1.4'ün webview derlemesi ayrıca `wpebackend-fdo-1.0`'ı soruyor ve bulamazsa duruyor; `lepton info` da onu eksik gösteriyor. Oysa 2.54 yolu onu hiç yüklemiyor. Arch onu artık paketlemiyor; bu yüzden yeni kurulmuş bir Arch'ta 0.1.4 ile webview derlenemiyor. 0.1.5'te düzeltildi.
