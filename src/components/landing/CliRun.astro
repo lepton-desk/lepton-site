@@ -13,6 +13,11 @@ const sizeNote =
 	text.htmlLang === 'tr'
 		? '173 852 bayt: uygulamanın kendisi. WebKit sistemden gelir.'
 		: '173,852 bytes: the app itself. WebKit comes from the system.';
+// The download is small; the engine still runs. Beside the size, where its memory was measured.
+const memory =
+	text.htmlLang === 'tr'
+		? { text: 'Çalışırken belleği ayrı konu: ölçtük', href: '/tr/blog/size-is-not-memory/' }
+		: { text: 'Its memory while running is another matter: measured', href: '/blog/size-is-not-memory/' };
 ---
 
 <section class="cli" aria-labelledby="cli-title">
@@ -28,6 +33,7 @@ const sizeNote =
 			<figcaption><code>$ {c.packageCaption}</code></figcaption>
 			<pre>{leptonPackage}</pre>
 			<p class="hand">{sizeNote}</p>
+			<p class="memory"><a href={memory.href}>{memory.text} →</a></p>
 		</figure>
 	</div>
 </section>
@@ -94,6 +100,18 @@ const sizeNote =
 		font-size: var(--step-1);
 		line-height: 1.25;
 		color: var(--pencil-lifted);
+	}
+	.memory {
+		margin: var(--space-2) 0 0;
+		font-size: var(--step-0);
+	}
+	.memory a {
+		color: var(--on-negative);
+		text-decoration-color: var(--pencil-lifted);
+		text-underline-offset: 0.22em;
+	}
+	.memory a:hover {
+		text-decoration-thickness: 2px;
 	}
 	::selection {
 		background: var(--pencil-soft);
