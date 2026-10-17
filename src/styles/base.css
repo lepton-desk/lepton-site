@@ -1,0 +1,56 @@
+/* The plate world's document defaults, shared by the landing page and the blog. */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+html {
+	background: var(--plate);
+	color: var(--ink);
+	font-family: var(--font-sans);
+	font-size: 100%;
+	-webkit-text-size-adjust: 100%;
+	scrollbar-color: var(--ink-soft) var(--plate-lo);
+	scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
+body {
+	margin: 0;
+	font-size: var(--step-0);
+	line-height: 1.55;
+	font-variant-numeric: tabular-nums;
+	text-rendering: optimizeLegibility;
+}
+::selection {
+	background: var(--pencil);
+	color: var(--paper);
+}
+a {
+	color: inherit;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.22em;
+}
+:focus-visible {
+	outline: 2px solid var(--pencil);
+	outline-offset: 3px;
+}
+h1,
+h2,
+h3 {
+	text-wrap: balance;
+}
+p {
+	text-wrap: pretty;
+}
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}

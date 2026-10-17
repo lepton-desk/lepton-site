@@ -1,0 +1,48 @@
+---
+import faviconSvg from '../../../public/favicon.svg?raw';
+
+export interface Props {
+	lang: 'en' | 'tr';
+	title: string;
+	description: string;
+	/** This page's path, and the same page in the other language when there is one. */
+	path: string;
+	paths?: { en: string; tr: string };
+	/** Link the manifest from the start; the landing page adds it after load instead (see PlateLayout). */
+	manifest?: boolean;
+	/** The faces the first viewport draws with; each one not loaded by the first layout fell back to the browser's default font, a system font lookup (measured). */
+	preload?: readonly ('archivo' | 'kalam' | 'jbmono')[];
+	ogType?: 'website' | 'article';
+	noindex?: boolean;
+}
+const { lang, title, description, path, paths, preload = ['archivo', 'kalam', 'jbmono'], ogType = 'website', noindex = false, manifest = true } = Astro.props;
+const site = Astro.site ?? new URL('https://lepton-desk.vercel.app');
+// In the page, not a request: a favicon fetch that started before the first paint was counted
+// into Lighthouse's simulated LCP (measured: 1955 ms with the request, 1804 ms without).
+const favicon = `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`;
+const fontFile = { archivo: '/fonts/archivo-latin.woff2', kalam: '/fonts/kalam.woff2', jbmono: '/fonts/jbmono.woff2' };
+---
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{noindex && <meta name="robots" content="noindex" />}
+<meta name="theme-color" content="#d5d8d0" />
+<link rel="icon" href={favicon} type="image/svg+xml" />
+{manifest && <link rel="manifest" href={lang === 'tr' ? '/tr/manifest.webmanifest' : '/manifest.webmanifest'} />}
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+{paths && <link rel="alternate" hreflang="en" href={new URL(paths.en, site).href} />}
+{paths && <link rel="alternate" hreflang="tr" href={new URL(paths.tr, site).href} />}
+{preload.map((face) => <link rel="preload" href={fontFile[face]} as="font" type="font/woff2" crossorigin />)}
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={new URL(path, site).href} />
+<meta property="og:site_name" content="Lepton" />
+<meta property="og:locale" content={lang} />
+<meta property="og:image" content={new URL(lang === 'tr' ? '/og-tr.png' : '/og-en.png', site).href} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+<meta name="twitter:card" content="summary_large_image" />
+<slot name="head" />

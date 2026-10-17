@@ -28,6 +28,7 @@ const isTr = text.htmlLang === 'tr';
 		<span class="plate-id">{t.id}</span>
 		<ul>
 			<li><a href={t.docsHref}>{n.docs}</a></li>
+			<li><a href={isTr ? '/tr/blog/' : '/blog/'}>Blog</a></li>
 			<li class="wide"><a href="#status">{n.status}</a></li>
 			<li><a href={githubUrl}>{n.github}</a></li>
 		</ul>

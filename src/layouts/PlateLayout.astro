@@ -1,106 +1,37 @@
 ---
+// The landing page's document. `swap` faces: its first paint was tuned around them.
 import '../styles/faces.css';
 import '../styles/tokens.css';
-import type { LandingText } from '../i18n/landing';
-import faviconSvg from '../../public/favicon.svg?raw';
+import '../styles/base.css';
+import Head, { type Props } from '../components/site/Head.astro';
 
-interface Props {
-	text: LandingText;
-}
-const { text } = Astro.props;
-const site = Astro.site ?? new URL('https://lepton-desk.vercel.app');
-// In the page, not a request: a favicon fetch that started before the first paint was counted
-// into Lighthouse's simulated LCP (measured: 1955 ms with the request, 1804 ms without).
-const favicon = `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`;
+const { lang } = Astro.props as Props;
 ---
 
 <!doctype html>
-<html lang={text.htmlLang}>
+<html lang={lang}>
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>{text.title}</title>
-		<meta name="description" content={text.description} />
-		<meta name="theme-color" content="#d5d8d0" />
-		<link rel="icon" href={favicon} type="image/svg+xml" />
-		<link rel="alternate" hreflang="en" href={new URL('/', site).href} />
-		<link rel="alternate" hreflang="tr" href={new URL('/tr/', site).href} />
-		<!-- All three faces of the first viewport: one not yet loaded at the first layout fell back
-		     to the browser's default font, a system font lookup (measured). -->
-		<link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin />
-		<link rel="preload" href="/fonts/kalam.woff2" as="font" type="font/woff2" crossorigin />
-		<link rel="preload" href="/fonts/jbmono.woff2" as="font" type="font/woff2" crossorigin />
-		<meta property="og:title" content={text.title} />
-		<meta property="og:description" content={text.description} />
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content={new URL(text.htmlLang === 'tr' ? '/tr/' : '/', site).href} />
-		<meta property="og:site_name" content="Lepton" />
-		<meta property="og:locale" content={text.htmlLang} />
-		<meta property="og:image" content={new URL(text.htmlLang === 'tr' ? '/og-tr.png' : '/og-en.png', site).href} />
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
-		<meta property="og:image:alt" content={text.title} />
-		<meta name="twitter:card" content="summary_large_image" />
+		<Head {...(Astro.props as Props)} manifest={false}><slot name="head" slot="head" /></Head>
 	</head>
 	<body>
 		<slot />
+		{/* After the fonts and the frame they paint, so neither competes with the first paint: linked in
+		    the head, or added on load (56 ms locally, before the fonts' paint at 121 ms), the manifest
+		    was fetched beside the fonts and the simulated LCP ended later (1433 → 1508 ms, measured). */}
+		<script is:inline define:vars={{ manifestHref: lang === 'tr' ? '/tr/manifest.webmanifest' : '/manifest.webmanifest' }}>
+			addEventListener('load', () =>
+				Promise.resolve(document.fonts?.ready).then(() =>
+					requestAnimationFrame(() =>
+						setTimeout(() => {
+							const link = document.createElement('link');
+							link.rel = 'manifest';
+							link.href = manifestHref;
+							document.head.append(link);
+							if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+						}, 0),
+					),
+				),
+			);
+		</script>
 	</body>
 </html>
-
-<style is:global>
-	*,
-	*::before,
-	*::after {
-		box-sizing: border-box;
-	}
-	html {
-		background: var(--plate);
-		color: var(--ink);
-		font-family: var(--font-sans);
-		font-size: 100%;
-		-webkit-text-size-adjust: 100%;
-		scrollbar-color: var(--ink-soft) var(--plate-lo);
-		scroll-behavior: smooth;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		html {
-			scroll-behavior: auto;
-		}
-	}
-	body {
-		margin: 0;
-		font-size: var(--step-0);
-		line-height: 1.55;
-		font-variant-numeric: tabular-nums;
-		text-rendering: optimizeLegibility;
-	}
-	::selection {
-		background: var(--pencil);
-		color: var(--paper);
-	}
-	a {
-		color: inherit;
-		text-decoration-thickness: 1px;
-		text-underline-offset: 0.22em;
-	}
-	:focus-visible {
-		outline: 2px solid var(--pencil);
-		outline-offset: 3px;
-	}
-	h1,
-	h2,
-	h3 {
-		text-wrap: balance;
-	}
-	p {
-		text-wrap: pretty;
-	}
-	.visually-hidden {
-		position: absolute;
-		width: 1px;
-		height: 1px;
-		overflow: hidden;
-		clip-path: inset(50%);
-		white-space: nowrap;
-	}
-</style>

@@ -1,0 +1,118 @@
+---
+// The index strip outside the landing page's plate: brand, Docs / Blog / GitHub, and the
+// language switch, which leads to the same page in the other language when there is one.
+import Logo from '../Logo.astro';
+import { githubUrl } from '../../i18n/landing';
+import { site, type Lang } from '../../i18n/site';
+
+interface Props {
+	lang: Lang;
+	paths: { en: string; tr: string };
+	current?: 'blog';
+}
+const { lang, paths, current } = Astro.props;
+const t = site[lang];
+---
+
+<nav class="strip" aria-label="Lepton Desk">
+	<a class="home" href={t.home}>
+		<Logo size={28} wordmark={false} />
+		<span class="brand">Lepton <span class="desk">Desk</span></span>
+	</a>
+	<ul>
+		<li><a href={t.docsHref}>{t.docs}</a></li>
+		<li><a href={t.blogHref} aria-current={current === 'blog' ? 'page' : undefined}>{t.blog}</a></li>
+		<li><a href={githubUrl}>{t.github}</a></li>
+	</ul>
+	<p class="langs">
+		<a href={paths.en} hreflang="en" lang="en" aria-current={lang === 'en' ? 'page' : undefined}>EN</a>
+		<a href={paths.tr} hreflang="tr" lang="tr" aria-current={lang === 'tr' ? 'page' : undefined}>TR</a>
+	</p>
+</nav>
+
+<style>
+	.strip {
+		display: flex;
+		align-items: center;
+		gap: var(--space-4);
+		padding: var(--space-3) var(--gutter);
+		border-bottom: 1px solid rgb(27 29 28 / 0.35);
+	}
+	.home {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		text-decoration: none;
+	}
+	.brand {
+		font-stretch: 70%;
+		font-weight: 800;
+		font-size: 1.35rem;
+		letter-spacing: -0.01em;
+		line-height: 1;
+		white-space: nowrap;
+	}
+	.desk {
+		font-weight: 500;
+		color: var(--ink-soft);
+	}
+	ul {
+		display: flex;
+		gap: var(--space-4);
+		margin: 0 0 0 auto;
+		padding: 0;
+		list-style: none;
+		font-weight: 600;
+		font-stretch: 85%;
+		letter-spacing: 0.02em;
+	}
+	ul a {
+		text-decoration: none;
+		padding-block: 0.3em;
+		background: linear-gradient(var(--pencil), var(--pencil)) no-repeat 0 100% / 0 2px;
+		transition: background-size 320ms var(--ease-out);
+	}
+	ul a:hover,
+	ul a[aria-current] {
+		background-size: 100% 2px;
+	}
+	.langs {
+		display: flex;
+		margin: 0;
+		border: 1.5px solid var(--ink);
+		font-size: var(--step--1);
+		font-weight: 650;
+		letter-spacing: 0.06em;
+	}
+	.langs a {
+		padding: 0.3em 0.6em;
+		text-decoration: none;
+		transition: background-color 240ms var(--ease-out);
+	}
+	.langs a:hover {
+		background: var(--plate-hi);
+	}
+	.langs a[aria-current] {
+		background: var(--ink);
+		color: var(--paper);
+	}
+	@media (max-width: 47.5rem) {
+		.strip {
+			gap: var(--space-2) var(--space-3);
+			flex-wrap: wrap;
+			justify-content: space-between;
+		}
+		ul {
+			order: 3;
+			width: 100%;
+			margin: 0;
+			font-size: var(--step--1);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		ul a,
+		.langs a {
+			transition: none;
+		}
+	}
+</style>

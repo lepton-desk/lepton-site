@@ -1,0 +1,139 @@
+---
+// The blog's index: one claim, then the posts as a track list, newest first.
+import ReadLayout from '../../layouts/ReadLayout.astro';
+import Fiducials from '../landing/Fiducials.astro';
+import { site, type Lang } from '../../i18n/site';
+import { postsIn, slugOf, hrefOf, minutesOf } from './posts';
+
+interface Props {
+	lang: Lang;
+}
+const { lang } = Astro.props;
+const t = site[lang];
+const posts = await postsIn(lang);
+---
+
+<ReadLayout
+	lang={lang}
+	title={`${t.blogTitle} — Lepton`}
+	description={t.blogDescription}
+	path={t.blogHref}
+	paths={{ en: '/blog/', tr: '/tr/blog/' }}
+	switchTo={{ en: '/blog/', tr: '/tr/blog/' }}
+	preload={['archivo']}
+	current="blog"
+>
+	<header class="head">
+		<Fiducials />
+		<h1>{t.blogTitle}</h1>
+		<p class="lead">{t.blogLead}</p>
+	</header>
+	<main>
+		<ol class="tracks" reversed>
+			{
+				posts.map((post) => (
+					<li>
+						<a href={hrefOf(lang, slugOf(post))}>
+							<span class="meta">
+								<time datetime={post.data.date.toISOString().slice(0, 10)}>{t.date(post.data.date)}</time>
+								<span>{t.minutes(minutesOf(post))}</span>
+							</span>
+							<span class="title">{post.data.title}</span>
+							<span class="desc">{post.data.description}</span>
+						</a>
+					</li>
+				))
+			}
+		</ol>
+	</main>
+</ReadLayout>
+
+<style>
+	.head {
+		position: relative;
+		padding: var(--space-6) var(--gutter) var(--space-5);
+	}
+	h1 {
+		margin: 0 0 var(--space-3);
+		font-size: var(--step-4);
+		font-stretch: 62%;
+		font-weight: 850;
+		line-height: 0.9;
+		letter-spacing: -0.02em;
+	}
+	.lead {
+		margin: 0;
+		max-width: 34em;
+		font-size: var(--step-1);
+		line-height: 1.45;
+		color: var(--ink-soft);
+	}
+	main {
+		padding: 0 var(--gutter) var(--space-6);
+	}
+	.tracks {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-top: 2px solid var(--ink);
+		max-width: 60rem;
+	}
+	.tracks li {
+		border-bottom: 1px solid rgb(27 29 28 / 0.3);
+	}
+	.tracks a {
+		display: grid;
+		grid-template-columns: 13rem 1fr;
+		gap: var(--space-1) var(--space-4);
+		padding: var(--space-4) 0;
+		text-decoration: none;
+	}
+	.meta {
+		grid-row: span 2;
+		display: flex;
+		flex-direction: column;
+		gap: 0.2em;
+		padding-top: 0.45em;
+		font-size: var(--step--1);
+		font-weight: 650;
+		font-stretch: 85%;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+	.title {
+		font-size: var(--step-2);
+		font-stretch: 75%;
+		font-weight: 750;
+		line-height: 1.1;
+		text-wrap: balance;
+		justify-self: start;
+		background: linear-gradient(var(--pencil), var(--pencil)) no-repeat 0 100% / 0 2px;
+		transition: background-size 320ms var(--ease-out);
+	}
+	.tracks a:hover .title,
+	.tracks a:focus-visible .title {
+		background-size: 100% 2px;
+	}
+	.desc {
+		max-width: 60ch;
+		color: var(--ink-soft);
+		text-wrap: pretty;
+	}
+	@media (max-width: 47.5rem) {
+		.tracks a {
+			grid-template-columns: 1fr;
+		}
+		.meta {
+			grid-row: auto;
+			flex-direction: row;
+			gap: var(--space-3);
+			padding-top: 0;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.title {
+			transition: none;
+		}
+	}
+</style>

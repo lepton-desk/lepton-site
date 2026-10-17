@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import { plateTheme } from './src/styles/code-theme.ts';
+import offlineDocs from './integrations/offline-docs.mjs';
 
 // The landing page lives in src/pages (`/`, `/tr/`); the docs are Starlight, under `/docs/`
 // and `/tr/docs/`.
@@ -31,6 +32,14 @@ export default defineConfig({
 			routeMiddleware: './src/routeData.ts',
 			expressiveCode: { themes: [plateTheme] },
 			head: [
+				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' } },
+				// Registered after load, so it never competes with the first paint; a docs page then
+				// asks it to keep the whole docs in its language for offline reading.
+				{
+					tag: 'script',
+					content:
+						"if('serviceWorker' in navigator)addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js');navigator.serviceWorker.ready.then(r=>r.active&&r.active.postMessage({type:'cache-docs',lang:document.documentElement.lang==='tr'?'tr':'en'}))})",
+				},
 				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/archivo-latin.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
 				// Code is on every docs page; unpreloaded, JetBrains Mono was requested 100–150 ms
 				// after Archivo and arrived after the first paint (measured).
@@ -56,8 +65,11 @@ export default defineConfig({
 						{ slug: 'docs/packaging' },
 					],
 				},
+				// Localised to /tr/blog/ by src/routeData.ts.
+				{ label: 'Blog', link: '/blog/' },
 			],
 		}),
+		offlineDocs(),
 	],
 	vite: {
 		plugins: [tailwindcss()],

@@ -3,8 +3,7 @@
    fonts 300 ms late: CLS 0.19 → 0). A font that misses Chrome's short wait is used from the next
    page on, from the cache. */
 
-/* Archivo, cut to the weights (400–850) and widths (62–100%) the site uses, Latin plus the six
-   letters Turkish adds (ğ Ğ ı İ ş Ş). One face, with no unicode-range: split into ranged faces,
+/* Archivo, the same file as faces.css: cut to the weights, widths and characters the site uses. One face, with no unicode-range: split into ranged faces,
    Chrome on Linux resolved the system fallback once per font description, ~100 ms of the first
    layout and ~150 ms later first paint (measured in traces). */
 @font-face {

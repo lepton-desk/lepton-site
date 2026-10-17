@@ -15,7 +15,13 @@ interface Props {
 const text = landing[Astro.props.lang];
 ---
 
-<PlateLayout text={text}>
+<PlateLayout
+	lang={Astro.props.lang}
+	title={text.title}
+	description={text.description}
+	path={Astro.props.lang === 'tr' ? '/tr/' : '/'}
+	paths={{ en: '/', tr: '/tr/' }}
+>
 	<Plate text={text} />
 	<main>
 		{/*

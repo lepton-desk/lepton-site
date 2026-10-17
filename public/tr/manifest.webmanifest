@@ -1,0 +1,21 @@
+{
+	"id": "/tr/",
+	"name": "Lepton",
+	"short_name": "Lepton",
+	"description": "Sisteminizdeki web motoruyla masaüstü uygulamaları.",
+	"lang": "tr",
+	"start_url": "/tr/",
+	"scope": "/",
+	"display": "standalone",
+	"background_color": "#d5d8d0",
+	"theme_color": "#d5d8d0",
+	"icons": [
+		{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+		{ "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+		{ "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+	],
+	"shortcuts": [
+		{ "name": "Belgeler", "url": "/tr/docs/getting-started/" },
+		{ "name": "Blog", "url": "/tr/blog/" }
+	]
+}

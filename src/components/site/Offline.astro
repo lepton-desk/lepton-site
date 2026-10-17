@@ -1,0 +1,75 @@
+---
+// What the service worker answers with when a page was never saved and the network is gone. Its
+// text is true when visited online too, so it is an ordinary, indexable page.
+import ReadLayout from '../../layouts/ReadLayout.astro';
+import Fiducials from '../landing/Fiducials.astro';
+import { site, type Lang } from '../../i18n/site';
+
+interface Props {
+	lang: Lang;
+}
+const { lang } = Astro.props;
+const t = site[lang];
+---
+
+<ReadLayout
+	lang={lang}
+	title={`${t.offlineTitle} — Lepton`}
+	description={t.offlineDescription}
+	path={lang === 'tr' ? '/tr/offline/' : '/offline/'}
+	switchTo={{ en: '/offline/', tr: '/tr/offline/' }}
+	paths={{ en: '/offline/', tr: '/tr/offline/' }}
+	preload={['archivo']}
+>
+	<main class="plate">
+		<Fiducials />
+		<h1>{t.offlineClaim}</h1>
+		<p>{t.offlineBody}</p>
+		<a class="action" href={t.docsHref}>{t.offlineDocs}</a>
+	</main>
+</ReadLayout>
+
+<style>
+	.plate {
+		position: relative;
+		flex: 1;
+		padding: var(--space-6) var(--gutter);
+	}
+	h1 {
+		margin: 0 0 var(--space-3);
+		max-width: 12ch;
+		font-size: var(--step-4);
+		font-stretch: 62%;
+		font-weight: 850;
+		line-height: 0.9;
+		letter-spacing: -0.02em;
+	}
+	p {
+		margin: 0 0 var(--space-4);
+		max-width: 34em;
+		font-size: var(--step-1);
+		line-height: 1.45;
+		color: var(--ink-soft);
+	}
+	.action {
+		display: inline-flex;
+		align-items: center;
+		height: 3.4rem;
+		padding: 0 1em;
+		border: 2px solid var(--ink);
+		background: var(--paper);
+		font-weight: 650;
+		font-stretch: 88%;
+		text-decoration: none;
+		box-shadow:
+			0 1px 1px rgb(27 29 28 / 0.2),
+			0 10px 28px -16px rgb(27 29 28 / 0.55);
+		transition:
+			background-color 240ms var(--ease-out),
+			color 240ms var(--ease-out);
+	}
+	.action:hover {
+		background: var(--ink);
+		color: var(--paper);
+	}
+</style>

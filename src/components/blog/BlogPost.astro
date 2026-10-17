@@ -1,0 +1,281 @@
+---
+// One post: a framed plate header (date, claim, lead, a grease-pencil note), then the text.
+import { render } from 'astro:content';
+import ReadLayout from '../../layouts/ReadLayout.astro';
+import Fiducials from '../landing/Fiducials.astro';
+import { site } from '../../i18n/site';
+import { type Post, langOf, slugOf, hrefOf, minutesOf } from './posts';
+
+interface Props {
+	post: Post;
+	/** The same post in the other language, when it exists. */
+	translated: boolean;
+}
+const { post, translated } = Astro.props;
+const lang = langOf(post);
+const slug = slugOf(post);
+const t = site[lang];
+const other = lang === 'tr' ? 'en' : 'tr';
+const here = hrefOf(lang, slug);
+const there = translated ? hrefOf(other, slug) : site[other].blogHref;
+const { Content, headings } = await render(post);
+const contents = headings.filter((h) => h.depth === 2);
+const hasCode = /^```/m.test(post.body ?? '');
+---
+
+<ReadLayout
+	lang={lang}
+	title={`${post.data.title} — Lepton`}
+	description={post.data.description}
+	path={here}
+	paths={translated ? { en: hrefOf('en', slug), tr: hrefOf('tr', slug) } : undefined}
+	switchTo={lang === 'tr' ? { en: there, tr: here } : { en: here, tr: there }}
+	preload={['archivo', ...(post.data.note ? (['kalam'] as const) : []), ...(hasCode ? (['jbmono'] as const) : [])]}
+	ogType="article"
+	current="blog"
+>
+	<main>
+	<article>
+		<header class="head">
+			<Fiducials />
+			<p class="meta">
+				<time datetime={post.data.date.toISOString().slice(0, 10)}>{t.date(post.data.date)}</time>
+				<span aria-hidden="true">·</span>
+				<span>{t.minutes(minutesOf(post))}</span>
+			</p>
+			<h1>{post.data.title}</h1>
+			<p class="lead">{post.data.description}</p>
+			{post.data.note && <p class="note">{post.data.note}</p>}
+			{
+				translated && (
+					<p class="other">
+						<a href={there} hreflang={other} lang={other}>{t.readInTr}</a>
+					</p>
+				)
+			}
+		</header>
+		<div class="body">
+			<div class="prose">
+				<Content />
+			</div>
+			{
+				contents.length > 2 && (
+					<nav class="contents" aria-label={t.contents}>
+						<p>{t.contents}</p>
+						<ol>
+							{contents.map((h) => (
+								<li><a href={`#${h.slug}`}>{h.text}</a></li>
+							))}
+						</ol>
+					</nav>
+				)
+			}
+		</div>
+	</article>
+	</main>
+</ReadLayout>
+
+<style>
+	.head {
+		position: relative;
+		padding: var(--space-6) var(--gutter) var(--space-5);
+		border-bottom: 1px solid rgb(27 29 28 / 0.35);
+	}
+	.meta {
+		display: flex;
+		gap: 0.6em;
+		margin: 0 0 var(--space-3);
+		font-size: var(--step--1);
+		font-weight: 650;
+		font-stretch: 85%;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		color: var(--ink-soft);
+	}
+	h1 {
+		margin: 0 0 var(--space-3);
+		max-width: 16em;
+		font-size: var(--step-3);
+		font-stretch: 66%;
+		font-weight: 800;
+		line-height: 0.95;
+		letter-spacing: -0.015em;
+	}
+	.lead {
+		margin: 0;
+		max-width: 36em;
+		font-size: var(--step-1);
+		line-height: 1.45;
+		color: var(--ink-soft);
+	}
+	/* The annotator's hand: a short pencil leader, then the note. */
+	.note {
+		display: flex;
+		align-items: center;
+		gap: 0.6em;
+		margin: var(--space-4) 0 0;
+		font-family: var(--font-hand);
+		font-weight: 700;
+		font-size: var(--step-1);
+		line-height: 1.2;
+		color: var(--pencil);
+	}
+	.note::before {
+		content: '';
+		flex: none;
+		width: 2.2rem;
+		height: 1.6px;
+		background: var(--pencil);
+		transform: rotate(-18deg);
+	}
+	.prose {
+		padding: var(--space-5) var(--gutter) var(--space-6);
+		max-width: calc(68ch + 2 * var(--gutter));
+		scroll-margin-top: var(--space-4);
+		line-height: 1.6;
+	}
+	.other {
+		margin: var(--space-3) 0 0;
+		font-size: var(--step--1);
+		font-weight: 600;
+	}
+	.body {
+		display: grid;
+		grid-template-columns: minmax(0, calc(68ch + 2 * var(--gutter))) minmax(0, 1fr);
+	}
+	/* Contents, on screens wide enough to keep it beside the text. */
+	.contents {
+		align-self: start;
+		position: sticky;
+		top: var(--space-4);
+		margin: var(--space-5) var(--gutter) 0 0;
+		max-width: 18rem;
+		border-top: 2px solid var(--ink);
+	}
+	.contents p {
+		margin: 0;
+		padding: 0.7em 0;
+		font-size: var(--step--1);
+		font-weight: 650;
+		font-stretch: 85%;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.contents ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.contents li {
+		border-top: 1px solid rgb(27 29 28 / 0.3);
+	}
+	.contents a {
+		display: block;
+		padding: 0.55em 0;
+		font-weight: 600;
+		font-stretch: 85%;
+		line-height: 1.25;
+		text-decoration: none;
+	}
+	.contents a:hover {
+		text-decoration: underline;
+		text-decoration-color: var(--pencil);
+		text-decoration-thickness: 2px;
+	}
+	@media (max-width: 75rem) {
+		.body {
+			display: block;
+		}
+		.contents {
+			display: none;
+		}
+	}
+
+	.prose :global(h2) {
+		scroll-margin-top: var(--space-4);
+		margin: var(--space-5) 0 var(--space-2);
+		font-size: var(--step-2);
+		font-stretch: 75%;
+		font-weight: 750;
+		line-height: 1.1;
+	}
+	.prose :global(h3) {
+		margin: var(--space-4) 0 var(--space-1);
+		font-size: var(--step-1);
+		font-stretch: 80%;
+		font-weight: 700;
+		line-height: 1.2;
+	}
+	.prose :global(p),
+	.prose :global(ul),
+	.prose :global(ol) {
+		margin: 0 0 var(--space-3);
+	}
+	.prose :global(li) {
+		margin-bottom: 0.35em;
+	}
+	.prose :global(li::marker) {
+		color: var(--ink-soft);
+	}
+	.prose :global(a:hover) {
+		text-decoration-color: var(--pencil);
+		text-decoration-thickness: 2px;
+	}
+	.prose :global(strong) {
+		font-weight: 700;
+	}
+	.prose :global(:not(pre) > code) {
+		font-family: var(--font-mono);
+		font-size: 0.86em;
+		padding: 0.1em 0.3em;
+		background: var(--paper);
+		border: 1px solid rgb(27 29 28 / 0.18);
+	}
+	/* Code blocks come framed by Expressive Code (Starlight runs it for all Markdown). */
+	.prose :global(.expressive-code) {
+		margin: 0 0 var(--space-4);
+	}
+	/* Tables as a data sheet: paper, uppercase heads over a 2px ink rule, tabular figures. */
+	.prose :global(table) {
+		width: 100%;
+		margin: 0 0 var(--space-4);
+		border-collapse: collapse;
+		background: var(--paper);
+		font-variant-numeric: tabular-nums;
+		box-shadow:
+			0 1px 1px rgb(27 29 28 / 0.12),
+			0 22px 40px -28px rgb(27 29 28 / 0.6);
+	}
+	.prose :global(th) {
+		padding: 0.7em 0.9em;
+		border-bottom: 2px solid var(--ink);
+		text-align: left;
+		font-size: var(--step--1);
+		font-weight: 650;
+		font-stretch: 85%;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+	.prose :global(td) {
+		padding: 0.6em 0.9em;
+		border-bottom: 1px solid rgb(27 29 28 / 0.18);
+		vertical-align: top;
+	}
+	.prose :global(blockquote) {
+		margin: 0 0 var(--space-3);
+		padding-left: var(--space-3);
+		border-left: 1px solid var(--ink);
+		color: var(--ink-soft);
+	}
+	.prose :global(hr) {
+		margin: var(--space-5) 0;
+		border: 0;
+		border-top: 1px solid rgb(27 29 28 / 0.35);
+	}
+	@media (max-width: 47.5rem) {
+		.prose :global(table) {
+			display: block;
+			overflow-x: auto;
+		}
+	}
+</style>

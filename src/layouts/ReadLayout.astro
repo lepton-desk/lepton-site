@@ -1,0 +1,69 @@
+---
+// Pages to read: the blog and the offline page. The plate's document with the docs' `optional`
+// faces — long text set again when a late font arrived was the docs' layout shift (measured).
+import '../styles/faces-docs.css';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import Head, { type Props as HeadProps } from '../components/site/Head.astro';
+import SiteStrip from '../components/site/SiteStrip.astro';
+import { site } from '../i18n/site';
+
+/** `switchTo`: where EN and TR lead; `paths` (hreflang) only when the other page is a translation of this one. */
+type Props = HeadProps & { switchTo: { en: string; tr: string }; current?: 'blog' };
+const props = Astro.props as Props;
+const { lang, switchTo, current } = props;
+const t = site[lang];
+const rss = lang === 'tr' ? '/tr/blog/rss.xml' : '/blog/rss.xml';
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<Head {...props}>
+			<link slot="head" rel="alternate" type="application/rss+xml" title={`Lepton — ${t.blogTitle}`} href={rss} />
+		</Head>
+	</head>
+	<body>
+		<div class="frame">
+			<SiteStrip lang={lang} paths={switchTo} current={current} />
+			<slot />
+			<footer class="foot">
+				<a href={t.blogHref}>{t.allPosts}</a>
+				<a href={rss}>{t.rss}</a>
+				<span>Lepton Desk</span>
+			</footer>
+		</div>
+		<script is:inline>
+			if ('serviceWorker' in navigator) addEventListener('load', () => navigator.serviceWorker.register('/sw.js'));
+		</script>
+	</body>
+</html>
+
+<style>
+	.frame {
+		margin: var(--frame);
+		min-height: calc(100svh - 2 * var(--frame));
+		display: flex;
+		flex-direction: column;
+		border-inline: 1px solid rgb(27 29 28 / 0.35);
+	}
+	.foot {
+		margin-top: auto;
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2) var(--space-4);
+		padding: var(--space-4) var(--gutter);
+		border-top: 1px solid rgb(27 29 28 / 0.35);
+		font-size: var(--step--1);
+		font-weight: 600;
+		font-stretch: 85%;
+		letter-spacing: 0.02em;
+		color: var(--ink-soft);
+	}
+	.foot span {
+		margin-left: auto;
+	}
+	.foot a {
+		color: var(--ink);
+	}
+</style>
