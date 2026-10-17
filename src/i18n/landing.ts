@@ -9,7 +9,7 @@ export interface LandingText {
 	htmlLang: string;
 	title: string;
 	description: string;
-	nav: { docs: string; github: string; status: string; other: string; otherHref: string; otherLabel: string };
+	nav: { docs: string; github: string; status: string; theme: string; other: string; otherHref: string; otherLabel: string };
 	plate: {
 		id: string;
 		offer: string;
@@ -70,7 +70,7 @@ export const landing: Record<Lang, LandingText> = {
 		title: 'Lepton — desktop apps on the web engine your system already has',
 		description:
 			'Lepton is a desktop application framework with a Zig core and a Rust CLI. Your web front end runs on the operating system’s own web engine; no browser ships inside your app.',
-		nav: { docs: 'Docs', github: 'GitHub', status: 'Status', other: 'TR', otherHref: '/tr/', otherLabel: 'Türkçe' },
+		nav: { docs: 'Docs', github: 'GitHub', status: 'Status', theme: 'Dark theme', other: 'TR', otherHref: '/tr/', otherLabel: 'Türkçe' },
 		plate: {
 			id: 'Plate 0.1 · Linux',
 			offer: 'Desktop apps on the web engine your system already has. A Zig core, a Rust CLI, and no browser in the box.',
@@ -155,7 +155,7 @@ export const landing: Record<Lang, LandingText> = {
 		title: 'Lepton — sisteminizdeki web motoruyla masaüstü uygulamaları',
 		description:
 			'Lepton, Zig çekirdekli ve Rust CLI’lı bir masaüstü uygulama çatısıdır. Web arayüzünüz işletim sisteminin kendi web motorunda çalışır; uygulamanızın içinde tarayıcı gelmez.',
-		nav: { docs: 'Belgeler', github: 'GitHub', status: 'Durum', other: 'EN', otherHref: '/', otherLabel: 'English' },
+		nav: { docs: 'Belgeler', github: 'GitHub', status: 'Durum', theme: 'Karanlık tema', other: 'EN', otherHref: '/', otherLabel: 'English' },
 		plate: {
 			id: 'Levha 0.1 · Linux',
 			offer: 'Sisteminizde zaten olan web motoruyla masaüstü uygulamaları. Zig çekirdek, Rust CLI ve kutuda tarayıcı yok.',

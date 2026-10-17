@@ -1,0 +1,38 @@
+/* The landing page's dark theme: the whole plate as its film negative, as in the docs' dark theme.
+   Pale graphite tracks and type on a dark ground (12.8:1, not pure white on black), prints laid
+   darker than the plate, the grease pencil lifted so it still reads (6.0:1 on the plate, 5.3:1 on
+   plate-hi). The machine output stays the deepest black. Chosen by the system's setting, or by the
+   toggle in the index strip, which shares Starlight's stored choice with the docs. Both selectors:
+   the head script always sets data-theme; without scripting the system setting decides. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+		--plate: #1e2120;
+		--plate-hi: #272b29;
+		--plate-lo: #121413;
+		--paper: #141615;
+		--ink: #e3e5de;
+		--ink-soft: #a9aea6;
+		--ink-faint: #858b85;
+		--pencil: #e8806a;
+		--exposed: #c9ccc4;
+		--negative: #0e100f;
+		--on-negative: #e3e5de;
+		--negative-hover: #262a28;
+	}
+}
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--plate: #1e2120;
+	--plate-hi: #272b29;
+	--plate-lo: #121413;
+	--paper: #141615;
+	--ink: #e3e5de;
+	--ink-soft: #a9aea6;
+	--ink-faint: #858b85;
+	--pencil: #e8806a;
+	--exposed: #c9ccc4;
+	--negative: #0e100f;
+	--on-negative: #e3e5de;
+	--negative-hover: #262a28;
+}

@@ -32,10 +32,20 @@ const isTr = text.htmlLang === 'tr';
 			<li class="wide"><a href="#status">{n.status}</a></li>
 			<li><a href={githubUrl}>{n.github}</a></li>
 		</ul>
-		<p class="langs">
-			<a href="/" hreflang="en" lang="en" aria-current={isTr ? undefined : 'page'}>EN</a>
-			<a href="/tr/" hreflang="tr" lang="tr" aria-current={isTr ? 'page' : undefined}>TR</a>
-		</p>
+		<div class="controls">
+			<p class="langs">
+				<a href="/" hreflang="en" lang="en" aria-current={isTr ? undefined : 'page'}>EN</a>
+				<a href="/tr/" hreflang="tr" lang="tr" aria-current={isTr ? 'page' : undefined}>TR</a>
+			</p>
+			{/* An exposure: half the plate printed dark. Pressed when the page is the negative. */}
+			<button class="theme" type="button" aria-pressed="false" title={n.theme} data-theme-toggle>
+				<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+					<circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.5"></circle>
+					<path d="M8 1.75a6.25 6.25 0 0 1 0 12.5z" fill="currentColor"></path>
+				</svg>
+				<span class="visually-hidden">{n.theme}</span>
+			</button>
+		</div>
 	</nav>
 
 	<div class="event" data-event>
@@ -70,6 +80,23 @@ const isTr = text.htmlLang === 'tr';
 	const canvas = plate?.querySelector<HTMLCanvasElement>('canvas');
 	const context = canvas?.getContext('2d');
 	const still = matchMedia('(prefers-reduced-motion: reduce)');
+	const root = document.documentElement;
+
+	// The theme toggle. The choice is kept under Starlight's own key, so the docs open in it too;
+	// the head script applies it before the first paint.
+	const toggle = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const pressed = () => toggle?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+	pressed();
+	new MutationObserver(pressed).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+	toggle?.addEventListener('click', () => {
+		const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+		try {
+			localStorage.setItem('starlight-theme', next);
+		} catch {
+			// Storage blocked: the choice holds for this page only.
+		}
+		root.dataset.theme = next;
+	});
 
 	function random(seed: number) {
 		let s = seed >>> 0;
@@ -114,6 +141,15 @@ const isTr = text.htmlLang === 'tr';
 		let scale = 1;
 		let frame = 0;
 		let fired = 0;
+		// The inks come from the page's tokens, so the tracks follow the theme.
+		let ink = '27, 29, 28';
+		let pencil = '#a32b17';
+		const readInks = () => {
+			const style = getComputedStyle(plate);
+			const hex = style.getPropertyValue('--ink').trim().replace('#', '');
+			if (/^[0-9a-f]{6}$/i.test(hex)) ink = [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16)).join(', ');
+			pencil = style.getPropertyValue('--pencil').trim() || pencil;
+		};
 
 		// The last point of a track still well inside the plate, then a fraction along that.
 		const along = (track: Track, fraction: number) => {
@@ -190,6 +226,12 @@ const isTr = text.htmlLang === 'tr';
 			const blocked: Box[] = masks.map((m) => ({ x: m.x - 12, y: m.y - 12, w: m.w + 24, h: m.h + 24 }));
 			const index = plate.querySelector('.index');
 			if (index) blocked.push(boxOf(index, root));
+			// The registration crosses too: on a phone the Turkish IPC note, the widest, took the
+			// spot over the top-left one.
+			for (const cross of plate.querySelectorAll('.fid')) {
+				const b = boxOf(cross, root);
+				blocked.push({ x: b.x - 4, y: b.y - 4, w: b.w + 8, h: b.h + 8 });
+			}
 			const scaleBar = plate.querySelector('.scale');
 			if (scaleBar) {
 				const range = document.createRange();
@@ -264,7 +306,7 @@ const isTr = text.htmlLang === 'tr';
 		};
 
 		const marks = () => {
-			context.strokeStyle = '#a32b17';
+			context.strokeStyle = pencil;
 			context.lineWidth = 2.2;
 			context.beginPath();
 			context.arc(vertex.x, vertex.y, 11, 0, Math.PI * 2);
@@ -292,7 +334,7 @@ const isTr = text.htmlLang === 'tr';
 				const target = Math.floor(dots.length * (1 - Math.pow(1 - progress, 3)));
 				const from = track.drawn ?? 0;
 				if (target <= from) continue;
-				context.fillStyle = track.weight < 0.7 ? 'rgba(27, 29, 28, 0.38)' : 'rgba(27, 29, 28, 0.88)';
+				context.fillStyle = `rgba(${ink}, ${track.weight < 0.7 ? 0.38 : 0.88})`;
 				context.beginPath();
 				for (let i = from; i < target; i++) {
 					const d = dots[i];
@@ -329,9 +371,18 @@ const isTr = text.htmlLang === 'tr';
 			if (laidOut) return;
 			laidOut = true;
 			origin = performance.now();
+			readInks();
 			layout();
 			redraw();
 		};
+
+		// A theme change redraws the plate in the new inks, finished: nothing animates again.
+		new MutationObserver(() => {
+			if (!laidOut) return;
+			readInks();
+			for (const track of tracks) track.start = -Infinity;
+			redraw();
+		}).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
 		const painted = new Promise((resolve) => requestAnimationFrame(() => window.setTimeout(resolve, 0)));
 		Promise.all([document.fonts?.ready, painted]).then(begin);
 		window.setTimeout(begin, 800);
@@ -391,6 +442,16 @@ const isTr = text.htmlLang === 'tr';
 		display: grid;
 		grid-template-rows: auto 1fr auto;
 	}
+	/* The same two gradients in the negative's inks (plate #1e2120, lit centre #272b29, a deeper
+	   vignette), rendered the same way. */
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme='light'])) .plate {
+			background-image: url('./plate-ground-dark.png');
+		}
+	}
+	:global(:root[data-theme='dark']) .plate {
+		background-image: url('./plate-ground-dark.png');
+	}
 	.tracks {
 		position: absolute;
 		inset: 0;
@@ -441,7 +502,7 @@ const isTr = text.htmlLang === 'tr';
 		align-items: center;
 		gap: var(--space-4);
 		padding: var(--space-3) var(--gutter);
-		border-bottom: 1px solid rgb(27 29 28 / 0.35);
+		border-bottom: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
 	}
 	.home {
 		display: inline-flex;
@@ -487,6 +548,10 @@ const isTr = text.htmlLang === 'tr';
 	.index ul a:hover {
 		background-size: 100% 2px;
 	}
+	.controls {
+		display: flex;
+		gap: var(--space-2);
+	}
 	.langs {
 		display: flex;
 		margin: 0;
@@ -504,6 +569,23 @@ const isTr = text.htmlLang === 'tr';
 		background: var(--plate-hi);
 	}
 	.langs a[aria-current] {
+		background: var(--ink);
+		color: var(--paper);
+	}
+	.theme {
+		display: inline-grid;
+		place-items: center;
+		padding: 0 0.55em;
+		border: 1.5px solid var(--ink);
+		background: transparent;
+		color: inherit;
+		cursor: pointer;
+		transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
+	}
+	.theme:hover {
+		background: var(--plate-hi);
+	}
+	.theme[aria-pressed='true'] {
 		background: var(--ink);
 		color: var(--paper);
 	}

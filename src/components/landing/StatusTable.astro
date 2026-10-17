@@ -53,7 +53,7 @@ const s = text.status;
 		gap: var(--space-5);
 		padding: var(--space-6) var(--gutter);
 		margin: 0 var(--frame);
-		border-inline: 1px solid rgb(27 29 28 / 0.25);
+		border-inline: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
 		scroll-margin-top: var(--space-3);
 	}
 	h2 {
@@ -73,7 +73,7 @@ const s = text.status;
 		min-width: 0;
 		padding: var(--space-4);
 		background: var(--paper);
-		border: 1px solid rgb(27 29 28 / 0.3);
+		border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
 		box-shadow: 0 1px 1px rgb(27 29 28 / 0.12), 0 22px 40px -28px rgb(27 29 28 / 0.6);
 		overflow-x: auto;
 	}
@@ -95,7 +95,7 @@ const s = text.status;
 	tbody th,
 	td {
 		padding: var(--space-2);
-		border-bottom: 1px solid rgb(27 29 28 / 0.18);
+		border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 		text-align: left;
 		vertical-align: top;
 	}
@@ -147,7 +147,7 @@ const s = text.status;
 			grid-template-columns: minmax(0, 1fr) auto;
 			gap: var(--space-1) var(--space-2);
 			padding: var(--space-3) 0;
-			border-bottom: 1px solid rgb(27 29 28 / 0.18);
+			border-bottom: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
 		}
 		tbody th,
 		td {

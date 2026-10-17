@@ -37,8 +37,8 @@ const sizeNote =
 		position: relative;
 		padding: var(--space-6) var(--gutter);
 		margin: 0 var(--frame);
-		background: var(--ink);
-		color: var(--paper);
+		background: var(--negative);
+		color: var(--on-negative);
 	}
 	h2 {
 		margin: 0 0 var(--space-3);
@@ -80,7 +80,7 @@ const sizeNote =
 		font-family: var(--font-mono);
 		font-size: clamp(0.72rem, 0.62rem + 0.35vw, 0.9rem);
 		line-height: 1.55;
-		color: var(--paper);
+		color: var(--on-negative);
 		scrollbar-color: #6b716c transparent;
 	}
 	.package pre {
@@ -97,7 +97,7 @@ const sizeNote =
 	}
 	::selection {
 		background: var(--pencil-soft);
-		color: var(--paper);
+		color: var(--on-negative);
 	}
 	@media (max-width: 60rem) {
 		.runs {

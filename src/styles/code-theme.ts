@@ -18,3 +18,24 @@ export const plateTheme = {
 		{ scope: ['punctuation', 'meta.brace'], settings: { foreground: '#4a4f4c' } },
 	],
 };
+
+// The same inks on the film negative, for the landing page's dark theme: pale graphite on a dark
+// print, the grease pencil lifted. Every colour is at least 5.5:1 on the print (#141615).
+export const plateNegativeTheme = {
+	name: 'lepton-plate-negative',
+	type: 'dark' as const,
+	colors: {
+		'editor.background': '#141615',
+		'editor.foreground': '#e3e5de',
+	},
+	tokenColors: [
+		{ scope: ['comment', 'punctuation.definition.comment'], settings: { foreground: '#8f958f', fontStyle: 'italic' } },
+		{ scope: ['keyword', 'storage', 'storage.type', 'keyword.control'], settings: { foreground: '#e8806a' } },
+		{ scope: ['string', 'string.quoted'], settings: { foreground: '#93c4aa' } },
+		{ scope: ['constant.numeric', 'constant.language'], settings: { foreground: '#e2a676' } },
+		{ scope: ['entity.name.function', 'support.function'], settings: { foreground: '#e3e5de', fontStyle: 'bold' } },
+		{ scope: ['entity.name.type', 'support.type', 'support.type.property-name'], settings: { foreground: '#a3b8e2' } },
+		{ scope: ['variable', 'variable.other'], settings: { foreground: '#e3e5de' } },
+		{ scope: ['punctuation', 'meta.brace'], settings: { foreground: '#b0b5ad' } },
+	],
+};

@@ -3,7 +3,7 @@
 // and the permission that lets it through. The Zig is the template's own, comments trimmed.
 import { Code } from 'astro:components';
 import type { LandingText } from '../../i18n/landing';
-import { plateTheme } from '../../styles/code-theme';
+import { plateNegativeTheme, plateTheme } from '../../styles/code-theme';
 import Fiducials from './Fiducials.astro';
 
 interface Props {
@@ -49,15 +49,15 @@ const config = `{
 	<div class="prints">
 		<figure class="print zig">
 			<figcaption>{c.zigCaption}</figcaption>
-			<Code code={zig} lang="zig" theme={plateTheme} />
+			<Code code={zig} lang="zig" themes={{ light: plateTheme, dark: plateNegativeTheme }} defaultColor="light" />
 		</figure>
 		<figure class="print ts">
 			<figcaption>{c.tsCaption}</figcaption>
-			<Code code={ts} lang="ts" theme={plateTheme} />
+			<Code code={ts} lang="ts" themes={{ light: plateTheme, dark: plateNegativeTheme }} defaultColor="light" />
 		</figure>
 		<figure class="print config">
 			<figcaption>{c.configCaption}</figcaption>
-			<Code code={config} lang="json" theme={plateTheme} />
+			<Code code={config} lang="json" themes={{ light: plateTheme, dark: plateNegativeTheme }} defaultColor="light" />
 		</figure>
 	</div>
 </section>
@@ -67,7 +67,7 @@ const config = `{
 		position: relative;
 		padding: var(--space-6) var(--gutter);
 		margin: 0 var(--frame);
-		border-inline: 1px solid rgb(27 29 28 / 0.25);
+		border-inline: 1px solid color-mix(in srgb, var(--ink) 25%, transparent);
 	}
 	.lead {
 		display: grid;
@@ -110,12 +110,12 @@ const config = `{
 		margin: 0;
 		min-width: 0;
 		background: var(--paper);
-		border: 1px solid rgb(27 29 28 / 0.3);
+		border: 1px solid color-mix(in srgb, var(--ink) 30%, transparent);
 		box-shadow: 0 1px 1px rgb(27 29 28 / 0.12), 0 18px 32px -24px rgb(27 29 28 / 0.55);
 	}
 	figcaption {
 		padding: var(--space-2) var(--space-3);
-		border-bottom: 1px solid rgb(27 29 28 / 0.2);
+		border-bottom: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
 		font-family: var(--font-hand);
 		font-weight: 700;
 		color: var(--pencil);
@@ -129,6 +129,15 @@ const config = `{
 		line-height: 1.6;
 		background: transparent !important;
 		scrollbar-color: var(--ink-faint) transparent;
+	}
+	/* The dark theme's inks: Shiki writes them beside the light ones as --shiki-dark. */
+	@media (prefers-color-scheme: dark) {
+		:global(:root:not([data-theme='light'])) .print :global(:is(pre, span)) {
+			color: var(--shiki-dark) !important;
+		}
+	}
+	:global(:root[data-theme='dark']) .print :global(:is(pre, span)) {
+		color: var(--shiki-dark) !important;
 	}
 	@media (max-width: 60rem) {
 		.lead,

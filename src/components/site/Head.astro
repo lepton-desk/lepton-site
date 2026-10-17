@@ -14,8 +14,10 @@ export interface Props {
 	preload?: readonly ('archivo' | 'kalam' | 'jbmono')[];
 	ogType?: 'website' | 'article';
 	noindex?: boolean;
+	/** The page has a dark theme (the landing page): pick it before the first paint. */
+	dark?: boolean;
 }
-const { lang, title, description, path, paths, preload = ['archivo', 'kalam', 'jbmono'], ogType = 'website', noindex = false, manifest = true } = Astro.props;
+const { lang, title, description, path, paths, preload = ['archivo', 'kalam', 'jbmono'], ogType = 'website', noindex = false, manifest = true, dark = false } = Astro.props;
 const site = Astro.site ?? new URL('https://lepton-desk.vercel.app');
 // In the page, not a request: a favicon fetch that started before the first paint was counted
 // into Lighthouse's simulated LCP (measured: 1955 ms with the request, 1804 ms without).
@@ -27,7 +29,33 @@ const fontFile = { archivo: '/fonts/archivo-latin.woff2', kalam: '/fonts/kalam.w
 <title>{title}</title>
 <meta name="description" content={description} />
 {noindex && <meta name="robots" content="noindex" />}
-<meta name="theme-color" content="#d5d8d0" />
+{
+	dark ? (
+		<>
+			{/* Before anything is painted: the stored choice (Starlight's key, shared with the docs), else
+			    the system's. Always set, so the styles need one selector per theme; the system changing
+			    later is followed unless a choice was made. */}
+			<script
+				is:inline
+				set:html={`(() => {
+					const root = document.documentElement;
+					const system = matchMedia('(prefers-color-scheme: dark)');
+					const apply = () => {
+						let stored = null;
+						try { stored = localStorage.getItem('starlight-theme'); } catch {}
+						root.dataset.theme = stored === 'light' || stored === 'dark' ? stored : system.matches ? 'dark' : 'light';
+					};
+					apply();
+					system.addEventListener('change', apply);
+				})();`}
+			/>
+			<meta name="theme-color" content="#d5d8d0" media="(prefers-color-scheme: light)" />
+			<meta name="theme-color" content="#1e2120" media="(prefers-color-scheme: dark)" />
+		</>
+	) : (
+		<meta name="theme-color" content="#d5d8d0" />
+	)
+}
 <link rel="icon" href={favicon} type="image/svg+xml" />
 {manifest && <link rel="manifest" href={lang === 'tr' ? '/tr/manifest.webmanifest' : '/manifest.webmanifest'} />}
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />

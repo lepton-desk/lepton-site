@@ -3,6 +3,7 @@
 import '../styles/faces.css';
 import '../styles/tokens.css';
 import '../styles/base.css';
+import '../styles/plate-dark.css';
 import Head, { type Props } from '../components/site/Head.astro';
 
 const { lang } = Astro.props as Props;
@@ -11,7 +12,7 @@ const { lang } = Astro.props as Props;
 <!doctype html>
 <html lang={lang}>
 	<head>
-		<Head {...(Astro.props as Props)} manifest={false}><slot name="head" slot="head" /></Head>
+		<Head {...(Astro.props as Props)} manifest={false} dark><slot name="head" slot="head" /></Head>
 	</head>
 	<body>
 		<slot />

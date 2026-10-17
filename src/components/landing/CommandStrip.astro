@@ -63,8 +63,8 @@ const { copy, copied, command = 'npm create lepton-app' } = Astro.props;
 		display: inline-flex;
 		align-items: stretch;
 		max-width: 100%;
-		background: var(--ink);
-		color: var(--paper);
+		background: var(--negative);
+		color: var(--on-negative);
 		box-shadow: 0 1px 1px rgb(27 29 28 / 0.25), 0 10px 28px -14px rgb(27 29 28 / 0.6);
 	}
 	.cmd {
@@ -98,13 +98,13 @@ const { copy, copied, command = 'npm create lepton-app' } = Astro.props;
 		transition: background-color 240ms var(--ease-out), color 240ms var(--ease-out);
 	}
 	.copy:hover {
-		background: var(--exposed);
+		background: var(--negative-hover);
 	}
 	.copy.done {
 		color: var(--pencil-lifted);
 	}
 	.copy:focus-visible {
-		outline-color: var(--paper);
+		outline-color: var(--on-negative);
 		outline-offset: -4px;
 	}
 	@media (max-width: 30rem) {

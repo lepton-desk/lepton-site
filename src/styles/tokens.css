@@ -29,6 +29,10 @@
 	--pencil-soft: #c9533e;
 	--pencil-lifted: #f0b9ab;
 	--exposed: #2e3331;
+	/* The film negative: machine output (the CLI run, the command strip) in either theme. */
+	--negative: #1b1d1c;
+	--on-negative: #f2f1eb;
+	--negative-hover: #2e3331;
 
 	/* No generic families: resolving one (`sans-serif`, `monospace`) asks the system's font
 	   matcher, which on Linux cost ~90 ms of the first layout (measured in Chrome traces: first
