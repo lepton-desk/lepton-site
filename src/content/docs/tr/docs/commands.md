@@ -33,7 +33,7 @@ const bytes = await invoke("app.name");
 const name = new TextDecoder().decode(bytes);
 ```
 
-`invoke(komut, args?, options?)` bir `Uint8Array` ile çözülür. `args` bir `Uint8Array` ya da `ArrayBuffer`'dır; `options.signal` isteği iptal eder. Reddedilen ya da başarısız bir çağrı `InvokeError` fırlatır; `reason` durumu adlandırır: komut `permissions`'ta yoksa `denied`, ayrıca `unknown_command`, `too_large` ya da `no_reply`.
+`invoke(komut, args?, options?)` bir `Uint8Array` ile çözülür. `args` bir `Uint8Array` ya da `ArrayBuffer`'dır; `options.signal` isteği iptal eder. Reddedilen ya da başarısız bir çağrı `InvokeError` fırlatır; `reason` durumu adlandırır: komut `permissions`'ta yoksa `denied`, ayrıca `unknown_command`, `too_large` (yanıt sığmadı), `malformed` (istek çerçevesi ya da argümanı komutun okuduğu biçimde değil), `failed` (işleyici hata döndürdü) ya da `no_reply` (yanıt çerçevesi gelmedi).
 
 Sayfa ve çekirdek JSON değil **ikili çerçeveler** alışverişi yapar: `invoke`, `lepton://localhost/__lepton/invoke` adresine tek bir istek çerçevesi gönderir ve yanıt çerçevesi cevaptır. Her derleme `src/lepton-commands.d.ts` dosyasını yeniden üretir, böylece komut adları tiplidir.
 
@@ -61,4 +61,29 @@ const stop = await listen("notes.saved", (event) => {
 });
 ```
 
-Çekirdek ayrıca `window.state` ve `window.resized` gönderir; pencereyi `@lepton-desk/api/window` yönetir.
+Çekirdeğin kendi olayları da vardır: `window.state`, `window.resized`, `download.started`, `download.progress`, `download.finished`, `download.failed` ve `permission.request` ([Web özellikleri](/tr/docs/web-features/) sayfasına bakın).
+
+## Yerleşik komutlar
+
+Çekirdeğin kendi komutları vardır. Sizinkiler gibi her biri yalnız `permissions`'ta listelendiğinde çalışır.
+
+| Komut | |
+| --- | --- |
+| `core.ping` | Argümanını geri döndürür. |
+| `core.protocol` | Kablo protokolünün sürümünü döndürür (`u32`, little-endian). |
+| `window.close` | Başlık çubuğundaki kapatma düğmesi gibi uygulamadan kapanmasını ister. |
+| `window.minimize`, `window.maximize`, `window.unmaximize` | Adlarındaki işi yapar. Wayland'de küçültülmüş pencereyi yalnız kullanıcı geri getirebilir. |
+| `window.state` | Durum bitleri: büyütülmüş, tam ekran, odakta. |
+| `permission.respond` | Bir `permission.request`'i yanıtlar. *0.1.5* |
+
+`@lepton-desk/api/window` pencere komutlarını sarar:
+
+```ts
+import { close, minimize, toggleMaximize, state, onStateChanged, onResized } from "@lepton-desk/api/window";
+
+await toggleMaximize(); // window.state, window.maximize ve window.unmaximize gerekir
+const { maximized, fullscreen, active } = await state();
+await onResized(({ width, height }) => console.log(width, height)); // mantıksal piksel
+```
+
+`window.state` ve `window.resized` olaylarını dinlemek izin gerektirmez.

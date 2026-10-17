@@ -22,27 +22,29 @@ description: Tüm lepton komutları ve seçenekleri.
 | --- | --- |
 | `-t, --template <ad>` | `vanilla-ts`, `vanilla-js`, `react-ts`, `react-js`, `vue-ts`, `svelte-ts`, `solid-ts` |
 | `--target <native\|webview>` | Uygulamanın nasıl çizileceği. Verilmezse sihirbaz sorar; `--non-interactive` `native` seçer. |
-| `--plugins <liste>` | Eklenecek eklentiler, virgülle: `os`, `clipboard`, `fs`, `dialog`. |
-| `--package-manager <ad>` | `npm`, `pnpm`, `yarn` ya da `bun`. |
+| `--plugins <liste>` | Eklenecek eklentiler, virgülle: `os`, `clipboard`, `fs`, `dialog`. Her birinin tüm komutları `permissions`'a eklenir (kullandıklarınıza indirin); `fs` kapsam olarak `$APPDATA` alır. |
+| `--package-manager <ad>` | `npm`, `pnpm`, `yarn` ya da `bun`. Verilmezse: `lepton`'ı başlatan, yoksa kuruluysa pnpm, yoksa npm. Sonraki komutlar projeyi izler: önce `packageManager` alanı, sonra kilit dosyası. |
 | `--install` | Oluşturduktan sonra bağımlılıkları kurar. |
 | `--identifier <kimlik>` | Uygulama kimliği (masaüstü girdisi, veri dizinleri). |
-| `--width`, `--height` | İlk pencere boyutu. |
+| `--width`, `--height` | İlk pencere boyutu, fiziksel piksel. Varsayılan 1200×800. |
 | `--directory <dizin>` | Projenin oluşturulacağı yer. |
 | `--non-interactive` | Hiçbir şey sormaz. |
+| `--verbose` | Yazılan her dosyayı ve kanal adını listeler. |
 
 ## `lepton dev`
 
 | Seçenek | |
 | --- | --- |
-| `-p, --port <port>` | Vite'ın portu. |
+| `-p, --port <port>` | Vite'ın portu; varsayılan 5173. |
 | `--native` | Yerel çizim yolunu çalıştırır. |
-| `--no-server` | Vite'ı başlatmaz. |
-| `--keep-open` | Pencere kapandıktan sonra çalışmayı sürdürür. |
+| `--no-server` | Pencereyi `--port`'ta sizin başlattığınız sunucuya karşı açar. |
 | `--print-plan` | Adımları çalıştırmak yerine yazdırır. |
 
 ## `lepton build`
 
-`--native` / `--webview` çizim yolunu seçer; `--servo`, WebKit yerine deneysel Servo motorunu bağlar (`--linux` ile); `-n, --dry-run` planı yazdırır.
+`--native` / `--webview` çizim yolunu seçer; `--servo`, WebKit yerine deneysel Servo motorunu bağlar (`--linux` ile); `-n, --dry-run` planı yazdırır. `--windows` ve `--macos` yerel çizim yolunu Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`); webview yolu yalnız Linux'tadır ve iki çıktı da o sistemlerde henüz denenmedi.
+
+`dev` ve `run` ayrıca `~/.local/share/applications/<identifier>.desktop` yazar, böylece görev çubuğu pencereyi adıyla eşleştirir; Lepton'ın yazmadığı bir girdinin üzerine asla yazmaz.
 
 ## `lepton run`
 
@@ -55,3 +57,5 @@ description: Tüm lepton komutları ve seçenekleri.
 ## `lepton record` ve `lepton replay` *0.1.5*
 
 `lepton record -o oturum.lrec` her isteği, yanıtı ve olayı yazar. Özel komutlar (dosya içerikleri, pano, seçilen yollar) `--unmasked` verilmedikçe yalnızca çerçeve başlıklarını tutar. `lepton replay oturum.lrec` kaydı pencere açmadan gerçek işleyicilerden geçirir ve bir yanıt farklıysa `1` ile çıkar; `--page` pencereyi açar ve sayfanın çağrılarını kayıttan yanıtlar.
+
+`-o` verilmezse dosya projede `recording-<unix saniyesi>.lrec` olur. `replay`, `HOME` ve `XDG_*` boş bir geçici dizini gösterecek şekilde çalışır; dosyalarınıza dokunamaz. İkisi de `--release` (eniyileştirilmiş çekirdek) ve `--print-plan` alır.

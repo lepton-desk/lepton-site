@@ -1,4 +1,5 @@
-// Captured from real runs of lepton 0.1.4 on 2026-10-16 (Linux x86_64). Only the absolute
+// Captured from real runs on 2026-10-16 (Linux x86_64) of the CLI built from trunk before the
+// 0.1.5 release; it still reports 0.1.4, which npm also has. Recapture when 0.1.5 is published. Only the absolute
 // project path was shortened to the project directory; nothing else is edited.
 export const leptonNew = "\n  \u25c9 lepton  create an app \u00b7 v0.1.4\n\n  \u25c6 Project     hello-lepton\n  \u25c6 Frontend    React \u00b7 TypeScript\n  \u25c6 Render      webview \u00b7 your page in WPE WebKit\n  \u25c6 Plugins     none\n  \u25c6 Identifier  hello-lepton\n\n  \u2714 Scaffolded the React \u00b7 TypeScript frontend      6 files\n  \u2714 Added the Lepton core                           78 files\n  \u2714 Wired the window, commands and permissions      12 files\n\n  Your app is ready in hello-lepton\n\n    cd hello-lepton\n    npm install             install the dependencies\n    npm run lepton dev      open the window, with hot reload\n    npm run lepton build    build a release binary\n\n  docs  https://github.com/lepton-desk/lepton";
 

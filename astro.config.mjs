@@ -48,7 +48,12 @@ export default defineConfig({
 				{
 					label: 'Build',
 					translations: { tr: 'Geliştir' },
-					items: [{ slug: 'docs/commands' }, { slug: 'docs/plugins' }, { slug: 'docs/packaging' }],
+					items: [
+						{ slug: 'docs/commands' },
+						{ slug: 'docs/web-features' },
+						{ slug: 'docs/plugins' },
+						{ slug: 'docs/packaging' },
+					],
 				},
 			],
 		}),

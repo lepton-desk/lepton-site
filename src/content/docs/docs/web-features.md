@@ -1,0 +1,58 @@
+---
+title: Web features
+description: What the engine offers a page beyond drawing it — downloads, permissions, notifications, links, the inspector. New in 0.1.5.
+---
+
+*0.1.5* — WebKit leaves each of these to the embedder and refuses when nobody answers. Lepton answers them; this page says how.
+
+## Downloads
+
+A download goes to the user's download directory (`XDG_DOWNLOAD_DIR`, e.g. `~/Downloads` or `~/İndirilenler`) under the name the server suggested, made safe: only its last path element, no control characters, never hidden (a leading `.` becomes `_`), and made unique when the file exists. No permission is needed to listen:
+
+```ts
+import { onDownload } from "@lepton-desk/api/download";
+
+const stop = await onDownload((event) => {
+  if (event.kind === "progress") console.log(event.received, event.expected);
+  if (event.kind === "finished") console.log("saved to", event.path);
+});
+```
+
+`kind` is `started` (with `name`), `progress` (`received`, and `expected`, which is 0 when the server did not say — at most four a second), `finished` (`path`) or `failed` (`message`). Every event carries the download's `id`.
+
+## Permissions the page asks for
+
+Notifications, camera, location and the rest are decided by `webPermissions` in `lepton.config.json`. A kind not listed is denied.
+
+```json
+"webPermissions": { "notifications": "allow", "camera": "ask" }
+```
+
+The kinds: `notifications`, `camera`, `microphone`, `geolocation`, `pointer-lock`, `device-info`, `media-keys`, `storage-access`, `xr`.
+
+`allow` and `deny` answer at once and never reach your code; `navigator.permissions.query` reports them as `granted` and `denied` (`ask` as `prompt`). With `ask`, the request comes to the page so you can ask in your own interface:
+
+```ts
+import { onPermissionRequest } from "@lepton-desk/api/permission";
+
+await onPermissionRequest(async ({ kinds }) => confirm(`Allow ${kinds.join(" and ")}?`));
+```
+
+Answering is the built-in command `permission.respond`, so list it under `permissions`. A request nobody answers is denied after a minute. A page asking for camera and microphone at once gets one request with both kinds.
+
+## Notifications
+
+With `notifications` allowed, `new Notification(title, { body })` reaches the desktop through `org.freedesktop.Notifications`, under the application's name and desktop entry.
+
+## Links and new windows
+
+A web link the user clicks — `http(s)` to any host other than `localhost`, `127.0.0.1` or `[::1]`, or `mailto:`, `tel:` and other schemes — opens in the desktop's default application through the `OpenURI` portal; the window stays on your page. `window.open` follows the same rule: an outside address goes to the desktop and returns `null`, the application's own page opens a second window on the same engine, which can call the core like the first.
+
+## The Web Inspector
+
+In debug builds — `lepton dev` and `lepton run` without `--release` — F12 or Ctrl+Shift+I opens WebKit's inspector. Release builds (`lepton build`, `lepton package`) leave it out.
+
+## The window and the system
+
+- The window's title follows the page's `document.title`.
+- Before the engine starts, the application moves into its own systemd scope, `app-<identifier>-<pid>.scope`, so a system monitor shows it and its WebKit processes as one application, named by its desktop entry. Started from a launcher that already made one, nothing changes.

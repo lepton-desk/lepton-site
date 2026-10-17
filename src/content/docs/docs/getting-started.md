@@ -34,11 +34,10 @@ npm create lepton-app@latest hello-lepton -- --template react-ts --target webvie
 
 ## Run it
 
-`create-lepton-app` installs the dependencies unless you pass `--no-install`. Every project has one script, `lepton`. With npm put `--` before flags; pnpm, Yarn and Bun don't need it.
+`create-lepton-app` installs the dependencies unless you pass `--no-install`. Lepton's commands go through one script, `lepton` *0.1.5* (0.1.4 projects have `lepton:dev` and `lepton:build`); `check` and `format` run Biome, and the framework's own `dev`, `build` and `preview` scripts stay. With npm put `--` before flags; pnpm, Yarn and Bun don't need it.
 
 ```sh
 cd hello-lepton
-npm install
 npm run lepton dev
 ```
 

@@ -19,15 +19,17 @@ description: lepton.config.json, alan alan.
 
 | Alan | |
 | --- | --- |
-| `productName` | İkilinin adı ve masaüstünün gösterdiği ad. |
-| `identifier` | Uygulama kimliği: masaüstü girdisi, pencerenin `app_id`'si, veri dizinleri (`~/.local/share/<identifier>`). |
-| `version` | Paket adlarında kullanılır. |
-| `renderPath` | `webview` (sayfanız WPE WebKit'te) ya da `native` (çekirdek çizer, web motoru yok). |
-| `window` | Başlık ve ilk boyut. Sayfanın `<title>`'ı başlığı izler. |
+| `productName` | Masaüstünün gösterdiği ad. İkilinin adı bundan türer: küçük harf, diğer karakter dizileri tek `-` (`My App` → `my-app`). |
+| `identifier` | Uygulama kimliği: masaüstü girdisi, pencerenin `app_id`'si, veri dizinleri (`~/.local/share/<identifier>`). `lepton new`'den sonra değişirse yalnız masaüstü girdisi ve paket adları izler; pencerenin `app_id`'si, veri dizinleri ve systemd kapsamı `src-lepton/main.zig`'e yazılan kimlikte kalır. |
+| `version` | Paket adlarında kullanılır. Varsayılan `0.1.0`. |
+| `renderPath` | `webview` (sayfanız WPE WebKit'te; varsayılan) ya da `native` (çekirdek çizer, web motoru yok). |
+| `target` | `lepton new`'in kurduğu ön yüz: `vanilla-ts`, `react`, `vue`, `svelte`, `solid`. Yalnız kayıt; değiştirmek bir şey değiştirmez. |
+| `window` | Başlık ve ilk boyut; `lepton new` bunları `src-lepton/main.zig`'e ve `index.html`'e yazar, sonradan burada değiştirmek etkisizdir. Varsayılan 1200×800, başlık `productName`. Çalışırken pencere sayfanın `<title>`'ını izler. |
 | `permissions` | Sayfanın çağırabileceği komutlar, her biri adıyla. Joker karakter yok. |
 | `plugins` | Eklenti ayarları, eklentinin adıyla; ör. `plugins.fs.scope`. |
 | `webPermissions` | Web motorunun kendi istekleri (bildirim, kamera…) için yanıtlar: `allow`, `deny` ya da `ask`. Listelenmeyenler reddedilir. *0.1.5* |
 | `bundle` | Paket biçimleri ve bilgileri; [Paketleme](/tr/docs/packaging/) sayfasına bakın. |
+| `sdkScope`, `channel` | `lepton new` yazar (`@lepton-desk`; paylaşımlı bellek kanalı `/lepton-<identifier>` ve boyutu). Kanal adı bir kez `src-lepton/main.zig`'e yazılır; burada değiştirmek etkisizdir. |
 
 ## İzinler
 

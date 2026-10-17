@@ -34,7 +34,7 @@ npm create lepton-app@latest hello-lepton -- --template react-ts --target webvie
 
 ## Çalıştırın
 
-`create-lepton-app`, `--no-install` vermediğiniz sürece bağımlılıkları kurar. Her projede tek bir betik vardır: `lepton`. npm'de bayraklardan önce `--` yazın; pnpm, Yarn ve Bun'da gerekmez.
+`create-lepton-app`, `--no-install` vermediğiniz sürece bağımlılıkları kurar. Lepton komutları tek bir betikten geçer: `lepton` *0.1.5* (0.1.4 projelerinde `lepton:dev` ve `lepton:build` vardır); `check` ve `format` Biome'u çalıştırır, çatının kendi `dev`, `build` ve `preview` betikleri de durur. npm'de bayraklardan önce `--` yazın; pnpm, Yarn ve Bun'da gerekmez.
 
 ```sh
 cd hello-lepton
