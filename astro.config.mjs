@@ -28,6 +28,7 @@ export default defineConfig({
 			},
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/lepton-desk/lepton' }],
 			customCss: ['./src/styles/starlight.css'],
+			routeMiddleware: './src/routeData.ts',
 			expressiveCode: { themes: [plateTheme] },
 			head: [
 				{ tag: 'link', attrs: { rel: 'preload', href: '/fonts/archivo-latin.woff2', as: 'font', type: 'font/woff2', crossorigin: '' } },
