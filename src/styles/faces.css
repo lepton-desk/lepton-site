@@ -1,8 +1,10 @@
 /* The landing page's faces. `swap`: its first paint was tuned around them (see tokens.css and
    PlateLayout.astro). The docs load the same files as `optional` (faces-docs.css). */
 
-/* Archivo, cut to the weights (400–850) and widths (62–100%) the site uses, Latin plus the six
-   letters Turkish adds (ğ Ğ ı İ ş Ş). One face, with no unicode-range: split into ranged faces,
+/* Archivo, cut to the weights (400–850) and widths (62–100%) the site uses, and to the characters
+   it uses: all of ASCII, Turkish, and every character in the built pages (65 → 38 KB; the docs'
+   simulated LCP ended with this download, 1966 → 1667 ms, pages pixel-identical, measured). A new
+   character outside the cut is drawn from the fallback face until the font is cut again. One face, with no unicode-range: split into ranged faces,
    Chrome on Linux resolved the system fallback once per font description, ~100 ms of the first
    layout and ~150 ms later first paint (measured in traces). */
 @font-face {
