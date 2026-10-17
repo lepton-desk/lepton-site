@@ -30,7 +30,12 @@ export default defineConfig({
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/lepton-desk/lepton' }],
 			customCss: ['./src/styles/starlight.css'],
 			routeMiddleware: './src/routeData.ts',
-			expressiveCode: { themes: [plateTheme] },
+			// Code styles in the page, not ec.*.css: that stylesheet sits in the body and blocks the parser,
+			// so the rest of the page waited for it and the first frame came ~540 ms in. Under Lighthouse's
+			// resize that was late enough for Chrome to hold the page's frames for a second, in 5 of 10
+			// live runs of a post with code (none on pages without code). Takes effect only on a build
+			// that re-renders Markdown (`astro build --force` once; the content store caches it).
+			expressiveCode: { themes: [plateTheme], emitExternalStylesheet: false },
 			head: [
 				{ tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' } },
 				// Registered after load, so it never competes with the first paint; a docs page then
