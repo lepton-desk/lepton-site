@@ -18,8 +18,14 @@ const t = site[lang];
 const other = lang === 'tr' ? 'en' : 'tr';
 const here = hrefOf(lang, slug);
 const there = translated ? hrefOf(other, slug) : site[other].blogHref;
-const { Content, headings } = await render(post);
+const { headings } = await render(post);
 const contents = headings.filter((h) => h.depth === 2);
+// The text before the first heading is drawn in the first frame; each section after it is added
+// after that frame, one task each (they arrive as <noscript>, so without scripting they show as
+// they are). Drawn all at once, a post's first frame came late enough under Lighthouse's mid-load
+// resize for Chrome to hold the page's frames for a second (measured: 8 of 8 runs held, 0 of 8
+// split like this; one task for the whole body cost CLS 0.1 and 117 ms TBT).
+const [lead = '', ...sections] = (post.rendered?.html ?? '').split(/(?=<h2[\s>])/);
 const hasCode = /^```/m.test(post.body ?? '');
 ---
 
@@ -55,8 +61,9 @@ const hasCode = /^```/m.test(post.body ?? '');
 			}
 		</header>
 		<div class="body">
-			<div class="prose">
-				<Content />
+			<div class="prose" data-later-box>
+				<Fragment set:html={lead} />
+				{sections.map((section) => <noscript data-later set:html={section} />)}
 			</div>
 			{
 				contents.length > 2 && (
@@ -73,6 +80,40 @@ const hasCode = /^```/m.test(post.body ?? '');
 		</div>
 	</article>
 	</main>
+	<script is:inline>
+		(() => {
+			const later = [...document.querySelectorAll('noscript[data-later]')];
+			const next = () => {
+				const block = later.shift();
+				if (!block) {
+					// A link to a section lands once that section exists.
+					const target = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)));
+					if (target) target.scrollIntoView({ behavior: 'instant' });
+					return;
+				}
+				const parsed = document.createElement('template');
+				parsed.innerHTML = block.textContent ?? '';
+				// Scripts parsed this way do not run; code blocks bring their copy button's module.
+				for (const old of parsed.content.querySelectorAll('script')) {
+					const script = document.createElement('script');
+					for (const { name, value } of old.attributes) script.setAttribute(name, value);
+					script.textContent = old.textContent;
+					old.replaceWith(script);
+				}
+				block.replaceWith(parsed.content);
+				setTimeout(next, 0);
+			};
+			let started = false;
+			const start = () => {
+				if (started) return;
+				started = true;
+				setTimeout(next, 0);
+			};
+			requestAnimationFrame(start);
+			// A page that gets no frames (hidden, occluded) still fills in.
+			setTimeout(start, 1000);
+		})();
+	</script>
 </ReadLayout>
 
 <style>
@@ -127,6 +168,10 @@ const hasCode = /^```/m.test(post.body ?? '');
 		height: 1.6px;
 		background: var(--pencil);
 		transform: rotate(-18deg);
+	}
+	/* Room for the sections still to come, so the footer is not seen and then pushed down. */
+	.prose:has(> noscript[data-later]) {
+		min-height: 100vh;
 	}
 	.prose {
 		padding: var(--space-5) var(--gutter) var(--space-6);
