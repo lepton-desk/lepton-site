@@ -7,7 +7,7 @@ description: Tüm lepton komutları ve seçenekleri.
 
 | Komut | Ne yapar |
 | --- | --- |
-| `lepton info` | Bu makinenin neyi derleyebildiğini ve neyin eksik olduğunu söyler. Betikler için `--json`. |
+| `lepton info` | Bu makinenin neyi derleyebildiğini ve neyin eksik olduğunu söyler; web motoru eksikse dağıtımınızın onu hangi komutla kurduğunu da. Betikler için `--json`. |
 | `lepton new [ad]` | Proje oluşturur ve Lepton'u bağlar. |
 | `lepton dev` | Geliştirme döngüsü: anında yenilenen Vite, çekirdek, pencere. |
 | `lepton run` | Bir kez derler ve uygulamayı açar; arayüzü diskten okur. |

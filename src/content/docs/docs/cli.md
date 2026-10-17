@@ -7,7 +7,7 @@ description: Every lepton command and its options.
 
 | Command | What it does |
 | --- | --- |
-| `lepton info` | Reports what this machine can build and what is missing. `--json` for scripts. |
+| `lepton info` | Reports what this machine can build and what is missing, and for a missing web engine the command your distribution installs it with. `--json` for scripts. |
 | `lepton new [name]` | Creates a project and wires Lepton into it. |
 | `lepton dev` | The development loop: Vite with hot reload, the core, the window. |
 | `lepton run` | Builds once and opens the app, reading the front end from disk. |
