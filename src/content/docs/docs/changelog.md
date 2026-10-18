@@ -3,9 +3,9 @@ title: Changes
 description: What changed in each Lepton release, what is on trunk for the next one, and how far 0.2.0 has come. Every figure was measured.
 ---
 
-Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository. "Not on npm yet" means the change is on `trunk` and arrives with the next release.
+Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository.
 
-## 0.1.7 *not on npm yet*
+## 0.1.7 *2026-10-18*
 
 ### Commands
 

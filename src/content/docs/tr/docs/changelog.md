@@ -3,9 +3,9 @@ title: Değişiklikler
 description: Her Lepton sürümünde ne değişti, bir sonraki sürüm için trunk'ta ne var ve 0.2.0 ne kadar ilerledi. Her sayı ölçüldü.
 ---
 
-Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı. "Henüz npm'de değil", değişikliğin `trunk`'ta olduğu ve bir sonraki sürümle geleceği anlamına gelir.
+Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı.
 
-## 0.1.7 *henüz npm'de değil*
+## 0.1.7 *2026-10-18*
 
 ### Komutlar
 
