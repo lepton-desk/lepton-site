@@ -73,4 +73,10 @@ Only `lepton new` writes the core into a project, so fixes made later reach an e
 - an edited one is merged three ways — the release it was made from, your file, today's template — so your commands and state stay;
 - where your edit and the template's change touch the same lines, nothing is written: `main.zig.merge` holds both with conflict markers, and you resolve it and run `lepton update` again.
 
+*0.1.8* It starts with the packages: it asks the registry for the newest `@lepton-desk/cli` (or takes `--to <version>`), moves the project's `@lepton-desk/*` dependencies to it (a `link:`, `file:` or `workspace:` one is left alone) and installs with the project's own package manager, so the lockfile follows. When that release is newer than the CLI that is running, the newly installed CLI finishes the job, because the core and templates it writes are its own. So `pnpm lepton update` is all a project needs. `--no-install` leaves package.json alone and updates only the core and templates. A React project whose `tsconfig.json` lacks `"jsx"` (react-ts projects made before 0.1.7) gets it.
+
+A project made before 0.1.8 runs the old CLI, which does not move its packages yet (0.1.6 has no `update` at all). Once, run the newest CLI from the registry instead: `npx @lepton-desk/cli@latest update`, `lepton-desk update` on Arch, or with pnpm the exact version, `pnpm dlx @lepton-desk/cli@0.1.8 update`. With pnpm, `@latest` is not enough on a release's first day: pnpm skips versions younger than its `minimumReleaseAge` and ran 0.1.6 instead (measured).
+
+With pnpm 11 or newer, a release younger than a day is installed only because pnpm's `minimumReleaseAge` allows exceptions; pnpm adds them to `pnpm-workspace.yaml` itself. With `minimumReleaseAgeStrict` on, it holds the release back and `lepton update` says so.
+
 `--dry-run` says what would change. Then `lepton build`.

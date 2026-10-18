@@ -5,6 +5,12 @@ description: What changed in each Lepton release, what is on trunk for the next 
 
 Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository.
 
+## 0.1.8 *2026-10-18*
+
+- **`lepton update` updates the packages too.** It asks the registry for the newest release, moves the project's `@lepton-desk/*` dependencies to it, installs them with the project's package manager and hands over to the newly installed CLI, which updates the core and templates it carries. Found on 0.1.7's release day: in a 0.1.6 project the lockfile kept the CLI at 0.1.6, which has no `update`, so a project could not reach a newer core by itself. From 0.1.8 on, `pnpm lepton update` is enough; an older project runs the newest CLI once. [The CLI](/docs/cli/#lepton-update-017)
+- **React projects made before 0.1.7 type-check again**: `lepton update` adds the `"jsx"` setting their `tsconfig.json` lacked (`tsc` failed on every component).
+- Measured on a copy of a real 0.1.6 project: one `pnpm dlx @lepton-desk/cli@0.1.8 update` moved six packages to 0.1.8, refreshed the core and the `tsconfig.json`, and the project built.
+
 ## 0.1.7 *2026-10-18*
 
 ### Commands

@@ -73,4 +73,10 @@ Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepto
 - düzenlenmiş dosya üç yollu birleştirilir — yapıldığı sürüm, sizin dosyanız, bugünkü şablon — komutlarınız ve durumunuz kalır;
 - düzenlemeniz ile şablonun değişikliği aynı satırlara dokunuyorsa hiçbir şey yazılmaz: `main.zig.merge` ikisini çakışma işaretleriyle tutar; çözüp `lepton update`'i yeniden çalıştırırsınız.
 
+*0.1.8* İşe paketlerden başlar: kayıt defterine en yeni `@lepton-desk/cli` sürümünü sorar (ya da `--to <sürüm>`'ü alır), projenin `@lepton-desk/*` bağımlılıklarını ona yükseltir (`link:`, `file:` ya da `workspace:` olanlara dokunmaz) ve projenin kendi paket yöneticisiyle kurar; kilit dosyası da güncellenir. Bu sürüm çalışan CLI'dan yeniyse işi yeni kurulan CLI bitirir, çünkü yazdığı çekirdek ve şablonlar onunkidir. Yani bir projeye `pnpm lepton update` yeter. `--no-install` package.json'a dokunmaz, yalnız çekirdeği ve şablonları günceller. `tsconfig.json`'ında `"jsx"` olmayan React projesine (0.1.7'den önce açılan react-ts projeleri) o satır eklenir.
+
+0.1.8'den önce açılmış bir proje eski CLI'yı çalıştırır; o paketleri henüz yükseltmez (0.1.6'da `update` hiç yok). Bir kerelik, kayıt defterindeki en yeni CLI'yı çalıştırın: `npx @lepton-desk/cli@latest update`, Arch'ta `lepton-desk update` ya da pnpm'de tam sürümle `pnpm dlx @lepton-desk/cli@0.1.8 update`. pnpm'de bir sürümün ilk gününde `@latest` yetmez: pnpm `minimumReleaseAge`'dan genç sürümleri atlıyor ve yerine 0.1.6'yı çalıştırdı (ölçüldü).
+
+pnpm 11 ve üstünde bir günden genç bir sürüm, pnpm'in `minimumReleaseAge` ayarı istisnaya izin verdiği için kurulur; istisnaları `pnpm-workspace.yaml`'a pnpm kendisi ekler. `minimumReleaseAgeStrict` açıksa sürümü bekletir ve `lepton update` bunu söyler.
+
 `--dry-run` neyin değişeceğini söyler. Sonra `lepton build`.

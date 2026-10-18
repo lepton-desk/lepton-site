@@ -5,6 +5,12 @@ description: Her Lepton sürümünde ne değişti, bir sonraki sürüm için tru
 
 Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı.
 
+## 0.1.8 *2026-10-18*
+
+- **`lepton update` paketleri de güncelliyor.** Kayıt defterine en yeni sürümü soruyor, projenin `@lepton-desk/*` bağımlılıklarını ona yükseltiyor, projenin paket yöneticisiyle kuruyor ve işi yeni kurulan CLI'ya devrediyor; çekirdeği ve şablonları o güncelliyor. 0.1.7'nin yayın günü bulundu: 0.1.6 projesinde kilit dosyası CLI'yı 0.1.6'da tutuyordu, onda da `update` yok; yani proje daha yeni bir çekirdeğe kendi başına ulaşamıyordu. 0.1.8'den sonra `pnpm lepton update` yetiyor; daha eski bir proje en yeni CLI'yı bir kez çalıştırıyor. [CLI](/tr/docs/cli/#lepton-update-017)
+- **0.1.7'den önce açılan React projeleri yine tür denetiminden geçiyor**: `lepton update`, `tsconfig.json`'larında eksik olan `"jsx"` ayarını ekliyor (`tsc` her bileşende hata veriyordu).
+- Gerçek bir 0.1.6 projesinin kopyasında ölçüldü: tek bir `pnpm dlx @lepton-desk/cli@0.1.8 update` altı paketi 0.1.8'e taşıdı, çekirdeği ve `tsconfig.json`'ı yeniledi, proje derlendi.
+
 ## 0.1.7 *2026-10-18*
 
 ### Komutlar
