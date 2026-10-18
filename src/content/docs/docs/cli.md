@@ -15,6 +15,9 @@ description: Every lepton command and its options.
 | `lepton package` | A release laid out as an installable tree, then each package format. |
 | `lepton record` | Opens the app and records every command the page calls. *0.1.5* |
 | `lepton replay <file>` | Runs a recording against the core again and compares the replies. *0.1.5* |
+| `lepton update` | Brings an existing project's core and `src-lepton/` files to this version, keeping your edits. *0.1.7* |
+
+On a terminal the output is coloured *0.1.7*: each step is framed with how long it took, and the tools Lepton runs (Vite, pnpm, Zig) keep their own colours. `NO_COLOR` or a pipe gives plain text, for logs and CI.
 
 ## `lepton new`
 
@@ -59,3 +62,15 @@ description: Every lepton command and its options.
 `lepton record -o session.lrec` writes every request, reply and event. Private commands (file contents, the clipboard, chosen paths) keep only their frame headers unless `--unmasked`. `lepton replay session.lrec` runs the recording through the real handlers with no window and exits `1` if a reply differs; `--page` opens the window and answers the page's calls from the recording instead.
 
 Without `-o` the file is `recording-<unix seconds>.lrec` in the project. `replay` runs with `HOME` and `XDG_*` pointed at an empty temporary directory, so it cannot touch your files. Both take `--release` (the optimised core) and `--print-plan`.
+
+`--page --close` *0.1.7* ends the run by itself once the recording has been played, so a recording can be a test: 1.5 s after the last recorded call (a call more in that time counts as diverged), or 10 s past the recording's length when calls are missing. Exit `0` when the page made the same calls with the same arguments.
+
+## `lepton update` *0.1.7*
+
+Only `lepton new` writes the core into a project, so fixes made later reach an existing project through this command. It replaces `src-lepton/vendor/lepton-core` and brings `main.zig`, `build.zig` and `lepton-commands.zig` up to the current template:
+
+- a file you never edited is replaced;
+- an edited one is merged three ways — the release it was made from, your file, today's template — so your commands and state stay;
+- where your edit and the template's change touch the same lines, nothing is written: `main.zig.merge` holds both with conflict markers, and you resolve it and run `lepton update` again.
+
+`--dry-run` says what would change. Then `lepton build`.

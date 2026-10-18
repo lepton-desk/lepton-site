@@ -15,6 +15,9 @@ description: Tüm lepton komutları ve seçenekleri.
 | `lepton package` | Sürümü kurulabilir bir ağaç olarak dizer, sonra her paket biçimini yazar. |
 | `lepton record` | Uygulamayı açar ve sayfanın çağırdığı her komutu kaydeder. *0.1.5* |
 | `lepton replay <dosya>` | Kaydı çekirdeğe yeniden oynatır ve yanıtları karşılaştırır. *0.1.5* |
+| `lepton update` | Var olan projenin çekirdeğini ve `src-lepton/` dosyalarını bu sürüme getirir, düzenlemelerinizi korur. *0.1.7* |
+
+Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepton'un çalıştırdığı araçlar (Vite, pnpm, Zig) kendi renklerini koruyor. `NO_COLOR` ya da boru düz metin verir; günlükler ve CI için.
 
 ## `lepton new`
 
@@ -59,3 +62,15 @@ description: Tüm lepton komutları ve seçenekleri.
 `lepton record -o oturum.lrec` her isteği, yanıtı ve olayı yazar. Özel komutlar (dosya içerikleri, pano, seçilen yollar) `--unmasked` verilmedikçe yalnızca çerçeve başlıklarını tutar. `lepton replay oturum.lrec` kaydı pencere açmadan gerçek işleyicilerden geçirir ve bir yanıt farklıysa `1` ile çıkar; `--page` pencereyi açar ve sayfanın çağrılarını kayıttan yanıtlar.
 
 `-o` verilmezse dosya projede `recording-<unix saniyesi>.lrec` olur. `replay`, `HOME` ve `XDG_*` boş bir geçici dizini gösterecek şekilde çalışır; dosyalarınıza dokunamaz. İkisi de `--release` (eniyileştirilmiş çekirdek) ve `--print-plan` alır.
+
+`--page --close` *0.1.7* kayıt oynatılınca çalışmayı kendisi bitirir; böylece bir kayıt test olur: son kayıtlı çağrıdan 1,5 sn sonra (bu sürede gelen fazladan çağrı ayrışma sayılır) ya da eksik çağrı varsa kaydın süresinden 10 sn sonra. Sayfa aynı çağrıları aynı argümanlarla yaptıysa çıkış `0`.
+
+## `lepton update` *0.1.7*
+
+Çekirdeği projeye yalnız `lepton new` yazar; sonradan gelen düzeltmeler var olan projeye bu komutla ulaşır. `src-lepton/vendor/lepton-core`'u değiştirir, `main.zig`, `build.zig` ve `lepton-commands.zig`'i güncel şablona getirir:
+
+- hiç düzenlemediğiniz dosya değiştirilir;
+- düzenlenmiş dosya üç yollu birleştirilir — yapıldığı sürüm, sizin dosyanız, bugünkü şablon — komutlarınız ve durumunuz kalır;
+- düzenlemeniz ile şablonun değişikliği aynı satırlara dokunuyorsa hiçbir şey yazılmaz: `main.zig.merge` ikisini çakışma işaretleriyle tutar; çözüp `lepton update`'i yeniden çalıştırırsınız.
+
+`--dry-run` neyin değişeceğini söyler. Sonra `lepton build`.

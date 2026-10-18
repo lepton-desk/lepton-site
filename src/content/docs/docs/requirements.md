@@ -16,6 +16,17 @@ Lepton runs on **Linux** today. Windows (through WebView2) and macOS (through WK
 
 To **develop**, add [Zig 0.16](https://ziglang.org/download/), Node 20 or newer, and npm, pnpm, Yarn or Bun. `lepton info` checks all of it.
 
+### The CLI on Arch *0.1.7*
+
+`npm create lepton-app` works on every distribution. On Arch the CLI is also packaged: `lepton-desk` builds it from source, `lepton-desk-bin` installs the binary published to npm, and both pull in Zig 0.16 and WPE WebKit. New AUR accounts are closed for now, so until the packages are on the AUR, build them from the repository:
+
+```sh
+git clone https://github.com/lepton-desk/lepton.git
+cd lepton/packaging/aur/lepton-desk-bin && makepkg -si
+```
+
+The command is `lepton-desk` (`lepton-desk new my-app`): the AUR's `lepton` is Dropbox's JPEG compressor and owns `/usr/bin/lepton`, so the two install side by side. Inside a project the `lepton` script runs the project's own CLI, as with any install.
+
 ### WPE WebKit by distribution
 
 | Distribution | WPE WebKit 2.54 |

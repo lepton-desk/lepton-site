@@ -60,6 +60,7 @@ export default defineConfig({
 						{ slug: 'docs/requirements' },
 						{ slug: 'docs/cli' },
 						{ slug: 'docs/configuration' },
+						{ slug: 'docs/changelog' },
 					],
 				},
 				{

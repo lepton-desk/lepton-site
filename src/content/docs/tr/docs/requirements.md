@@ -16,6 +16,17 @@ Lepton bugün **Linux**'ta çalışıyor. Windows (WebView2 ile) ve macOS (WKWeb
 
 **Geliştirmek** için ayrıca [Zig 0.16](https://ziglang.org/download/), Node 20 ya da üstü ve npm, pnpm, Yarn veya Bun gerekir. `lepton info` hepsini denetler.
 
+### Arch'ta CLI *0.1.7*
+
+`npm create lepton-app` her dağıtımda çalışır. Arch'ta CLI ayrıca paketli: `lepton-desk` kaynaktan derler, `lepton-desk-bin` npm'de yayımlanan ikiliyi kurar; ikisi de Zig 0.16'yı ve WPE WebKit'i kendisi kurdurur. AUR yeni hesap kaydını şimdilik kapattığı için paketler AUR'a gelene kadar depodan derleyin:
+
+```sh
+git clone https://github.com/lepton-desk/lepton.git
+cd lepton/packaging/aur/lepton-desk-bin && makepkg -si
+```
+
+Komutun adı `lepton-desk` (`lepton-desk new uygulamam`): AUR'daki `lepton`, Dropbox'ın JPEG sıkıştırıcısı ve `/usr/bin/lepton`'ı o kuruyor; böylece ikisi yan yana kurulabiliyor. Projenin içinde `lepton` betiği, her kurulumda olduğu gibi projenin kendi CLI'sını çalıştırır.
+
 ### Dağıtıma göre WPE WebKit
 
 | Dağıtım | WPE WebKit 2.54 |
