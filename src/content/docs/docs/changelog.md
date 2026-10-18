@@ -44,6 +44,16 @@ Every figure on this page was measured on the project's own machine (Radeon R7 2
 - **The native template draws on it.** Its screen and the window's title bar and menu are one command list; the title is now drawn in the bar. The app uses 0.21 s of CPU in 10 s, against 0.82 s painting on the CPU and uploading the frame. Without the GPU it falls back to that path.
 - **Decided:** layout will be Lepton's own flexbox, written in Zig.
 
+## Windows *started, on trunk*
+
+Windows is not supported yet: an app cannot be built there. The first steps, measured on the same machine under Windows 10:
+
+- **WebView2 in a real window.** `zig build webview2-check` opens a Win32 window, puts WebView2 in it, loads a page, runs a script in it and captures a frame. The installed runtime (155 here) is found the way Microsoft's loader finds it and its own DLL is called directly, so no `WebView2Loader.dll` is shipped; only Microsoft's `WebView2.h` is in the repository, under its BSD-style licence. The page loaded in 704 ms, the script answered at 719 ms and the frame was captured at 829 ms. WebView2 is Chromium, the copy that comes with Windows: no browser is bundled, but it is not Chromium-free.
+- **The CLI builds and its tests pass on Windows** (293). `lepton new` works there; `build`, `dev` and `run` do not yet, because the core's shared-memory channel and window layer are Linux's.
+- **Children end with Lepton.** On Windows `lepton` joins a job object that ends everything it started when it ends, even when it is killed outright: there, ending `cmd` alone had left the dev server's Node process running.
+- **LF on every checkout.** A CLI built from a Windows checkout embedded its templates with CRLF line endings, and `zig fmt` refused the generated `main.zig`. The repository now keeps LF everywhere.
+- Next: serving the bundled frontend and the page → core calls through WebView2, then the Win32 window and the core's Windows backend.
+
 ## 0.1.6
 
 - `npm create lepton-app` works again: 0.1.5's `create-lepton-app` stopped before creating the project (it read `lepton info --json` in an older shape). 0.1.5 of that package is deprecated on npm.
