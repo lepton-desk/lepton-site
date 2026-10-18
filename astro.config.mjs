@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 import tailwindcss from '@tailwindcss/vite';
 import { plateNegativeTheme, plateTheme } from './src/styles/code-theme.ts';
 import offlineDocs from './integrations/offline-docs.mjs';
+import inlineCsp from './integrations/inline-csp.mjs';
 
 // The landing page lives in src/pages (`/`, `/tr/`); the docs are Starlight, under `/docs/`
 // and `/tr/docs/`.
@@ -78,6 +79,8 @@ export default defineConfig({
 			],
 		}),
 		offlineDocs(),
+		// Last: it hashes the pages as they will be served.
+		inlineCsp(),
 	],
 	vite: {
 		plugins: [tailwindcss()],
