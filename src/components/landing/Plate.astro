@@ -489,6 +489,7 @@ const isTr = text.htmlLang === 'tr';
 		text-decoration: none;
 	}
 	.brand {
+		font-family: 'Archivo', 'Plate Condensed Fallback';
 		font-stretch: 70%;
 		font-weight: 800;
 		font-size: 1.35rem;
@@ -568,6 +569,8 @@ const isTr = text.htmlLang === 'tr';
 	}
 	.offer {
 		margin: 0 0 var(--space-4);
+		/* Its fallback is set at Archivo's width, so it wraps the same before the font arrives (tokens.css). */
+		font-family: 'Archivo', 'Plate Narrow Fallback';
 		font-size: var(--step-2);
 		font-stretch: 88%;
 		line-height: 1.22;
@@ -575,6 +578,9 @@ const isTr = text.htmlLang === 'tr';
 		   computed, and before the web fonts arrive that meant looking up the browser's default
 		   font in the first style pass (measured with fonts held back: that task 19 → 10 ms). */
 		max-width: 15.44em;
+	}
+	.offer:lang(tr) {
+		font-family: 'Archivo', 'Plate Narrow Fallback TR';
 	}
 
 	.notes {

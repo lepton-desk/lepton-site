@@ -16,6 +16,56 @@
 	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
 		url('/fonts/archivo-latin.woff2') format('woff2');
 }
+/* The same fallback drawn at Archivo's 88% width, for the landing page's lead (`.offer`, the only
+   text whose line count moves what is under it). The installed sans cannot narrow, so the lead
+   wrapped to 4 lines until Archivo arrived and then to 3, and the buttons under it moved 30 px
+   (Lighthouse CLS 0.146 in one live run; the trace and a font-delaying server showed it).
+   One size per language: line breaks are whole words, so no single size wraps both leads like
+   Archivo at every width. Swept on the real page at 76 widths (320–440 every 2 px, then to 1920):
+   EN 88.25% matched at all of them; TR wanted 89.5% (EN at that size missed 412 px, Lighthouse's
+   phone), and misses only 348–354 px. */
+@font-face {
+	font-family: 'Plate Narrow Fallback';
+	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
+		url('/fonts/archivo-latin.woff2') format('woff2');
+	size-adjust: 88.25%;
+}
+@font-face {
+	font-family: 'Plate Narrow Fallback TR';
+	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
+		url('/fonts/archivo-latin.woff2') format('woff2');
+	size-adjust: 89.5%;
+}
+/* And at Archivo's 70% width, for the wordmark in the landing page's nav (`.brand`): at 320 px the
+   wider fallback pushed the nav's controls to a second row until Archivo arrived, and everything
+   under the nav moved 40 px (measured: nav 145 → 105 px). Ratio 436/551 on "Lepton Desk". */
+@font-face {
+	font-family: 'Plate Condensed Fallback';
+	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
+		url('/fonts/archivo-latin.woff2') format('woff2');
+	size-adjust: 79%;
+}
+/* And for the landing page's button labels (weight 600–650, 88% width): bold Arial runs closer to
+   bold Archivo (label ratios 0.928–0.956, measured), and at its full width the row wrapped
+   differently until Archivo arrived (a button changed rows at 600 px EN and 900 px TR). */
+@font-face {
+	font-family: 'Plate Button Fallback';
+	src: local('Arial'), local('Helvetica'), local('Roboto'), local('Liberation Sans'), local('DejaVu Sans'), local('Noto Sans'),
+		url('/fonts/archivo-latin.woff2') format('woff2');
+	size-adjust: 94%;
+}
+/* Code waits for JetBrains Mono with a monospace fallback, matched by name. With Archivo
+   (proportional) as the fallback, every code block was set again when the font arrived, after the
+   first paint: the docs pages' layout shift (measured: 0.16–0.20 on a code-heavy page), and on the
+   landing page the command strip, whose wider mono line wrapped the buttons to a second row at
+   820 px when JetBrains Mono came in. These fonts advance 0.6 em per character, as JetBrains Mono
+   does, so lines keep their length; Consolas (0.55 em) is last, after Courier New, for Windows.
+   The last source keeps the face valid on a system with none of them. */
+@font-face {
+	font-family: 'Plate Mono Fallback';
+	src: local('DejaVu Sans Mono'), local('Liberation Mono'), local('Menlo'), local('Courier New'), local('Roboto Mono'),
+		local('Consolas'), url('/fonts/jbmono.woff2') format('woff2');
+}
 
 :root {
 	--plate: #d5d8d0;
@@ -39,7 +89,7 @@
 	   frame 375 → 273 ms median, three cores busy). The last fallback is 'Plate Fallback'. */
 	--font-sans: 'Archivo', 'Plate Fallback';
 	--font-hand: 'Kalam', 'Archivo', 'Plate Fallback';
-	--font-mono: 'JetBrains Mono', 'Archivo', 'Plate Fallback';
+	--font-mono: 'JetBrains Mono', 'Plate Mono Fallback';
 
 	--step--1: clamp(0.84rem, 0.8rem + 0.15vw, 0.92rem);
 	--step-0: clamp(1rem, 0.96rem + 0.2vw, 1.12rem);

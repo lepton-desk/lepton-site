@@ -3,18 +3,7 @@
 @import './faces-docs.css';
 @import './tokens.css';
 
-/* Code in the docs waits for JetBrains Mono with a monospace fallback, matched by name. With
-   Archivo (proportional) as the fallback, every code block was set again when the font arrived,
-   after the first paint: that was the pages' layout shift (measured: 0.16–0.20 on a code-heavy
-   page, 20–45 ms after JetBrains Mono finished). These fonts advance about 0.6 em per character,
-   as JetBrains Mono does, so lines keep their length. The last source keeps the face valid on a
-   system with none of them. */
-@font-face {
-	font-family: 'Plate Mono Fallback';
-	src: local('DejaVu Sans Mono'), local('Liberation Mono'), local('Menlo'), local('Consolas'), local('Courier New'),
-		local('Roboto Mono'), url('/fonts/jbmono.woff2') format('woff2');
-}
-
+/* Code waits for JetBrains Mono with 'Plate Mono Fallback' (tokens.css). */
 :root {
 	--sl-font: var(--font-sans);
 	--sl-font-mono: 'JetBrains Mono', 'Plate Mono Fallback';
