@@ -44,15 +44,17 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
 - **Native şablon bunu kullanıyor.** Ekranı ve pencerenin başlık çubuğu ile menüsü tek komut listesi; başlık artık çubukta yazıyor. Uygulama 10 sn'de 0,21 sn CPU harcıyor; CPU'da boyayıp kareyi yükleyen yol 0,82 sn. GPU yoksa o yola düşüyor.
 - **Karar:** düzen motoru Lepton'un kendi flexbox'ı, Zig'de yazılacak.
 
-## Windows *başladı, trunk'ta*
+## Windows *trunk'ta, henüz sürümde değil*
 
-Windows henüz desteklenmiyor: orada uygulama derlenemiyor. İlk adımlar, aynı makinede Windows 10 altında ölçüldü:
+Trunk'ta bir uygulama artık Windows 10'da WebView2 ile derleniyor, çalışıyor ve paketleniyor; henüz bir sürümde değil ve aşağıdaki değişikliklerden sonra Linux'ta yeniden denetlenmedi. Aynı makinede Windows 10 22H2 altında ölçüldü:
 
 - **Gerçek bir pencerede WebView2.** `zig build webview2-check` bir Win32 penceresi açıyor, içine WebView2'yi yerleştiriyor, bir sayfa yüklüyor, sayfada betik çalıştırıyor ve bir kare yakalıyor. Kurulu çalışma zamanı (burada 155) Microsoft'un yükleyicisinin bulduğu yoldan bulunuyor ve kendi DLL'i doğrudan çağrılıyor; yani `WebView2Loader.dll` taşınmıyor, depoda yalnız Microsoft'un `WebView2.h`'si var, BSD tarzı lisansıyla. Sayfa 704 ms'de yüklendi, betik 719 ms'de yanıt verdi, kare 829 ms'de yakalandı. WebView2 Chromium'dur, Windows'la gelen kopyası: kutuda tarayıcı yok, ama Chromium'suz da değil.
 - **CLI Windows'ta derleniyor ve testleri geçiyor** (293). `lepton new` orada çalışıyor; `build`, `dev` ve `run` henüz çalışmıyor, çünkü çekirdeğin paylaşımlı bellek kanalı ve pencere katmanı Linux'unki.
 - **Alt süreçler Lepton'la birlikte bitiyor.** Windows'ta `lepton`, bittiğinde başlattığı her şeyi bitiren bir iş nesnesine (job object) giriyor; zorla öldürülse bile. Orada yalnız `cmd`'yi bitirmek, geliştirme sunucusunun Node sürecini ayakta bırakıyordu.
 - **Her klonda LF.** Windows klonundan derlenen CLI şablonları CRLF satır sonlarıyla gömüyordu ve `zig fmt` üretilen `main.zig`'i reddediyordu. Depo artık her yerde LF tutuyor.
-- Sırada: paketlenmiş ön ucu ve sayfa → çekirdek çağrılarını WebView2 üzerinden sunmak, sonra Win32 penceresi ve çekirdeğin Windows arka ucu.
+- **Webview yolu WebView2'de çalışıyor.** `lepton new`, `build`, `dev`, `run`, `record` ve `replay` çalışıyor. Sayfa `http://lepton.localhost` üzerinden sunuluyor ve Linux'takiyle aynı köprü yanıtlıyor: `invoke` (sayfadan 2 ms), olaylar, paylaşımlı bellek halkası, pencere komutları, `webPermissions`, indirmeler, `window.open`, pano. Derlenmiş bir uygulama 7 süreç ve yaklaşık 100 MiB özel çalışma kümesi, bunun 3,3 MiB'ı çekirdek; kapatınca geride WebView2 süreci kalmıyor.
+- **Windows'ta `lepton package`.** Tekrarlanabilir bir `.zip` ve **WiX'siz yazılan bir MSI**: WiX 3–5 artık desteklenmiyor, 6 ve sonrası bir bakım ücretine bağlı; bir framework bunu onu kullanan her şirkete yüklememeli. MSI yönetici izni olmadan kullanıcı başına kuruluyor, Başlat menüsüne kısayol ekliyor, eski sürümü yükseltiyor ve düşürmeyi reddediyor, temiz kaldırılıyor ve Windows SDK'nın ICE doğrulamasından 0 hatayla geçiyor. `--verify` paketlenmiş uygulamayı başlatıp ölçüyor ve kapatıyor, Linux'taki gibi Windows'ta da.
+- Henüz yok: Windows'ta native çizim, orada `plugin-dialog` ve `plugin-fs`, MSIX (kod imzalama sertifikası gerekiyor). İmzasız yükleyiciler, diğer framework'lerdekiler gibi, Windows'un SmartScreen uyarısını alıyor.
 
 ## 0.1.6
 

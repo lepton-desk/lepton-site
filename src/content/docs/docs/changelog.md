@@ -44,15 +44,17 @@ Every figure on this page was measured on the project's own machine (Radeon R7 2
 - **The native template draws on it.** Its screen and the window's title bar and menu are one command list; the title is now drawn in the bar. The app uses 0.21 s of CPU in 10 s, against 0.82 s painting on the CPU and uploading the frame. Without the GPU it falls back to that path.
 - **Decided:** layout will be Lepton's own flexbox, written in Zig.
 
-## Windows *started, on trunk*
+## Windows *on trunk, not released yet*
 
-Windows is not supported yet: an app cannot be built there. The first steps, measured on the same machine under Windows 10:
+On trunk an app now builds, runs and is packaged on Windows 10 with WebView2; it is not in a release yet, and it has not been re-checked on Linux after the changes below. Measured on the same machine under Windows 10 22H2:
 
 - **WebView2 in a real window.** `zig build webview2-check` opens a Win32 window, puts WebView2 in it, loads a page, runs a script in it and captures a frame. The installed runtime (155 here) is found the way Microsoft's loader finds it and its own DLL is called directly, so no `WebView2Loader.dll` is shipped; only Microsoft's `WebView2.h` is in the repository, under its BSD-style licence. The page loaded in 704 ms, the script answered at 719 ms and the frame was captured at 829 ms. WebView2 is Chromium, the copy that comes with Windows: no browser is bundled, but it is not Chromium-free.
 - **The CLI builds and its tests pass on Windows** (293). `lepton new` works there; `build`, `dev` and `run` do not yet, because the core's shared-memory channel and window layer are Linux's.
 - **Children end with Lepton.** On Windows `lepton` joins a job object that ends everything it started when it ends, even when it is killed outright: there, ending `cmd` alone had left the dev server's Node process running.
 - **LF on every checkout.** A CLI built from a Windows checkout embedded its templates with CRLF line endings, and `zig fmt` refused the generated `main.zig`. The repository now keeps LF everywhere.
-- Next: serving the bundled frontend and the page → core calls through WebView2, then the Win32 window and the core's Windows backend.
+- **The webview path runs on WebView2.** `lepton new`, `build`, `dev`, `run`, `record` and `replay` work. The page is served from `http://lepton.localhost` and answered by the same bridge as on Linux: `invoke` (2 ms from the page), events, the shared-memory ring, window commands, `webPermissions`, downloads, `window.open`, the clipboard. A built app is 7 processes and about 100 MiB of private working set, the core 3.3 MiB of it; closing it leaves no WebView2 process behind.
+- **`lepton package` on Windows.** A reproducible `.zip` and an **MSI written without WiX**: WiX 3–5 are out of support and 6 onwards come under a maintenance fee, which a framework should not hand to every company using it. The MSI installs per user without admin rights, adds a Start menu shortcut, upgrades an older version and refuses a downgrade, uninstalls cleanly, and passes the Windows SDK's ICE validation with 0 errors. `--verify` starts the packaged app, measures it and closes it, on Windows as on Linux.
+- Not yet: native drawing on Windows, `plugin-dialog` and `plugin-fs` there, MSIX (it needs a code-signing certificate). Unsigned installers get Windows' SmartScreen warning, as other frameworks' do.
 
 ## 0.1.6
 
