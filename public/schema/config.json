@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lepton-desk.vercel.app/schema/config.json",
+  "title": "lepton.config.json",
+  "description": "A Lepton project's configuration. Every rule here is one the lepton CLI enforces when it reads the file.",
+  "type": "object",
+  "required": ["productName"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "productName": {
+      "description": "The application's name. The binary is named after it.",
+      "type": "string",
+      "pattern": "\\S"
+    },
+    "identifier": {
+      "description": "Reverse-DNS identifier: the desktop entry, the window's app id and the per-application data directory.",
+      "type": "string",
+      "pattern": "^[^/]+$"
+    },
+    "version": { "type": "string", "default": "0.1.0" },
+    "renderPath": {
+      "description": "webview: the page in WPE WebKit (Linux) or WebView2 (Windows). native: the core draws the window, no web engine.",
+      "enum": ["webview", "native"],
+      "default": "webview"
+    },
+    "target": {
+      "description": "The frontend framework the project was created with.",
+      "enum": [
+        "vanilla-ts",
+        "react",
+        "vue",
+        "svelte",
+        "solid",
+        "preact",
+        "lit",
+        "angular",
+        "astro",
+        "next"
+      ]
+    },
+    "sdkScope": { "type": "string", "default": "@lepton-desk" },
+    "channel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The shared-memory channel: starts with / and has no other /.",
+          "type": "string",
+          "pattern": "^/[^/]+$"
+        },
+        "geometry": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "cellCount": { "type": "integer", "minimum": 1 },
+            "payloadCapacity": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+    "window": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "title": { "type": "string" },
+        "width": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "height": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 }
+      }
+    },
+    "permissions": {
+      "description": "The commands the page may call, each by name: no wildcards. An unlisted command is refused.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$" }
+    },
+    "webPermissions": {
+      "description": "What the web engine may grant the page. Unlisted kinds are denied; \"ask\" needs \"permission.respond\" in permissions.",
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "notifications",
+          "camera",
+          "microphone",
+          "geolocation",
+          "pointer-lock",
+          "device-info",
+          "media-keys",
+          "storage-access",
+          "xr"
+        ]
+      },
+      "additionalProperties": { "enum": ["allow", "deny", "ask"] }
+    },
+    "plugins": {
+      "description": "Settings for plugins that take them, by the section name the plugin declares (fs: { \"scope\": [\"$APPDATA\"] }).",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "propertyNames": { "pattern": "^[a-z0-9_]+$" },
+        "additionalProperties": {
+          "anyOf": [
+            { "type": "string", "pattern": "^[^\\n\\u0000]*$" },
+            { "type": "boolean" },
+            { "type": "array", "items": { "type": "string", "pattern": "^[^\\n\\u0000]*$" } }
+          ]
+        }
+      }
+    },
+    "bundle": {
+      "description": "What lepton package writes.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "targets": {
+          "description": "Release formats, in order. Without it: tar.gz on Linux, zip on Windows. arch and deb are made only on Linux.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["tar.gz", "arch", "deb", "zip", "msi"] }
+        },
+        "maintainer": {
+          "description": "Name <email>. Required for deb.",
+          "type": "string",
+          "pattern": "\\S"
+        },
+        "deb": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "depends": {
+              "description": "Debian package names, for a machine without dpkg-query.",
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "icon": {
+          "description": "An .ico file, relative to the project, for the Windows installer's shortcut and Apps entry.",
+          "type": "string",
+          "pattern": "\\.[iI][cC][oO]\\s*$"
+        }
+      }
+    },
+    "frontend": {
+      "description": "How the frontend is built and served. Without it: Vite's dist/ and flags.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "dist": {
+          "description": "The bundler's output directory, inside the project (out for Next.js).",
+          "type": "string",
+          "default": "dist",
+          "pattern": "^(?![/\\\\])(?!.*:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$))(?!.*[/\\\\]{2}).*\\S.*$"
+        },
+        "devArgs": {
+          "description": "The flags after `<manager> run dev`, with {port} and {host} where the dev server takes them.",
+          "type": "array",
+          "items": { "type": "string" },
+          "allOf": [
+            { "contains": { "type": "string", "pattern": "\\{port\\}" } },
+            { "contains": { "type": "string", "pattern": "\\{host\\}" } }
+          ]
+        }
+      }
+    }
+  }
+}
