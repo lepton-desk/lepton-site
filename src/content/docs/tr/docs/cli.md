@@ -9,7 +9,7 @@ description: Tüm lepton komutları ve seçenekleri.
 | --- | --- |
 | `lepton info` | Bu makinenin neyi derleyebildiğini ve neyin eksik olduğunu söyler; web motoru eksikse dağıtımınızın onu hangi komutla kurduğunu da. Betikler için `--json`. |
 | `lepton new [ad]` | Proje oluşturur ve Lepton'u bağlar. |
-| `lepton dev` | Geliştirme döngüsü: anında yenilenen Vite, çekirdek, pencere. |
+| `lepton dev` | Geliştirme döngüsü: ön yüzün anında yenilenen dev sunucusu, çekirdek, pencere. |
 | `lepton run` | Bir kez derler ve uygulamayı açar; arayüzü diskten okur. |
 | `lepton build` | Sürüm derlemesi. |
 | `lepton package` | Sürümü kurulabilir bir ağaç olarak dizer, sonra her paket biçimini yazar. |
@@ -17,13 +17,13 @@ description: Tüm lepton komutları ve seçenekleri.
 | `lepton replay <dosya>` | Kaydı çekirdeğe yeniden oynatır ve yanıtları karşılaştırır. *0.1.5* |
 | `lepton update` | Var olan projenin çekirdeğini ve `src-lepton/` dosyalarını bu sürüme getirir, düzenlemelerinizi korur. *0.1.7* |
 
-Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepton'un çalıştırdığı araçlar (Vite, pnpm, Zig) kendi renklerini koruyor. `NO_COLOR` ya da boru düz metin verir; günlükler ve CI için.
+Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepton'un çalıştırdığı araçlar (Vite, pnpm, npm, Zig) kendi renklerini koruyor. `NO_COLOR` ya da boru düz metin verir; günlükler ve CI için.
 
 ## `lepton new`
 
 | Seçenek | |
 | --- | --- |
-| `-t, --template <ad>` | `vanilla-ts`, `vanilla-js`, `react-ts`, `react-js`, `vue-ts`, `svelte-ts`, `solid-ts` |
+| `-t, --template <ad>` | `<çatı>-<dil>`: `vanilla`, `react`, `vue`, `svelte`, `solid`, `preact`, `lit`, `astro` ve `next`, her biri `-ts` ya da `-js`, ve `angular-ts`. Preact, Lit ve Vue, Svelte, Solid'in JavaScript sürümleri *0.1.9-beta.0*; Astro, Next.js ve Angular da, kendi `frontend` bölümleriyle ([Yapılandırma](/tr/docs/configuration/#frontend-019-beta0)). |
 | `--target <native\|webview>` | Uygulamanın nasıl çizileceği. Verilmezse sihirbaz sorar; `--non-interactive` `native` seçer. |
 | `--plugins <liste>` | Eklenecek eklentiler, virgülle: `os`, `clipboard`, `fs`, `dialog`. Her birinin tüm komutları `permissions`'a eklenir (kullandıklarınıza indirin); `fs` kapsam olarak `$APPDATA` alır. |
 | `--package-manager <ad>` | `npm`, `pnpm`, `yarn` ya da `bun`. Verilmezse: `lepton`'ı başlatan, yoksa kuruluysa pnpm, yoksa npm. Sonraki komutlar projeyi izler: önce `packageManager` alanı, sonra kilit dosyası. |
@@ -38,14 +38,16 @@ Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepto
 
 | Seçenek | |
 | --- | --- |
-| `-p, --port <port>` | Vite'ın portu; varsayılan 5173. |
+| `-p, --port <port>` | Dev sunucusunun portu; varsayılan 5173. |
 | `--native` | Yerel çizim yolunu çalıştırır. |
 | `--no-server` | Pencereyi `--port`'ta sizin başlattığınız sunucuya karşı açar. |
 | `--print-plan` | Adımları çalıştırmak yerine yazdırır. |
 
+Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bayraklarıyla). *0.1.9-beta.0* Pencere ancak sunucu bir bağlantı kabul edince açılır; önce duran bir sunucu, örneğin dolu bir portta, çıkış durumuyla bildirilir. Önceden, derleme önbelleğinden gelen bir çekirdek pencereyi sunucu dinlemeden açabiliyordu; sayfa da `null` kökende kalıyor, çekirdeğe her çağrı reddediliyordu.
+
 ## `lepton build`
 
-`--native` / `--webview` çizim yolunu seçer; `--servo`, WebKit yerine deneysel Servo motorunu bağlar (`--linux` ile); `-n, --dry-run` planı yazdırır. `--windows` ve `--macos` yerel çizim yolunu Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`); webview yolu yalnız Linux'tadır ve iki çıktı da o sistemlerde henüz denenmedi.
+`--native` / `--webview` çizim yolunu seçer; `-n, --dry-run` planı yazdırır. `--servo` (`--linux` ile) deneysel Servo motoru içindir; Servo henüz bağlanmıyor, bugün yine WPE WebKit ile derler. `--windows` ve `--macos` Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`). Linux'tan `--windows`, webview yolunu WebView2 için derler *0.1.9-beta.0*: yalnız Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`, henüz Windows'ta açılmadı; yerel çizim yolu Windows'ta henüz çalışmıyor, macOS çıktısı denenmedi.
 
 `dev` ve `run` ayrıca `~/.local/share/applications/<identifier>.desktop` yazar, böylece görev çubuğu pencereyi adıyla eşleştirir; Lepton'ın yazmadığı bir girdinin üzerine asla yazmaz.
 
@@ -73,7 +75,7 @@ Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepto
 - düzenlenmiş dosya üç yollu birleştirilir — yapıldığı sürüm, sizin dosyanız, bugünkü şablon — komutlarınız ve durumunuz kalır;
 - düzenlemeniz ile şablonun değişikliği aynı satırlara dokunuyorsa hiçbir şey yazılmaz: `main.zig.merge` ikisini çakışma işaretleriyle tutar; çözüp `lepton update`'i yeniden çalıştırırsınız.
 
-*0.1.8* İşe paketlerden başlar: kayıt defterine en yeni `@lepton-desk/cli` sürümünü sorar (ya da `--to <sürüm>`'ü alır), projenin `@lepton-desk/*` bağımlılıklarını ona yükseltir (`link:`, `file:` ya da `workspace:` olanlara dokunmaz) ve projenin kendi paket yöneticisiyle kurar; kilit dosyası da güncellenir. Bu sürüm çalışan CLI'dan yeniyse işi yeni kurulan CLI bitirir, çünkü yazdığı çekirdek ve şablonlar onunkidir. Yani bir projeye `pnpm lepton update` yeter. `--no-install` package.json'a dokunmaz, yalnız çekirdeği ve şablonları günceller. `tsconfig.json`'ında `"jsx"` olmayan React projesine (0.1.7'den önce açılan react-ts projeleri) o satır eklenir.
+*0.1.8* İşe paketlerden başlar: kayıt defterine en yeni `@lepton-desk/cli` sürümünü sorar (ya da `--to <sürüm>`'ü alır; betadaki CLI en yeni betayı da sorar *0.1.9-beta.0*), projenin `@lepton-desk/*` bağımlılıklarını ona yükseltir (`link:`, `file:` ya da `workspace:` olanlara dokunmaz) ve projenin kendi paket yöneticisiyle kurar; kilit dosyası da güncellenir. Bu sürüm çalışan CLI'dan yeniyse işi yeni kurulan CLI bitirir, çünkü yazdığı çekirdek ve şablonlar onunkidir. Yani bir projeye `pnpm lepton update` yeter. `--no-install` package.json'a dokunmaz, yalnız çekirdeği ve şablonları günceller. `tsconfig.json`'ında `"jsx"` olmayan React projesine (0.1.7'den önce açılan react-ts projeleri) o satır eklenir; `$schema`'sı eski adrese gösteren bir `lepton.config.json` da yenisine taşınır.
 
 0.1.8'den önce açılmış bir proje eski CLI'yı çalıştırır; o paketleri henüz yükseltmez (0.1.6'da `update` hiç yok). Bir kerelik, kayıt defterindeki en yeni CLI'yı çalıştırın: `npx @lepton-desk/cli@latest update`, Arch'ta `lepton-desk update` ya da pnpm'de tam sürümle `pnpm dlx @lepton-desk/cli@0.1.8 update`. pnpm'de bir sürümün ilk gününde `@latest` yetmez: pnpm `minimumReleaseAge`'dan genç sürümleri atlıyor ve yerine 0.1.6'yı çalıştırdı (ölçüldü).
 

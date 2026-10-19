@@ -3,7 +3,7 @@ title: Başlarken
 description: Bir Lepton projesi oluşturun, penceresini açın ve sürüm derleyin.
 ---
 
-Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile kurar. Pencereyi çekirdek açar ve komutlarınızı çalıştırır; sayfa, sistemde zaten olan web motorunda çalışır. Bugün bu, **Linux** ve **WPE WebKit** demek.
+Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile kurar. Pencereyi çekirdek açar ve komutlarınızı çalıştırır; sayfa, sistemde zaten olan web motorunda çalışır: **Linux**'ta **WPE WebKit**, 0.1.9 betasında **Windows 10 ve 11**'de **WebView2**.
 
 ## Gerekenler
 
@@ -21,7 +21,7 @@ npx @lepton-desk/cli info
 Her dağıtım WPE WebKit 2.54'ü paketlemiyor; nereden edinileceği ve her platformun neye ihtiyaç duyduğu [Sistem gereksinimleri](/tr/docs/requirements/) sayfasında.
 
 :::caution[0.1.6 ya da sonrasını kullanın]
-`npm create lepton-app@latest` 0.1.8'i getirir. Önceki iki sürümde birer sorun vardı: 0.1.4'ün webview derlemesi `wpebackend-fdo-1.0`'ı istiyordu; 2.54 yolu onu hiç yüklemiyor ve Arch artık paketlemiyor, bu yüzden yeni kurulmuş bir Arch'ta derlenemiyordu (0.1.5'te düzeltildi). `create-lepton-app` 0.1.5 ise projeyi oluşturmadan duruyordu (0.1.6'da düzeltildi; 0.1.5 npm'de kullanımdan kaldırıldı olarak işaretli).
+`npm create lepton-app@latest` 0.1.8'i getirir; `npm create lepton-app@beta` ise Windows'u ve Astro, Next.js, Angular şablonlarını getiren 0.1.9-beta.0'ı (pnpm'de sürümü tam yazın: `pnpm dlx create-lepton-app@0.1.9-beta.0`). Önceki iki sürümde birer sorun vardı: 0.1.4'ün webview derlemesi `wpebackend-fdo-1.0`'ı istiyordu; 2.54 yolu onu hiç yüklemiyor ve Arch artık paketlemiyor, bu yüzden yeni kurulmuş bir Arch'ta derlenemiyordu (0.1.5'te düzeltildi). `create-lepton-app` 0.1.5 ise projeyi oluşturmadan duruyordu (0.1.6'da düzeltildi; 0.1.5 npm'de kullanımdan kaldırıldı olarak işaretli).
 :::
 
 ## Proje oluşturun
@@ -30,7 +30,7 @@ Her dağıtım WPE WebKit 2.54'ü paketlemiyor; nereden edinileceği ve her plat
 npm create lepton-app@latest
 ```
 
-Sihirbaz bir ad, bir arayüz (React, Vue, Svelte, Solid ya da düz TypeScript) ve uygulamanın nasıl çizileceğini sorar. Sayfanızı WPE WebKit'te açmak için **webview**'ı seçin; **native**, web motoru olmadan doğrudan pencereye çizer.
+Sihirbaz bir ad, bir arayüz (düz TypeScript ya da JavaScript, React, Vue, Svelte, Solid; betada ayrıca Preact, Lit, Angular, Next.js ve Astro) ve uygulamanın nasıl çizileceğini sorar. Sayfanızı WPE WebKit'te açmak için **webview**'ı seçin; **native**, web motoru olmadan doğrudan pencereye çizer.
 
 Soru sormadan:
 
@@ -47,17 +47,17 @@ cd hello-lepton
 npm run lepton dev
 ```
 
-`dev`, Vite'ı başlatır, çekirdeği bir kez derler ve pencereyi açar. Sayfadaki değişiklikler anında yenilenir; çekirdek yalnızca Zig değiştiğinde yeniden derlenir.
+`dev`, ön yüzün dev sunucusunu (Vite ya da Astro'nunki, Next.js'inki, Angular'ınki) başlatır, çekirdeği bir kez derler ve sunucu dinlemeye başlayınca pencereyi açar. Sayfadaki değişiklikler anında yenilenir; çekirdek yalnızca Zig değiştiğinde yeniden derlenir.
 
 ## Derleyin ve paketleyin
 
 ```sh
 npm run lepton build      # sürüm ikilisi
-npm run lepton package    # varsayılan .tar.gz; istenirse .deb ve Arch
+npm run lepton package    # Linux'ta .tar.gz, Windows'ta .zip; istenirse .deb, Arch ve MSI
 ```
 
 Biçimler için [Paketleme](/tr/docs/packaging/), tüm komutlar için [CLI](/tr/docs/cli/) sayfasına bakın.
 
 :::note[Erken aşama]
-Lepton 0.1 sürümünde. Webview yolu, derlendiği ve denendiği makinelerde çalışıyor ama henüz her yerde uçtan uca doğrulanmadı. macOS ve Windows planlanıyor, henüz yapılmadı.
+Lepton 0.1 sürümünde. Webview yolu, derlendiği ve denendiği makinelerde çalışıyor ama henüz her yerde uçtan uca doğrulanmadı. Windows 0.1.9 betasında, yalnız WebView2 ile (henüz yerel çizim yok); macOS planlanıyor, henüz yapılmadı.
 :::

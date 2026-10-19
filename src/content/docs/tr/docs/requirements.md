@@ -3,7 +3,7 @@ title: Sistem gereksinimleri
 description: Lepton uygulamasını derlemek için makinede ne gerekir, kullanıcının makinesinde çalıştırmak için ne gerekir; platform platform.
 ---
 
-Lepton bugün **Linux**'ta çalışıyor. Windows (WebView2 ile) ve macOS (WKWebView ile) planlı, henüz yapılmadı. Aşağıdaki alt sınırlar araçların kendisinden geliyor, 2026-10-17'de denetlendi; "genelde çalışır" tahmini değil.
+Lepton **Linux**'ta, 0.1.9 betasında da WebView2 ile **Windows**'ta çalışıyor. macOS (WKWebView ile) planlı, henüz yapılmadı. Aşağıdaki alt sınırlar araçların kendisinden geliyor, 2026-10-17'de denetlendi; "genelde çalışır" tahmini değil.
 
 ## Linux
 
@@ -46,9 +46,9 @@ Motor yoksa `lepton info` paket yöneticinize neyi kurabileceğini sorar ve komu
 
 `lepton package` ile üretilen paket, onu derleyen makinenin kütüphanelerine bağlanır; o dağıtımda ve daha yenilerinde çalışır, eskilerinde çalışmaz. Eski dağıtımlar için paketlemek, onların üzerinde derlemek demek; bu Lepton'ın CI'ıyla planlı, henüz yapılmadı.
 
-## Windows *planlı*
+## Windows *0.1.9-beta.0*
 
-Windows'la gelen Chromium tabanlı WebView2 ile; uygulamanız onu taşımaz.
+Windows'la gelen Chromium tabanlı WebView2 ile; uygulamanız onu taşımaz. Çekirdek kurulu çalışma zamanını kendisi bulur, bu yüzden uygulamayla `WebView2Loader.dll` gitmez. Derlemek için Linux'taki gibi Zig 0.16 ve Node 20 ya da üstü gerekir; `lepton info` çalışma zamanını denetler. Paketler `.zip` ve istenirse WiX'siz yazılmış, yönetici izni istemeden kullanıcı başına kurulan bir MSI ([Paketleme](/tr/docs/packaging/)). Henüz yok: yerel çizim yolu, `dialog` ve `fs` eklentileri, MSIX. Yükleyiciler imzalı değil; Windows SmartScreen uyarısını gösterir.
 
 - **Windows 10 (1709 ve sonrası, LTSC sürümleri) ve Windows 11**: Microsoft'un WebView2'yi desteklediği sürümler.
 - **Windows 8.1, 8 ve 7: desteklenmiyor.** WebView2 bunlarda Ocak 2023'te 109. sürümde durdu ve güvenlik düzeltmesi almıyor; yamasız bir motorda çalışan web uygulaması kullanıcısını riske atar. Zig 0.16 de yalnız Windows 10 ve üstünü destekliyor. Web motoru olmayan ayrı bir yol düşünülüyor.

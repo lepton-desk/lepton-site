@@ -1,13 +1,13 @@
 ---
 title: Paketleme
-description: Tek komutla tar.gz, .deb ve Arch paketleri.
+description: Tek komutla Linux'ta tar.gz, .deb ve Arch, Windows'ta .zip ve MSI paketleri.
 ---
 
 ```sh
 npm run lepton package
 ```
 
-`lepton package` bir sürüm derler ve onu bir masaüstü girdisiyle birlikte `src-lepton/bundle/<ad>-<sürüm>-linux-<mimari>/` altına dizer; sonra `bundle.targets` içindeki her biçimi yazar. Varsayılan `tar.gz`'dir.
+`lepton package` bir sürüm derler ve onu `src-lepton/bundle/<ad>-<sürüm>-<sistem>-<mimari>/` altına dizer (Linux'ta bir masaüstü girdisiyle); sonra `bundle.targets` içindeki her biçimi yazar. Varsayılan Linux'ta `tar.gz`, Windows'ta `zip`; Linux paketleri Windows'ta daha hiçbir şey derlenmeden reddedilir.
 
 ```json
 {
@@ -23,6 +23,8 @@ npm run lepton package
 | `tar.gz` | Kurulum öneki; her yere açılabilir. |
 | `arch` | Arch Linux paketi (`.pkg.tar.zst`). Bağımlılıklar ikilinin bağlı kütüphanelerinden çıkarılır. |
 | `deb` | Debian paketi. `bundle.maintainer` gerekir. Bağımlılık adları `dpkg-query`'den ya da onun olmadığı makinede `bundle.deb.depends`'ten gelir; asla tahmin edilmez. |
+| `zip` | Windows *0.1.9-beta.0*: kurulum öneki, `bin\<ad>.exe` ve yanında ön yüz. |
+| `msi` | Windows *0.1.9-beta.0*: WiX olmadan Lepton'un kendisinin yazdığı bir Windows Installer paketi. Yönetici izni istemeden kullanıcı başına kurulur (`%LOCALAPPDATA%\Programs\<ürün>`), Başlat menüsüne kısayol ekler, eski sürümü yükseltir ve sürüm düşürmeyi reddeder, temiz kaldırılır. `bundle.icon` (bir `.ico`) kısayolun ve Uygulamalar listesinin simgesidir. Windows SDK'nın ICE doğrulamasından hatasız geçer. |
 
 Paketler tekrarlanabilir: sıralı girdiler, `root:root` ve `SOURCE_DATE_EPOCH`. Her arşive bir `.sha256` dosyası eşlik eder. Yazılamayan bir biçim hatadır; sessizce atlanmaz.
 
@@ -34,4 +36,4 @@ Uygulama tarayıcı taşımaz: `lepton new` ile oluşturulan bir React uygulamas
 npm run lepton package -- --verify
 ```
 
-Her paketi boş bir dizine açar, uygulamayı oradan başlatır, belleğini ölçer, kapatır; başlamazsa ya da arkada süreç bırakırsa başarısız olur.
+Her paketi boş bir dizine açar, uygulamayı oradan başlatır, belleğini ölçer, kapatır; başlamazsa ya da arkada süreç bırakırsa başarısız olur. Windows'ta uygulama ve başlattığı her süreç bir iş nesnesinde tutulur ve bir kullanıcının pencereyi kapatacağı gibi kapatılır.

@@ -3,7 +3,7 @@ title: System requirements
 description: What a machine needs to build a Lepton app, and what a user's machine needs to run one, on each platform.
 ---
 
-Lepton runs on **Linux** today. Windows (through WebView2) and macOS (through WKWebView) are planned, not built. The floors below come from the tools themselves, checked on 2026-10-17; they are not guesses at what usually works.
+Lepton runs on **Linux**, and on **Windows** through WebView2 in the 0.1.9 beta. macOS (through WKWebView) is planned, not built. The floors below come from the tools themselves, checked on 2026-10-17; they are not guesses at what usually works.
 
 ## Linux
 
@@ -46,9 +46,9 @@ Where the engine is missing, `lepton info` asks your package manager what it can
 
 A package built with `lepton package` is linked against the libraries of the machine that built it, so it runs on that distribution and newer ones, not older ones. Building for older distributions means building on them; that is planned with Lepton's CI, not done yet.
 
-## Windows *planned*
+## Windows *0.1.9-beta.0*
 
-Through WebView2, the Chromium-based engine that comes with Windows; your app does not carry it.
+Through WebView2, the Chromium-based engine that comes with Windows; your app does not carry it. The core finds the installed runtime itself, so no `WebView2Loader.dll` ships with the app. Building needs Zig 0.16 and Node 20 or newer, as on Linux; `lepton info` checks for the runtime. Packages are a `.zip` and, on request, an MSI made without WiX that installs per user, without admin rights ([Packaging](/docs/packaging/)). Not there yet: the native render path, the `dialog` and `fs` plugins, MSIX. Installers are not signed, so Windows shows its SmartScreen warning.
 
 - **Windows 10 (1709 and later, and the LTSC releases) and Windows 11**: the versions Microsoft supports WebView2 on.
 - **Windows 8.1, 8 and 7: not supported.** WebView2 stopped at version 109 on them in January 2023 and gets no security fixes there; a web app on an unpatched engine would put its users at risk. Zig 0.16 also supports Windows 10 and newer only. A separate path without a web engine is being considered.
