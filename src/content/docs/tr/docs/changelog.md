@@ -5,6 +5,28 @@ description: Her Lepton sürümünde ne değişti, bir sonraki sürüm için tru
 
 Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı.
 
+## 0.1.9-beta.0 *2026-10-19, beta*
+
+`beta` etiketiyle yayında: `npm create lepton-app@beta`, pnpm'de ise tam sürümle `pnpm dlx create-lepton-app@0.1.9-beta.0`. 0.1.9'un kalanı (başlangıç ekranları, WebAssembly, isteğe bağlı sunucu işleme) 0.1.9'un kendisinden önce geliyor. [Her çatının ihtiyacı](/tr/blog/astro-next-angular/)
+
+### Şablonlar
+
+- **Astro, Next.js ve Angular.** `astro-ts`, `astro-js`, `next-ts`, `next-js` ve `angular-ts`; her biri diğerleriyle aynı başlangıç ekranıyla. Next.js statik bir site dışa aktarıyor (`out/`) ve ekranı yalnızca pencerede yüklüyor; Astro'nun sayfası düz DOM ekranını yüklüyor. Sıfırdan projelerle ölçüldü: `biome check` ve `tsc` derlemeden önce ve sonra geçiyor, `lepton package --verify` geçiyor, `run` ve `dev` altında pencerede konsol hatası yok.
+- **Her Vite şablonunun JavaScript sürümü, Preact ve Lit:** `vue-js`, `svelte-js`, `solid-js`, `preact-ts`/`js`, `lit-ts`/`js`. Toplam 19 şablon. JavaScript projeleri oluşturuldukları hâliyle `biome check`'ten geçiyor.
+
+### Komutlar
+
+- **`lepton.config.json`'da `frontend` ayarı:** derlemenin nereye gittiği (`dist`) ve dev sunucusunun portu ile adresi nasıl aldığı (`devArgs`, `{port}` ve `{host}` ile). Ayar yoksa proje eskisi gibi bir Vite projesi.
+- **`lepton dev` pencereyi dev sunucusu dinleyince açıyor.** Çekirdek önbellekten gelince pencere Astro hazır olmadan açılıyordu; sayfa `null` kökende kalıyor, çekirdeğe her çağrı reddediliyordu. Önce duran bir sunucu (dolu port) çıkış durumuyla bildiriliyor.
+- **Betadaki `lepton update` en yeni betayı da soruyor;** `latest` son sürümde kalıyor. Eski projelerin `$schema`'sı yeni adrese taşınıyor.
+- Hata ayıklama derlemeleri sayfanın konsolunu terminale yazıyor. pnpm'in ve npm'in kendi çıktısı `lepton` altında da renkli kalıyor.
+
+### Diğerleri
+
+- **`lepton.config.json` için bir JSON şeması,** [bu siteyle yayında](/schema/config.json): CLI'nin denetlediği her kural ve bilinmeyen alanların işaretlenmesi; `devArg` gibi bir yazım hatası editörde görünüyor. Projeler eskiden hiç çözülmeyen bir adrese gösteriyordu.
+- **Linux'tan Windows derlemesi bağlanıyor.** `lepton build --windows`, Windows ikilisine pkg-config'in bulduğu Linux kütüphanelerini veriyordu; artık yalnızca Windows DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`. Henüz Windows'ta açılmadı.
+- `create-lepton-app`, Windows'ta motor eksikse WPE WebKit'i değil WebView2'yi söylüyor.
+
 ## 0.1.8 *2026-10-18*
 
 - **`lepton update` paketleri de güncelliyor.** Kayıt defterine en yeni sürümü soruyor, projenin `@lepton-desk/*` bağımlılıklarını ona yükseltiyor, projenin paket yöneticisiyle kuruyor ve işi yeni kurulan CLI'ya devrediyor; çekirdeği ve şablonları o güncelliyor. 0.1.7'nin yayın günü bulundu: 0.1.6 projesinde kilit dosyası CLI'yı 0.1.6'da tutuyordu, onda da `update` yok; yani proje daha yeni bir çekirdeğe kendi başına ulaşamıyordu. 0.1.8'den sonra `pnpm lepton update` yetiyor; daha eski bir proje en yeni CLI'yı bir kez çalıştırıyor. [CLI](/tr/docs/cli/#lepton-update-017)
@@ -44,9 +66,9 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
 - **Native şablon bunu kullanıyor.** Ekranı ve pencerenin başlık çubuğu ile menüsü tek komut listesi; başlık artık çubukta yazıyor. Uygulama 10 sn'de 0,21 sn CPU harcıyor; CPU'da boyayıp kareyi yükleyen yol 0,82 sn. GPU yoksa o yola düşüyor.
 - **Karar:** düzen motoru Lepton'un kendi flexbox'ı, Zig'de yazılacak.
 
-## Windows *trunk'ta, henüz sürümde değil*
+## Windows *0.1.9-beta.0'da*
 
-Trunk'ta bir uygulama artık Windows 10'da WebView2 ile derleniyor, çalışıyor ve paketleniyor; henüz bir sürümde değil ve aşağıdaki değişikliklerden sonra Linux'ta yeniden denetlenmedi. Aynı makinede Windows 10 22H2 altında ölçüldü:
+Bir uygulama Windows 10'da WebView2 ile derleniyor, çalışıyor ve paketleniyor. Aşağıdaki değişiklikler sonradan Linux'ta yeniden denetlendi: testler, iki çizim yolu, bir web görünümü uygulaması ve onun üç Linux paketi. Aynı makinede Windows 10 22H2 altında ölçüldü:
 
 - **Gerçek bir pencerede WebView2.** `zig build webview2-check` bir Win32 penceresi açıyor, içine WebView2'yi yerleştiriyor, bir sayfa yüklüyor, sayfada betik çalıştırıyor ve bir kare yakalıyor. Kurulu çalışma zamanı (burada 155) Microsoft'un yükleyicisinin bulduğu yoldan bulunuyor ve kendi DLL'i doğrudan çağrılıyor; yani `WebView2Loader.dll` taşınmıyor, depoda yalnız Microsoft'un `WebView2.h`'si var, BSD tarzı lisansıyla. Sayfa 704 ms'de yüklendi, betik 719 ms'de yanıt verdi, kare 829 ms'de yakalandı. WebView2 Chromium'dur, Windows'la gelen kopyası: kutuda tarayıcı yok, ama Chromium'suz da değil.
 - **CLI Windows'ta derleniyor ve testleri geçiyor** (293). `lepton new` orada çalışıyor; `build`, `dev` ve `run` henüz çalışmıyor, çünkü çekirdeğin paylaşımlı bellek kanalı ve pencere katmanı Linux'unki.

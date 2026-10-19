@@ -5,6 +5,28 @@ description: What changed in each Lepton release, what is on trunk for the next 
 
 Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository.
 
+## 0.1.9-beta.0 *2026-10-19, beta*
+
+Published under the `beta` tag: `npm create lepton-app@beta`, or with pnpm the exact version, `pnpm dlx create-lepton-app@0.1.9-beta.0`. The rest of 0.1.9 (starter screens, WebAssembly, opt-in server rendering) comes before 0.1.9 itself. [What each framework needed](/blog/astro-next-angular/)
+
+### Templates
+
+- **Astro, Next.js and Angular.** `astro-ts`, `astro-js`, `next-ts`, `next-js` and `angular-ts`, each with the same starter screen as the others. Next.js exports a static site (`out/`) and loads the screen in the window only; Astro's page loads the plain-DOM screen. Measured with fresh projects: `biome check` and `tsc` pass before and after a build, `lepton package --verify` passes, and the window shows no console errors under `run` and `dev`.
+- **JavaScript for every Vite template, and Preact and Lit:** `vue-js`, `svelte-js`, `solid-js`, `preact-ts`/`js`, `lit-ts`/`js`. 19 templates in all. JavaScript projects pass `biome check` as created.
+
+### Commands
+
+- **A `frontend` setting** in `lepton.config.json`: where the build goes (`dist`) and how the dev server takes its port and address (`devArgs`, with `{port}` and `{host}`). Without it a project is a Vite project, as before.
+- **`lepton dev` opens the window once the dev server listens.** With a cached core the window opened before Astro was ready, and the page stayed at origin `null` with every call to the core refused. A server that stops first (a taken port) is reported with its exit status.
+- **`lepton update` on a beta also asks for the newest beta;** `latest` stays at the last release. Old projects' `$schema` moves to the new address.
+- Debug builds print the page's console to the terminal. pnpm's and npm's own output stays coloured under `lepton`.
+
+### The rest
+
+- **A JSON schema for `lepton.config.json`,** [published with this site](/schema/config.json): every rule the CLI checks, and unknown fields flagged, so a typo such as `devArg` shows in the editor. Projects used to point at an address that never resolved.
+- **A Windows build from Linux links.** `lepton build --windows` handed the Windows binary the Linux libraries pkg-config found; it is now a 1.1 MB `.exe` that imports only Windows DLLs. Not started on Windows yet.
+- `create-lepton-app` names WebView2, not WPE WebKit, when the engine is missing on Windows.
+
 ## 0.1.8 *2026-10-18*
 
 - **`lepton update` updates the packages too.** It asks the registry for the newest release, moves the project's `@lepton-desk/*` dependencies to it, installs them with the project's package manager and hands over to the newly installed CLI, which updates the core and templates it carries. Found on 0.1.7's release day: in a 0.1.6 project the lockfile kept the CLI at 0.1.6, which has no `update`, so a project could not reach a newer core by itself. From 0.1.8 on, `pnpm lepton update` is enough; an older project runs the newest CLI once. [The CLI](/docs/cli/#lepton-update-017)
@@ -44,9 +66,9 @@ Every figure on this page was measured on the project's own machine (Radeon R7 2
 - **The native template draws on it.** Its screen and the window's title bar and menu are one command list; the title is now drawn in the bar. The app uses 0.21 s of CPU in 10 s, against 0.82 s painting on the CPU and uploading the frame. Without the GPU it falls back to that path.
 - **Decided:** layout will be Lepton's own flexbox, written in Zig.
 
-## Windows *on trunk, not released yet*
+## Windows *in 0.1.9-beta.0*
 
-On trunk an app now builds, runs and is packaged on Windows 10 with WebView2; it is not in a release yet, and it has not been re-checked on Linux after the changes below. Measured on the same machine under Windows 10 22H2:
+An app builds, runs and is packaged on Windows 10 with WebView2. The changes below were checked again on Linux afterwards: tests, both render paths, a webview app and its three Linux packages. Measured on the same machine under Windows 10 22H2:
 
 - **WebView2 in a real window.** `zig build webview2-check` opens a Win32 window, puts WebView2 in it, loads a page, runs a script in it and captures a frame. The installed runtime (155 here) is found the way Microsoft's loader finds it and its own DLL is called directly, so no `WebView2Loader.dll` is shipped; only Microsoft's `WebView2.h` is in the repository, under its BSD-style licence. The page loaded in 704 ms, the script answered at 719 ms and the frame was captured at 829 ms. WebView2 is Chromium, the copy that comes with Windows: no browser is bundled, but it is not Chromium-free.
 - **The CLI builds and its tests pass on Windows** (293). `lepton new` works there; `build`, `dev` and `run` do not yet, because the core's shared-memory channel and window layer are Linux's.
