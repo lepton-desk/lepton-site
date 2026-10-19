@@ -1,6 +1,7 @@
 ---
 title: "Lepton, and what it is not"
 description: "A desktop framework that runs your web front end on the engine the system already has, with a Zig core and a Rust CLI. What works today, what it costs, and what is still a plan."
+authors: [galaxysal]
 date: 2026-10-17
 note: "numbers from lepton's own measurement log"
 ---

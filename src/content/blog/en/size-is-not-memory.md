@@ -1,6 +1,7 @@
 ---
 title: "A small download is not a small app"
 description: "Lepton, Tauri and Electron with the same page, the same window, measured one at a time. What each one ships, what each one uses while it runs, and the bug in Lepton the measurement found."
+authors: [galaxysal]
 date: 2026-10-17
 note: "measured on an i3-2120 with a Radeon R7 240"
 ---

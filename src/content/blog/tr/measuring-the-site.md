@@ -1,6 +1,7 @@
 ---
 title: "Bu site 100'e nasıl ulaştı: tahmin etmeden, ölçerek"
 description: "Lighthouse siteye hiçbir tahminin düzeltemediği şeyler için puan kırıyordu. Düzelten, Lighthouse'un kendi sayılarını kendi izlerinden yeniden hesaplayıp nedene kadar izlemek oldu."
+authors: [galaxysal]
 date: 2026-10-17
 note: "i3-2120 ve Radeon R7 240 üzerinde ölçüldü"
 ---

@@ -1,6 +1,7 @@
 ---
 title: "Lepton ve ne olmadığı"
 description: "Web ön yüzünüzü sistemde zaten olan motorda çalıştıran, Zig çekirdekli ve Rust CLI'lı bir masaüstü çatısı. Bugün ne çalışıyor, bedeli ne, ne hâlâ plan."
+authors: [galaxysal]
 date: 2026-10-17
 note: "sayılar Lepton'ın kendi ölçüm kaydından"
 ---

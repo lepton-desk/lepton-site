@@ -1,6 +1,7 @@
 ---
 title: "How this site got to 100, by measuring instead of guessing"
 description: "Lighthouse kept marking the site down for things no guess could fix. What fixed it was recomputing Lighthouse's own numbers from its traces and following them to the cause."
+authors: [galaxysal]
 date: 2026-10-17
 note: "measured on an i3-2120 with a Radeon R7 240"
 ---

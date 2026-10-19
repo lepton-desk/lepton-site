@@ -1,6 +1,7 @@
 ---
 title: "Küçük indirme, küçük uygulama demek değil"
 description: "Aynı sayfa, aynı pencere, her biri tek başına: Lepton, Tauri ve Electron. Hangisi ne kadar dağıtıyor, çalışırken ne kadar kullanıyor ve ölçümün Lepton'da bulduğu hata."
+authors: [galaxysal]
 date: 2026-10-17
 note: "i3-2120 ve Radeon R7 240 üzerinde ölçüldü"
 ---

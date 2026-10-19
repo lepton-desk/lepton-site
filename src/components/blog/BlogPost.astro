@@ -4,6 +4,7 @@ import { render } from 'astro:content';
 import ReadLayout from '../../layouts/ReadLayout.astro';
 import Fiducials from '../landing/Fiducials.astro';
 import { site } from '../../i18n/site';
+import { authors } from '../../data/authors';
 import { type Post, langOf, slugOf, hrefOf, minutesOf } from './posts';
 
 interface Props {
@@ -51,6 +52,15 @@ const hasCode = /^```/m.test(post.body ?? '');
 			</p>
 			<h1>{post.data.title}</h1>
 			<p class="lead">{post.data.description}</p>
+			<p class="byline">
+				{t.by}{' '}
+				{post.data.authors.map((id, index) => (
+					<>
+						{index > 0 && ', '}
+						<a href={authors[id].href} rel="author">{authors[id].name}</a>, {authors[id].role[lang]}
+					</>
+				))}
+			</p>
 			{post.data.note && <p class="note">{post.data.note}</p>}
 			{
 				translated && (
@@ -178,6 +188,15 @@ const hasCode = /^```/m.test(post.body ?? '');
 		max-width: calc(68ch + 2 * var(--gutter));
 		scroll-margin-top: var(--space-4);
 		line-height: 1.6;
+	}
+	.byline {
+		margin: var(--space-3) 0 0;
+		font-size: var(--step--1);
+		font-weight: 600;
+		color: var(--ink-soft);
+	}
+	.byline a {
+		color: var(--ink);
 	}
 	.other {
 		margin: var(--space-3) 0 0;
