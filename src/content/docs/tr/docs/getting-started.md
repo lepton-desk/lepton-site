@@ -9,7 +9,7 @@ Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile k
 
 Her platformda:
 
-- [Zig 0.16](https://ziglang.org/download/) (0.17 Lepton'ı henüz derleyemiyor)
+- [Zig 0.16 ya da 0.17](https://ziglang.org/download/)
 - Node 20 ya da üstü; npm, pnpm, Yarn veya Bun
 
 **Linux**'ta:

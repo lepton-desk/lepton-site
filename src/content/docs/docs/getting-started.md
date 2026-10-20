@@ -9,7 +9,7 @@ Lepton builds desktop applications with a **Zig core** and a **web front end**. 
 
 On every platform:
 
-- [Zig 0.16](https://ziglang.org/download/) (0.17 cannot build Lepton yet)
+- [Zig 0.16 or 0.17](https://ziglang.org/download/)
 - Node 20 or newer, and npm, pnpm, Yarn or Bun
 
 On **Linux**:
