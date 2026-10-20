@@ -43,6 +43,7 @@ On a terminal the output is coloured *0.1.7*: each step is framed with how long 
 | `--native` | Run the native render path. |
 | `--no-server` | Open the window against a server you already started on `--port`. |
 | `--print-plan` | Print the steps instead of running them. |
+| `--servo` | Render in Servo instead of WPE WebKit, **experimental** *0.1.9-beta.2* (Linux; the library as for `build --servo`). Measured: the page loads from the dev server, an edit reloads it, and Ctrl+C leaves nothing running. |
 
 The dev server is started with the project's `frontend.devArgs` (Vite's flags without them). *0.1.9-beta.0* The window opens only once the server accepts a connection; a server that stops first, for instance on a taken port, is reported with its exit status. Before, a core that came from the build cache could open the window before the server listened, and the page then stayed at origin `null` with every call to the core refused.
 
@@ -54,7 +55,7 @@ The dev server is started with the project's `frontend.devArgs` (Vite's flags wi
 
 ## `lepton run`
 
-`--native` / `--webview`, `--release` for the optimised core, `--print-plan`.
+`--native` / `--webview`, `--release` for the optimised core, `--print-plan`, `--servo` (Servo instead of WPE WebKit, as for `build`) *0.1.9-beta.2*.
 
 ## `lepton package`
 

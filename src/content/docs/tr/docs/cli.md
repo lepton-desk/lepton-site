@@ -43,6 +43,7 @@ Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepto
 | `--native` | Yerel çizim yolunu çalıştırır. |
 | `--no-server` | Pencereyi `--port`'ta sizin başlattığınız sunucuya karşı açar. |
 | `--print-plan` | Adımları çalıştırmak yerine yazdırır. |
+| `--servo` | WPE WebKit yerine Servo'da çizer, **deneysel** *0.1.9-beta.2* (Linux; kitaplık `build --servo`'daki gibi). Ölçüldü: sayfa dev sunucusundan yükleniyor, bir düzenleme sayfayı yeniliyor, Ctrl+C geride çalışan bir şey bırakmıyor. |
 
 Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bayraklarıyla). *0.1.9-beta.0* Pencere ancak sunucu bir bağlantı kabul edince açılır; önce duran bir sunucu, örneğin dolu bir portta, çıkış durumuyla bildirilir. Önceden, derleme önbelleğinden gelen bir çekirdek pencereyi sunucu dinlemeden açabiliyordu; sayfa da `null` kökende kalıyor, çekirdeğe her çağrı reddediliyordu.
 
@@ -54,7 +55,7 @@ Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bay
 
 ## `lepton run`
 
-`--native` / `--webview`, eniyileştirilmiş çekirdek için `--release`, `--print-plan`.
+`--native` / `--webview`, eniyileştirilmiş çekirdek için `--release`, `--print-plan`, `--servo` (WPE WebKit yerine Servo, `build`'deki gibi) *0.1.9-beta.2*.
 
 ## `lepton package`
 
