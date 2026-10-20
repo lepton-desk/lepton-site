@@ -47,7 +47,7 @@ Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bay
 
 ## `lepton build`
 
-`--native` / `--webview` çizim yolunu seçer; `-n, --dry-run` planı yazdırır. `--servo` (`--linux` ile) deneysel Servo motoru içindir; Servo henüz bağlanmıyor, bugün yine WPE WebKit ile derler. `--windows` ve `--macos` Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`). Linux'tan `--windows`, webview yolunu WebView2 için derler *0.1.9-beta.0*: yalnız Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`, henüz Windows'ta açılmadı; yerel çizim yolu Windows'ta henüz çalışmıyor, macOS çıktısı denenmedi.
+`--native` / `--webview` çizim yolunu seçer; `-n, --dry-run` planı yazdırır. `--servo` (`--linux` ile) deneysel Servo motoru içindir; Servo henüz bağlanmıyor, bu yüzden Servo adıyla WPE WebKit derlemek yerine bu gerekçeyle reddedilir *0.1.9-beta.2*. `--windows` ve `--macos` Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`). Linux'tan `--windows`, webview yolunu WebView2 için derler *0.1.9-beta.0*: yalnız Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`, henüz Windows'ta açılmadı; yerel çizim yolu Windows'ta henüz çalışmıyor, macOS çıktısı denenmedi.
 
 `dev` ve `run` ayrıca `~/.local/share/applications/<identifier>.desktop` yazar, böylece görev çubuğu pencereyi adıyla eşleştirir; Lepton'ın yazmadığı bir girdinin üzerine asla yazmaz.
 

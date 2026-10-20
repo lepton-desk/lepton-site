@@ -47,7 +47,7 @@ The dev server is started with the project's `frontend.devArgs` (Vite's flags wi
 
 ## `lepton build`
 
-`--native` / `--webview` choose the render path; `-n, --dry-run` prints the plan. `--servo` (with `--linux`) is for the experimental Servo engine; Servo is not linked yet, so today it still builds with WPE WebKit. `--windows` and `--macos` cross-compile with Zig (`x86_64-windows-gnu`, `aarch64-macos`). From Linux, `--windows` builds the webview path for WebView2 *0.1.9-beta.0*: a 1.1 MB `.exe` that imports only Windows' own DLLs, not yet started on Windows; the native path does not run on Windows yet, and the macOS result has not been tested.
+`--native` / `--webview` choose the render path; `-n, --dry-run` prints the plan. `--servo` (with `--linux`) is for the experimental Servo engine; Servo is not linked yet, so it is refused with that reason rather than building with WPE WebKit under Servo's name *0.1.9-beta.2*. `--windows` and `--macos` cross-compile with Zig (`x86_64-windows-gnu`, `aarch64-macos`). From Linux, `--windows` builds the webview path for WebView2 *0.1.9-beta.0*: a 1.1 MB `.exe` that imports only Windows' own DLLs, not yet started on Windows; the native path does not run on Windows yet, and the macOS result has not been tested.
 
 `dev` and `run` also write `~/.local/share/applications/<identifier>.desktop`, so the dock matches the window to its name; they never overwrite an entry Lepton did not write.
 
