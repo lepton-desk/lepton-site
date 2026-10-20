@@ -1,5 +1,6 @@
 ---
-// Real CLI output, unedited apart from shortened paths (see src/data/cli.ts).
+// Real CLI output with its colours (see src/data/cli.ts); `runs` turns the codes into spans.
+import { runs } from '../../data/ansi';
 import { leptonNew, leptonPackage } from '../../data/cli';
 import type { LandingText } from '../../i18n/landing';
 import Fiducials from './Fiducials.astro';
@@ -27,11 +28,11 @@ const memory =
 	<div class="runs">
 		<figure class="run">
 			<figcaption><code>$ {c.caption}</code></figcaption>
-			<pre>{leptonNew}</pre>
+			<pre>{runs(leptonNew).map((run) => <span class:list={[run.bold && 'b']} style={run.color ? `color: ${run.color}` : undefined}>{run.text}</span>)}</pre>
 		</figure>
 		<figure class="run package">
 			<figcaption><code>$ {c.packageCaption}</code></figcaption>
-			<pre>{leptonPackage}</pre>
+			<pre>{runs(leptonPackage).map((run) => <span class:list={[run.bold && 'b']} style={run.color ? `color: ${run.color}` : undefined}>{run.text}</span>)}</pre>
 			<p class="hand">{sizeNote}</p>
 			<p class="memory"><a href={memory.href}>{memory.text} →</a></p>
 		</figure>
@@ -88,6 +89,9 @@ const memory =
 		line-height: 1.55;
 		color: var(--on-negative);
 		scrollbar-color: #6b716c transparent;
+	}
+	pre .b {
+		font-weight: 700;
 	}
 	.package pre {
 		white-space: pre-wrap;
