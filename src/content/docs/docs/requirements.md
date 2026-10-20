@@ -49,7 +49,7 @@ A package built with `lepton package` is linked against the libraries of the mac
 
 ## Windows *0.1.9-beta.0*
 
-Through WebView2, the Chromium-based engine that comes with Windows; your app does not carry it. The core finds the installed runtime itself, so no `WebView2Loader.dll` ships with the app. Building needs Zig 0.16 and Node 20 or newer, as on Linux; `lepton info` checks for the runtime. Packages are a `.zip` and, on request, an MSI made without WiX that installs per user, without admin rights ([Packaging](/docs/packaging/)). All four plugins run there *0.1.9-beta.1*. Not there yet: the native render path, MSIX. Installers are not signed, so Windows shows its SmartScreen warning.
+Through WebView2, the Chromium-based engine that comes with Windows; your app does not carry it. The core finds the installed runtime itself, so no `WebView2Loader.dll` ships with the app. Building needs Zig 0.16 and Node 20 or newer, as on Linux; `lepton info` checks for the runtime. Packages are a `.zip` and, on request, an MSI made without WiX that installs per user, without admin rights ([Packaging](/docs/packaging/)). The `os`, `fs` and `dialog` plugins were measured there *0.1.9-beta.1*; `clipboard` not yet. Not there yet: the native render path, MSIX. Installers are not signed, so Windows shows its SmartScreen warning.
 
 - **Windows 10 (1709 and later, and the LTSC releases) and Windows 11**: the versions Microsoft supports WebView2 on.
 - **Windows 8.1, 8 and 7: not supported.** WebView2 stopped at version 109 on them in January 2023 and gets no security fixes there; a web app on an unpatched engine would put its users at risk. Zig 0.16 also supports Windows 10 and newer only. A separate path without a web engine is being considered.

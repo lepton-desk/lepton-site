@@ -49,7 +49,7 @@ Motor yoksa `lepton info` paket yöneticinize neyi kurabileceğini sorar ve komu
 
 ## Windows *0.1.9-beta.0*
 
-Windows'la gelen Chromium tabanlı WebView2 ile; uygulamanız onu taşımaz. Çekirdek kurulu çalışma zamanını kendisi bulur, bu yüzden uygulamayla `WebView2Loader.dll` gitmez. Derlemek için Linux'taki gibi Zig 0.16 ve Node 20 ya da üstü gerekir; `lepton info` çalışma zamanını denetler. Paketler `.zip` ve istenirse WiX'siz yazılmış, yönetici izni istemeden kullanıcı başına kurulan bir MSI ([Paketleme](/tr/docs/packaging/)). Dört eklentinin hepsi orada çalışıyor *0.1.9-beta.1*. Henüz yok: yerel çizim yolu, MSIX. Yükleyiciler imzalı değil; Windows SmartScreen uyarısını gösterir.
+Windows'la gelen Chromium tabanlı WebView2 ile; uygulamanız onu taşımaz. Çekirdek kurulu çalışma zamanını kendisi bulur, bu yüzden uygulamayla `WebView2Loader.dll` gitmez. Derlemek için Linux'taki gibi Zig 0.16 ve Node 20 ya da üstü gerekir; `lepton info` çalışma zamanını denetler. Paketler `.zip` ve istenirse WiX'siz yazılmış, yönetici izni istemeden kullanıcı başına kurulan bir MSI ([Paketleme](/tr/docs/packaging/)). `os`, `fs` ve `dialog` eklentileri orada ölçüldü *0.1.9-beta.1*; `clipboard` henüz ölçülmedi. Henüz yok: yerel çizim yolu, MSIX. Yükleyiciler imzalı değil; Windows SmartScreen uyarısını gösterir.
 
 - **Windows 10 (1709 ve sonrası, LTSC sürümleri) ve Windows 11**: Microsoft'un WebView2'yi desteklediği sürümler.
 - **Windows 8.1, 8 ve 7: desteklenmiyor.** WebView2 bunlarda Ocak 2023'te 109. sürümde durdu ve güvenlik düzeltmesi almıyor; yamasız bir motorda çalışan web uygulaması kullanıcısını riske atar. Zig 0.16 de yalnız Windows 10 ve üstünü destekliyor. Web motoru olmayan ayrı bir yol düşünülüyor.
