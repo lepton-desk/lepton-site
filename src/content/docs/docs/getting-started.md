@@ -21,7 +21,7 @@ npx @lepton-desk/cli info
 Not every distribution ships WPE WebKit 2.54; [System requirements](/docs/requirements/) lists where to get it and what each platform needs.
 
 :::caution[Use 0.1.6 or later]
-`npm create lepton-app@latest` gets 0.1.8; `npm create lepton-app@beta` gets 0.1.9-beta.0, with Windows and the Astro, Next.js and Angular templates (with pnpm, name the exact version: `pnpm dlx create-lepton-app@0.1.9-beta.0`). Two earlier versions had a problem: 0.1.4's webview build asked for `wpebackend-fdo-1.0`, which the 2.54 path never loads and Arch no longer packages, so a fresh Arch install could not build with it (fixed in 0.1.5). `create-lepton-app` 0.1.5 stopped before creating the project (fixed in 0.1.6; 0.1.5 is marked deprecated on npm).
+`npm create lepton-app@latest` gets 0.1.8; `npm create lepton-app@beta` gets 0.1.9-beta.1, with Windows and the Astro, Next.js and Angular templates (with pnpm, name the exact version: `pnpm dlx create-lepton-app@0.1.9-beta.1`). Two earlier versions had a problem: 0.1.4's webview build asked for `wpebackend-fdo-1.0`, which the 2.54 path never loads and Arch no longer packages, so a fresh Arch install could not build with it (fixed in 0.1.5). `create-lepton-app` 0.1.5 stopped before creating the project (fixed in 0.1.6; 0.1.5 is marked deprecated on npm).
 :::
 
 ## Create a project

@@ -71,7 +71,7 @@ npm create lepton-app@beta
 With pnpm, name the exact version: pnpm waits a day before using a new release, so `@beta` alone may still resolve to the previous one.
 
 ```sh
-pnpm dlx create-lepton-app@0.1.9-beta.0
+pnpm dlx create-lepton-app@0.1.9-beta.1
 ```
 
 ---

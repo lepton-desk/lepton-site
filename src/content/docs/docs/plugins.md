@@ -5,7 +5,7 @@ description: fs, dialog, clipboard and os — npm packages with a Zig half.
 
 A plugin is an npm package carrying both halves: TypeScript for the page and Zig for the core. `lepton build`, `run` and `dev` find plugins among the project's dependencies and compile them into the core. Their commands still have to be listed under `permissions`.
 
-On Windows *0.1.9-beta.0* the clipboard works through WebView2; `dialog` and `fs` are not there yet.
+All four run on Windows too *0.1.9-beta.1*: `dialog` opens Windows' own file dialogs, and `fs` keeps its scope there by refusing every link out of it, stricter than on Linux. The base folders (`$APPDATA`, `$APPCACHE`, …) are Windows' Known Folders.
 
 ```sh
 npm create lepton-app@latest my-app -- --plugins fs,dialog

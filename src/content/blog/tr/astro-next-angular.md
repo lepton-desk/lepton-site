@@ -71,7 +71,7 @@ npm create lepton-app@beta
 pnpm'de sürümü tam yazın: pnpm yeni bir sürümü kullanmadan önce bir gün bekliyor, bu yüzden yalnızca `@beta` hâlâ bir öncekine çözülebilir.
 
 ```sh
-pnpm dlx create-lepton-app@0.1.9-beta.0
+pnpm dlx create-lepton-app@0.1.9-beta.1
 ```
 
 ---

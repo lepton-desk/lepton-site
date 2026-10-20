@@ -5,9 +5,15 @@ description: What changed in each Lepton release, what is on trunk for the next 
 
 Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository.
 
+## 0.1.9-beta.1 *2026-10-20, beta*
+
+- **Every plugin runs on Windows.** `plugin-dialog` opens Windows' own file dialogs; `plugin-fs` keeps its scope with one `NtCreateFile` relative to the scope folder and refuses every link out of it, stricter than on Linux (a junction planted inside the folder opened without the flag and is refused with it, measured); `plugin-os` reports the Windows version, host name and locale. `$APPDATA`, `$APPCACHE` and the other folders come from Windows' Known Folders.
+- **No console error on a new project under WebView2.** WebView2 asks for `/favicon.ico` on every page; the 404 is now an empty 204.
+- 0.1.9-beta.0's Windows binary went out before the plugins ran there, and npm takes a version once, so every package moved to beta.1 together.
+
 ## 0.1.9-beta.0 *2026-10-19, beta*
 
-Published under the `beta` tag: `npm create lepton-app@beta`, or with pnpm the exact version, `pnpm dlx create-lepton-app@0.1.9-beta.0`. The rest of 0.1.9 (starter screens, WebAssembly, opt-in server rendering) comes before 0.1.9 itself. [What each framework needed](/blog/astro-next-angular/)
+Published under the `beta` tag: `npm create lepton-app@beta`, or with pnpm the exact version, `pnpm dlx create-lepton-app@0.1.9-beta.1`. The rest of 0.1.9 (starter screens, WebAssembly, opt-in server rendering) comes before 0.1.9 itself. [What each framework needed](/blog/astro-next-angular/)
 
 ### Templates
 
@@ -76,7 +82,7 @@ An app builds, runs and is packaged on Windows 10 with WebView2. The changes bel
 - **LF on every checkout.** A CLI built from a Windows checkout embedded its templates with CRLF line endings, and `zig fmt` refused the generated `main.zig`. The repository now keeps LF everywhere.
 - **The webview path runs on WebView2.** `lepton new`, `build`, `dev`, `run`, `record` and `replay` work. The page is served from `http://lepton.localhost` and answered by the same bridge as on Linux: `invoke` (2 ms from the page), events, the shared-memory ring, window commands, `webPermissions`, downloads, `window.open`, the clipboard. A built app is 7 processes and about 100 MiB of private working set, the core 3.3 MiB of it; closing it leaves no WebView2 process behind.
 - **`lepton package` on Windows.** A reproducible `.zip` and an **MSI written without WiX**: WiX 3–5 are out of support and 6 onwards come under a maintenance fee, which a framework should not hand to every company using it. The MSI installs per user without admin rights, adds a Start menu shortcut, upgrades an older version and refuses a downgrade, uninstalls cleanly, and passes the Windows SDK's ICE validation with 0 errors. `--verify` starts the packaged app, measures it and closes it, on Windows as on Linux.
-- Not yet: native drawing on Windows, `plugin-dialog` and `plugin-fs` there, MSIX (it needs a code-signing certificate). Unsigned installers get Windows' SmartScreen warning, as other frameworks' do.
+- Not yet: native drawing on Windows, MSIX (it needs a code-signing certificate). The plugins came in 0.1.9-beta.1. Unsigned installers get Windows' SmartScreen warning, as other frameworks' do.
 
 ## 0.1.6
 

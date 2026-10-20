@@ -5,7 +5,7 @@ description: fs, dialog, clipboard ve os — Zig yarısı olan npm paketleri.
 
 Eklenti, iki yarıyı birlikte taşıyan bir npm paketidir: sayfa için TypeScript, çekirdek için Zig. `lepton build`, `run` ve `dev` eklentileri projenin bağımlılıkları arasında bulur ve çekirdeğe derler. Komutlarının yine de `permissions` altında listelenmesi gerekir.
 
-Windows'ta *0.1.9-beta.0* pano WebView2 üzerinden çalışıyor; `dialog` ve `fs` henüz yok.
+Dördü de Windows'ta çalışıyor *0.1.9-beta.1*: `dialog` Windows'un kendi dosya pencerelerini açıyor, `fs` ise kapsamını orada dışarı çıkan her bağlantıyı reddederek koruyor; Linux'takinden katı. Temel klasörler (`$APPDATA`, `$APPCACHE`, …) Windows'un Known Folders'ı.
 
 ```sh
 npm create lepton-app@latest uygulamam -- --plugins fs,dialog

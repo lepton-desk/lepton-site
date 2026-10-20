@@ -5,9 +5,15 @@ description: Her Lepton sürümünde ne değişti, bir sonraki sürüm için tru
 
 Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı.
 
+## 0.1.9-beta.1 *2026-10-20, beta*
+
+- **Her eklenti Windows'ta çalışıyor.** `plugin-dialog` Windows'un kendi dosya pencerelerini açıyor; `plugin-fs` kapsamını kapsam klasörüne göre tek bir `NtCreateFile` ile koruyor ve klasörden dışarı çıkan her bağlantıyı reddediyor; Linux'takinden de katı (klasörün içine konmuş bir junction bayrak olmadan açıldı, bayrakla reddediliyor; ölçüldü). `plugin-os` Windows sürümünü, makine adını ve yerel ayarı veriyor. `$APPDATA`, `$APPCACHE` ve diğer klasörler Windows'un Known Folders'ından geliyor.
+- **WebView2'de yeni projede konsol hatası yok.** WebView2 her sayfada `/favicon.ico` istiyor; 404 artık boş bir 204.
+- 0.1.9-beta.0'ın Windows ikilisi eklentiler orada çalışmadan önce yayımlanmıştı ve npm bir sürümü bir kez alıyor; bu yüzden bütün paketler birlikte beta.1'e geçti.
+
 ## 0.1.9-beta.0 *2026-10-19, beta*
 
-`beta` etiketiyle yayında: `npm create lepton-app@beta`, pnpm'de ise tam sürümle `pnpm dlx create-lepton-app@0.1.9-beta.0`. 0.1.9'un kalanı (başlangıç ekranları, WebAssembly, isteğe bağlı sunucu işleme) 0.1.9'un kendisinden önce geliyor. [Her çatının ihtiyacı](/tr/blog/astro-next-angular/)
+`beta` etiketiyle yayında: `npm create lepton-app@beta`, pnpm'de ise tam sürümle `pnpm dlx create-lepton-app@0.1.9-beta.1`. 0.1.9'un kalanı (başlangıç ekranları, WebAssembly, isteğe bağlı sunucu işleme) 0.1.9'un kendisinden önce geliyor. [Her çatının ihtiyacı](/tr/blog/astro-next-angular/)
 
 ### Şablonlar
 
@@ -76,7 +82,7 @@ Bir uygulama Windows 10'da WebView2 ile derleniyor, çalışıyor ve paketleniyo
 - **Her klonda LF.** Windows klonundan derlenen CLI şablonları CRLF satır sonlarıyla gömüyordu ve `zig fmt` üretilen `main.zig`'i reddediyordu. Depo artık her yerde LF tutuyor.
 - **Webview yolu WebView2'de çalışıyor.** `lepton new`, `build`, `dev`, `run`, `record` ve `replay` çalışıyor. Sayfa `http://lepton.localhost` üzerinden sunuluyor ve Linux'takiyle aynı köprü yanıtlıyor: `invoke` (sayfadan 2 ms), olaylar, paylaşımlı bellek halkası, pencere komutları, `webPermissions`, indirmeler, `window.open`, pano. Derlenmiş bir uygulama 7 süreç ve yaklaşık 100 MiB özel çalışma kümesi, bunun 3,3 MiB'ı çekirdek; kapatınca geride WebView2 süreci kalmıyor.
 - **Windows'ta `lepton package`.** Tekrarlanabilir bir `.zip` ve **WiX'siz yazılan bir MSI**: WiX 3–5 artık desteklenmiyor, 6 ve sonrası bir bakım ücretine bağlı; bir framework bunu onu kullanan her şirkete yüklememeli. MSI yönetici izni olmadan kullanıcı başına kuruluyor, Başlat menüsüne kısayol ekliyor, eski sürümü yükseltiyor ve düşürmeyi reddediyor, temiz kaldırılıyor ve Windows SDK'nın ICE doğrulamasından 0 hatayla geçiyor. `--verify` paketlenmiş uygulamayı başlatıp ölçüyor ve kapatıyor, Linux'taki gibi Windows'ta da.
-- Henüz yok: Windows'ta native çizim, orada `plugin-dialog` ve `plugin-fs`, MSIX (kod imzalama sertifikası gerekiyor). İmzasız yükleyiciler, diğer framework'lerdekiler gibi, Windows'un SmartScreen uyarısını alıyor.
+- Henüz yok: Windows'ta native çizim, MSIX (kod imzalama sertifikası gerekiyor). Eklentiler 0.1.9-beta.1'de geldi. İmzasız yükleyiciler, diğer framework'lerdekiler gibi, Windows'un SmartScreen uyarısını alıyor.
 
 ## 0.1.6
 

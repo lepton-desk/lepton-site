@@ -21,7 +21,7 @@ npx @lepton-desk/cli info
 Her dağıtım WPE WebKit 2.54'ü paketlemiyor; nereden edinileceği ve her platformun neye ihtiyaç duyduğu [Sistem gereksinimleri](/tr/docs/requirements/) sayfasında.
 
 :::caution[0.1.6 ya da sonrasını kullanın]
-`npm create lepton-app@latest` 0.1.8'i getirir; `npm create lepton-app@beta` ise Windows'u ve Astro, Next.js, Angular şablonlarını getiren 0.1.9-beta.0'ı (pnpm'de sürümü tam yazın: `pnpm dlx create-lepton-app@0.1.9-beta.0`). Önceki iki sürümde birer sorun vardı: 0.1.4'ün webview derlemesi `wpebackend-fdo-1.0`'ı istiyordu; 2.54 yolu onu hiç yüklemiyor ve Arch artık paketlemiyor, bu yüzden yeni kurulmuş bir Arch'ta derlenemiyordu (0.1.5'te düzeltildi). `create-lepton-app` 0.1.5 ise projeyi oluşturmadan duruyordu (0.1.6'da düzeltildi; 0.1.5 npm'de kullanımdan kaldırıldı olarak işaretli).
+`npm create lepton-app@latest` 0.1.8'i getirir; `npm create lepton-app@beta` ise Windows'u ve Astro, Next.js, Angular şablonlarını getiren 0.1.9-beta.1'i (pnpm'de sürümü tam yazın: `pnpm dlx create-lepton-app@0.1.9-beta.1`). Önceki iki sürümde birer sorun vardı: 0.1.4'ün webview derlemesi `wpebackend-fdo-1.0`'ı istiyordu; 2.54 yolu onu hiç yüklemiyor ve Arch artık paketlemiyor, bu yüzden yeni kurulmuş bir Arch'ta derlenemiyordu (0.1.5'te düzeltildi). `create-lepton-app` 0.1.5 ise projeyi oluşturmadan duruyordu (0.1.6'da düzeltildi; 0.1.5 npm'de kullanımdan kaldırıldı olarak işaretli).
 :::
 
 ## Proje oluşturun

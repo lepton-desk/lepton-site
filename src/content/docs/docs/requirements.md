@@ -14,13 +14,14 @@ Lepton runs on **Linux**, and on **Windows** through WebView2 in the 0.1.9 beta.
 | Web engine (webview apps) | WPE WebKit 2.54 or newer, with its WPE Platform API | The API the core uses; stable and on by default since 2.54. Native apps need no engine. |
 | To build WPE WebKit 2.54 | GLib 2.70, ICU 70.1, GStreamer 1.18.4, Wayland 1.20, libinput 1.19; Clang 18 or GCC 12 | WebKit's own build checks. This is what decides which distributions can have 2.54 at all. |
 
-To **develop**, add [Zig 0.16](https://ziglang.org/download/), Node 20 or newer, and npm, pnpm, Yarn or Bun. `lepton info` checks all of it.
+To **develop**, add [Zig 0.16](https://ziglang.org/download/), Node 20 or newer, and npm, pnpm, Yarn or Bun. `lepton info` checks all of it. Lepton builds with the 0.16 series only: Zig 0.17 stops at Lepton's own `build.zig`. *0.1.9-beta.2* The CLI takes the first of `zig` and `zig-0.16` on `PATH` that is 0.16, or the one `LEPTON_ZIG` names, and says so when it finds only another version.
 
 ### The CLI on Arch *0.1.7*
 
-`npm create lepton-app` works on every distribution. On Arch the CLI is also packaged: `lepton-desk` builds it from source, `lepton-desk-bin` installs the binary published to npm, and both pull in Zig 0.16 and WPE WebKit. New AUR accounts are closed for now, so until the packages are on the AUR, build them from the repository:
+`npm create lepton-app` works on every distribution. On Arch the CLI is also packaged: `lepton-desk` builds it from source, `lepton-desk-bin` installs the binary published to npm, and both pull in WPE WebKit. Arch's `zig` is 0.17, so both depend on the AUR's `zig0.16-bin`, which installs Zig 0.16 in `/opt/zig0.16` beside the system Zig; `lepton-desk` hands that one to the CLI, and the system's `zig` can be upgraded. New AUR accounts are closed for now, so until the packages are on the AUR, build them from the repository (`makepkg` does not fetch AUR dependencies itself):
 
 ```sh
+paru -S zig0.16-bin
 git clone https://github.com/lepton-desk/lepton.git
 cd lepton/packaging/aur/lepton-desk-bin && makepkg -si
 ```
@@ -48,7 +49,7 @@ A package built with `lepton package` is linked against the libraries of the mac
 
 ## Windows *0.1.9-beta.0*
 
-Through WebView2, the Chromium-based engine that comes with Windows; your app does not carry it. The core finds the installed runtime itself, so no `WebView2Loader.dll` ships with the app. Building needs Zig 0.16 and Node 20 or newer, as on Linux; `lepton info` checks for the runtime. Packages are a `.zip` and, on request, an MSI made without WiX that installs per user, without admin rights ([Packaging](/docs/packaging/)). Not there yet: the native render path, the `dialog` and `fs` plugins, MSIX. Installers are not signed, so Windows shows its SmartScreen warning.
+Through WebView2, the Chromium-based engine that comes with Windows; your app does not carry it. The core finds the installed runtime itself, so no `WebView2Loader.dll` ships with the app. Building needs Zig 0.16 and Node 20 or newer, as on Linux; `lepton info` checks for the runtime. Packages are a `.zip` and, on request, an MSI made without WiX that installs per user, without admin rights ([Packaging](/docs/packaging/)). All four plugins run there *0.1.9-beta.1*. Not there yet: the native render path, MSIX. Installers are not signed, so Windows shows its SmartScreen warning.
 
 - **Windows 10 (1709 and later, and the LTSC releases) and Windows 11**: the versions Microsoft supports WebView2 on.
 - **Windows 8.1, 8 and 7: not supported.** WebView2 stopped at version 109 on them in January 2023 and gets no security fixes there; a web app on an unpatched engine would put its users at risk. Zig 0.16 also supports Windows 10 and newer only. A separate path without a web engine is being considered.
