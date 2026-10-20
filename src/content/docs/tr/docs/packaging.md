@@ -26,6 +26,8 @@ npm run lepton package
 | `zip` | Windows *0.1.9-beta.0*: kurulum öneki, `bin\<ad>.exe` ve yanında ön yüz. |
 | `msi` | Windows *0.1.9-beta.0*: WiX olmadan Lepton'un kendisinin yazdığı bir Windows Installer paketi. Yönetici izni istemeden kullanıcı başına kurulur (`%LOCALAPPDATA%\Programs\<ürün>`), Başlat menüsüne kısayol ekler, eski sürümü yükseltir ve sürüm düşürmeyi reddeder, temiz kaldırılır. `bundle.icon` (bir `.ico`) kısayolun ve Uygulamalar listesinin simgesidir. Windows SDK'nın ICE doğrulamasından hatasız geçer. |
 
+**Simge.** `lepton new`, Lepton'ın işaretini `src-lepton/icon.svg`'ye koyar *0.1.9-beta.2*; kendinizinkiyle değiştirin. Linux'ta paket onu `share/icons/hicolor/scalable/apps/<identifier>.svg` olarak kurar ve masaüstü girdisi onu adlandırır (`Icon=<identifier>`); `lepton dev` ve `run` yazdıkları girdinin yanına kurar. MSI `bundle.icon`'u (projenin içinde bir `.ico`) kullanır, yoksa Lepton'ın işaretini. `icon.svg`'si olmayan proje de Lepton'ın işaretini alır.
+
 Paketler tekrarlanabilir: sıralı girdiler, `root:root` ve `SOURCE_DATE_EPOCH`. Her arşive bir `.sha256` dosyası eşlik eder. Yazılamayan bir biçim hatadır; sessizce atlanmaz.
 
 Uygulama tarayıcı taşımaz: `lepton new` ile oluşturulan bir React uygulaması burada 176 601 baytlık bir `.tar.gz` oldu (0.1.9-beta.1, 2026-10-20) ve sistemin `wpewebkit` paketine bağlı.

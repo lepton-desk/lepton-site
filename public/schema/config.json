@@ -97,9 +97,31 @@
       },
       "additionalProperties": { "enum": ["allow", "deny", "ask"] }
     },
+    "deepLinks": {
+      "description": "URL schemes the application opens (\"myapp\" for myapp://…). A link starts the app, or reaches the running copy as the app.opened event (@lepton-desk/api/app); list app.args under permissions to read it.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9+.-]{0,63}$",
+        "not": { "enum": ["http", "https", "file", "mailto", "ftp", "data", "javascript", "about", "lepton"] }
+      }
+    },
     "plugins": {
-      "description": "Settings for plugins that take them, by the section name the plugin declares (fs: { \"scope\": [\"$APPDATA\"] }).",
+      "description": "Settings for plugins that take them, by the section name the plugin declares (fs: { \"scope\": [\"$APPDATA\"] }, clipboard: { \"read\": \"always\" }).",
       "type": "object",
+      "properties": {
+        "clipboard": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "read": {
+              "description": "When clipboard.read_text answers: \"input\" (default) only within 5 s of the user pressing a key or button in the window; \"always\" without one, for a clipboard manager.",
+              "enum": ["input", "always"]
+            }
+          }
+        }
+      },
       "additionalProperties": {
         "type": "object",
         "propertyNames": { "pattern": "^[a-z0-9_]+$" },

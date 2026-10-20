@@ -35,6 +35,16 @@ Linux'ta her yol çekirdeğin `RESOLVE_BENEATH`'iyle açılır; izinli bir dizin
 - `rename(kaynak, hedef)` tek bir kapsam dizini içinde kalır ve var olan hedefi tek adımda değiştirir. *0.1.5*
 - Tek çağrı en çok 64 KiB taşır. `readFile` daha büyük dosyayı parça parça okur; `writeFile` parça parça `<ad>.lepton-save` adına yazar ve eskisinin üzerine taşır, böylece yarıda kalan yazma eski dosyayı bozmaz. *0.1.5*
 
+`watch(path, handler)` her değişiklikte `handler({ change, name })` çağırır: bir klasörde bir girdinin `created`, `modified` (yazan onu kapatınca), `removed`, `renamedFrom` ya da `renamedTo` olması; izlenen yolun kendisi için `gone`. Çekirdek her değişikliği okuduğu anda iletir, en geç çeyrek saniyede; hiçbir şey yoklanmaz. Yol izlenmeden önce kapsamın içinde açılır, bu yüzden bir bağlantı izlemeyi kapsamın dışına çeviremez. İzlemeyi durduran bir fonksiyonla çözülür. Alt klasörler izlenmez; şimdilik yalnız Linux (Windows `failed` ile reddeder). Komutlar `fs.watch` ve `fs.unwatch`. *0.1.9-beta.2*
+
+```ts
+import { BaseDirectory, watch } from "@lepton-desk/plugin-fs";
+
+const stop = await watch("notes", ({ change, name }) => console.log(change, name), {
+  baseDir: BaseDirectory.AppData,
+});
+```
+
 `fs` ayarlarında `"chosen": true` ile kullanıcının `@lepton-desk/plugin-dialog`'da seçtiği şey kapsama katılır ve sonraki açılışlarda hatırlanır: seçilen klasör içindekilerle, seçilen dosya yalnız kendisi. *0.1.5*
 
 ```json
@@ -63,8 +73,13 @@ const target = await save({ defaultName: "notlar.md", acceptLabel: "Dışa aktar
 
 `writeText(text)` ve `readText()`. Wayland seçimi yalnızca odaktaki pencereye bildirir; bu yüzden ikisi de odağı bekler. Beklemeyi durdurmak için `{ signal }` verin.
 
+`readText` yalnızca kullanıcı pencerede bir tuşa ya da düğmeye bastıktan sonraki beş saniye içinde cevap verir; tarayıcı da panoyu yalnızca bir kullanıcı hareketi sırasında okutur. Aksi halde `NotAllowedError` `DOMException` ile reddeder. Kararı çekirdek gördüğü girdiden verir; sayfaya sızmış bir betik kullanıcının başka yerde kopyaladığını okuyamaz (ölçüldü: sayfa yüklenirken yapılan okuma reddedildi, bir tıklamadan hemen sonraki cevaplandı). Bunsuz okuması gereken bir pano yöneticisi `"read": "always"` verir. *0.1.9-beta.2*
+
 ```json
-{ "permissions": ["clipboard.read_text", "clipboard.write_text"] }
+{
+  "permissions": ["clipboard.read_text", "clipboard.write_text"],
+  "plugins": { "clipboard": { "read": "always" } }
+}
 ```
 
 ## `@lepton-desk/plugin-os`
@@ -107,3 +122,4 @@ TypeScript yarısı onları `@lepton-desk/api/core`'daki `invoke` ile çağırı
 
 - `settings`, eklentinin `lepton.config.json`'daki bölümünü adlandırır (`plugins.eklentim`); çekirdek onu derleme anında `core.pluginConfig` ile okur.
 - `pub const private = .{ "eklentim.gizli" };` bir komutun baytlarını [`lepton record`](/tr/docs/cli/) kayıtlarından uzak tutar.
+- Bir şeyi izleyen eklenti `pub fn tick(bridge: anytype) void` dışa aktarır; uygulamanın döngüsü onu her turda çağırır (en az 250 ms'de bir), o da `bridge.emit("eklentim.degisti", baytlar)` ile olay yayar (en çok 256 bayt). TypeScript yarısı olayı `AppEvents`'te bildirir (`@lepton-desk/api/event`). *0.1.9-beta.2*

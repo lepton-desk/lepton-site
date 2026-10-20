@@ -28,7 +28,8 @@ On a terminal the output is coloured *0.1.7*: each step is framed with how long 
 | `--plugins <list>` | Plugins to add, comma-separated: `os`, `clipboard`, `fs`, `dialog`. Every command of each is added to `permissions` (trim the list to what you use), and `fs` gets `$APPDATA` as its scope. |
 | `--package-manager <name>` | `npm`, `pnpm`, `yarn` or `bun`. Without it: the one that started `lepton`, else pnpm if installed, else npm. Later commands follow the project: its `packageManager` field, then its lockfile. |
 | `--install` | Install dependencies after creating. |
-| `--identifier <id>` | The application identifier (desktop entry, data directories). |
+| `--identifier <id>` | The application identifier (desktop entry, data directories). Without it: `com.<owner>.<name>`. |
+| `--owner <name>` | Who publishes the app, the middle of `com.<owner>.<name>` *0.1.9-beta.2*. Without it the wizard asks, defaulting to Git's `user.name`, else `example`. |
 | `--width`, `--height` | Initial window size, in physical pixels. Default 1200×800. |
 | `--directory <dir>` | Where to create the project. |
 | `--non-interactive` | Ask nothing. |
@@ -47,7 +48,7 @@ The dev server is started with the project's `frontend.devArgs` (Vite's flags wi
 
 ## `lepton build`
 
-`--native` / `--webview` choose the render path; `-n, --dry-run` prints the plan. `--servo` (with `--linux`) is for the experimental Servo engine; Servo is not linked yet, so it is refused with that reason rather than building with WPE WebKit under Servo's name *0.1.9-beta.2*. `--windows` and `--macos` cross-compile with Zig (`x86_64-windows-gnu`, `aarch64-macos`). From Linux, `--windows` builds the webview path for WebView2 *0.1.9-beta.0*: a 1.1 MB `.exe` that imports only Windows' own DLLs; one built from a Next.js project opened on Windows 10 and its page reached the core *0.1.9-beta.1*; the native path does not run on Windows yet, and the macOS result has not been tested.
+`--native` / `--webview` choose the render path; `-n, --dry-run` prints the plan. `--servo` (with `--linux`) renders the page in Servo instead of WPE WebKit, **experimental** *0.1.9-beta.2*: install its library with `npm install -D @lepton-desk/servo-linux-x64@beta` (or set `LEPTON_SERVO_LIB` to a directory holding one); without it the build is refused with that reason. Servo has no keyboard input in Lepton yet. `--windows` and `--macos` cross-compile with Zig (`x86_64-windows-gnu`, `aarch64-macos`). From Linux, `--windows` builds the webview path for WebView2 *0.1.9-beta.0*: a 1.1 MB `.exe` that imports only Windows' own DLLs; one built from a Next.js project opened on Windows 10 and its page reached the core *0.1.9-beta.1*; the native path does not run on Windows yet, and the macOS result has not been tested.
 
 `dev` and `run` also write `~/.local/share/applications/<identifier>.desktop`, so the dock matches the window to its name; they never overwrite an entry Lepton did not write.
 

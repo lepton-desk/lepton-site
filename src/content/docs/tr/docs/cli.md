@@ -28,7 +28,8 @@ Terminalde çıktı renkli *0.1.7*: her adım süresiyle çerçeveleniyor, Lepto
 | `--plugins <liste>` | Eklenecek eklentiler, virgülle: `os`, `clipboard`, `fs`, `dialog`. Her birinin tüm komutları `permissions`'a eklenir (kullandıklarınıza indirin); `fs` kapsam olarak `$APPDATA` alır. |
 | `--package-manager <ad>` | `npm`, `pnpm`, `yarn` ya da `bun`. Verilmezse: `lepton`'ı başlatan, yoksa kuruluysa pnpm, yoksa npm. Sonraki komutlar projeyi izler: önce `packageManager` alanı, sonra kilit dosyası. |
 | `--install` | Oluşturduktan sonra bağımlılıkları kurar. |
-| `--identifier <kimlik>` | Uygulama kimliği (masaüstü girdisi, veri dizinleri). |
+| `--identifier <kimlik>` | Uygulama kimliği (masaüstü girdisi, veri dizinleri). Verilmezse `com.<sahip>.<ad>`. |
+| `--owner <ad>` | Uygulamayı yayımlayan, `com.<sahip>.<ad>`'ın ortası *0.1.9-beta.2*. Verilmezse sihirbaz sorar; varsayılanı Git'in `user.name`'i, o da yoksa `example`. |
 | `--width`, `--height` | İlk pencere boyutu, fiziksel piksel. Varsayılan 1200×800. |
 | `--directory <dizin>` | Projenin oluşturulacağı yer. |
 | `--non-interactive` | Hiçbir şey sormaz. |
@@ -47,7 +48,7 @@ Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bay
 
 ## `lepton build`
 
-`--native` / `--webview` çizim yolunu seçer; `-n, --dry-run` planı yazdırır. `--servo` (`--linux` ile) deneysel Servo motoru içindir; Servo henüz bağlanmıyor, bu yüzden Servo adıyla WPE WebKit derlemek yerine bu gerekçeyle reddedilir *0.1.9-beta.2*. `--windows` ve `--macos` Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`). Linux'tan `--windows`, webview yolunu WebView2 için derler *0.1.9-beta.0*: yalnız Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`; bir Next.js projesinden derlenen Windows 10'da açıldı ve sayfası çekirdeğe ulaştı *0.1.9-beta.1*; yerel çizim yolu Windows'ta henüz çalışmıyor, macOS çıktısı denenmedi.
+`--native` / `--webview` çizim yolunu seçer; `-n, --dry-run` planı yazdırır. `--servo` (`--linux` ile) sayfayı WPE WebKit yerine Servo'da çizer, **deneysel** *0.1.9-beta.2*: kitaplığını `npm install -D @lepton-desk/servo-linux-x64@beta` ile kurun (ya da `LEPTON_SERVO_LIB`'i onu tutan bir dizine verin); o olmadan derleme bu gerekçeyle reddedilir. Servo'nun Lepton'da henüz klavye girişi yok. `--windows` ve `--macos` Zig ile çapraz derler (`x86_64-windows-gnu`, `aarch64-macos`). Linux'tan `--windows`, webview yolunu WebView2 için derler *0.1.9-beta.0*: yalnız Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`; bir Next.js projesinden derlenen Windows 10'da açıldı ve sayfası çekirdeğe ulaştı *0.1.9-beta.1*; yerel çizim yolu Windows'ta henüz çalışmıyor, macOS çıktısı denenmedi.
 
 `dev` ve `run` ayrıca `~/.local/share/applications/<identifier>.desktop` yazar, böylece görev çubuğu pencereyi adıyla eşleştirir; Lepton'ın yazmadığı bir girdinin üzerine asla yazmaz.
 

@@ -35,6 +35,16 @@ On Linux every path is opened with the kernel's `RESOLVE_BENEATH`, so a symbolic
 - `rename(from, to)` stays inside one scope directory and replaces an existing `to` in one step. *0.1.5*
 - One call carries at most 64 KiB. `readFile` reads a larger file in pieces; `writeFile` writes it in pieces under `<name>.lepton-save` and renames it over the old file, so a write cut short leaves the old file whole. *0.1.5*
 
+`watch(path, handler)` calls `handler({ change, name })` for each change: for a directory, an entry `created`, `modified` (once its writer closes it), `removed`, `renamedFrom` or `renamedTo`; for the watched path itself, `gone`. The core pushes each change as it reads it, within a quarter of a second; nothing is polled. The path is opened inside the scope before it is watched, so a link cannot point the watch outside it. It resolves with a function that stops watching. Subdirectories are not watched; Linux only for now (Windows rejects with `failed`). Commands `fs.watch` and `fs.unwatch`. *0.1.9-beta.2*
+
+```ts
+import { BaseDirectory, watch } from "@lepton-desk/plugin-fs";
+
+const stop = await watch("notes", ({ change, name }) => console.log(change, name), {
+  baseDir: BaseDirectory.AppData,
+});
+```
+
 With `"chosen": true` in the `fs` settings, what the user picks in `@lepton-desk/plugin-dialog` joins the scope and is remembered across runs: a chosen folder with everything in it, a chosen file by itself. *0.1.5*
 
 ```json
@@ -63,8 +73,13 @@ Both take `title`, `defaultPath`, `filters`, `acceptLabel` and `signal`; `open` 
 
 `writeText(text)` and `readText()`. Wayland only tells a focused window what the selection is, so both wait for focus; pass `{ signal }` to stop waiting.
 
+`readText` answers only within five seconds of the user pressing a key or button in the window, as a browser reads the clipboard only during a gesture; otherwise it rejects with a `NotAllowedError` `DOMException`. The core decides from the input it sees, so a script that got into the page cannot read what the user copied elsewhere (measured: a read at page load was refused, one right after a click answered). A clipboard manager that must read without that sets `"read": "always"`. *0.1.9-beta.2*
+
 ```json
-{ "permissions": ["clipboard.read_text", "clipboard.write_text"] }
+{
+  "permissions": ["clipboard.read_text", "clipboard.write_text"],
+  "plugins": { "clipboard": { "read": "always" } }
+}
 ```
 
 ## `@lepton-desk/plugin-os`
@@ -107,3 +122,4 @@ The TypeScript half calls them with `invoke` from `@lepton-desk/api/core` (a pee
 
 - `settings` names the plugin's section in `lepton.config.json` (`plugins.myplugin`); the core reads it at compile time with `core.pluginConfig`.
 - `pub const private = .{ "myplugin.secret" };` keeps a command's bytes out of [`lepton record`](/docs/cli/) recordings.
+- A plugin that watches something exports `pub fn tick(bridge: anytype) void`; the application's loop calls it on every turn (at least every 250 ms), and it emits with `bridge.emit("myplugin.changed", bytes)` (at most 256 bytes). Its TypeScript half declares the event in `AppEvents` (`@lepton-desk/api/event`). *0.1.9-beta.2*
