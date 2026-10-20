@@ -27,6 +27,14 @@ function lines(note: string, max: number): string[] {
 	return out;
 }
 
+// Lines are separate tspans, so copied or extracted text ran their words together
+// ("yourpage"). Each break keeps its space, on the side the anchor leaves invisible:
+// after the line for start/middle text, before it for end-anchored text.
+function spaced(line: string, index: number, count: number, anchor: string): string {
+	if (anchor === 'end') return index === 0 ? line : ` ${line}`;
+	return index === count - 1 ? line : `${line} `;
+}
+
 interface Label {
 	x: number;
 	y: number;
@@ -100,9 +108,9 @@ const plates = [
 								{label.name}
 							</text>
 							<text x={label.x} y={label.y + 30} text-anchor={label.anchor} class="hand">
-								{lines(label.note, label.max).map((line, i) => (
+								{lines(label.note, label.max).map((line, i, all) => (
 									<tspan x={label.x} dy={i === 0 ? 0 : 27}>
-										{line}
+										{spaced(line, i, all.length, label.anchor)}
 									</tspan>
 								))}
 							</text>

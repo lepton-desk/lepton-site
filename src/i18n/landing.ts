@@ -99,7 +99,7 @@ export const landing: Record<Lang, LandingText> = {
 		},
 		event: {
 			claim: 'One event, three tracks.',
-			body: 'Your page and the Zig core talk in binary frames over a lepton:// scheme and shared memory. No JSON is parsed on the way. The core owns the window and asks the desktop for the rest.',
+			body: 'Your page and the Zig core talk in binary frames over the app’s own scheme and shared memory. No JSON is parsed on the way. The core owns the window and asks the desktop for the rest.',
 			page: 'Your page',
 			pageNote: 'React, Vue, Svelte, Solid, Preact, Lit, Angular, Next.js, Astro or plain TypeScript and JavaScript, in the system web engine',
 			frames: 'Binary frames',
@@ -107,9 +107,9 @@ export const landing: Record<Lang, LandingText> = {
 			core: 'Zig core',
 			coreNote: 'window, commands, permissions, plugins',
 			system: 'The desktop',
-			systemNote: 'Wayland or X11, desktop portals, a systemd scope per app',
+			systemNote: 'Wayland, X11 or Win32; desktop portals and a systemd scope on Linux',
 			engine: 'System web engine',
-			engineNote: 'WPE WebKit draws your page; Lepton ships no browser',
+			engineNote: 'WPE WebKit or WebView2 draws your page; Lepton ships no browser',
 		},
 		code: {
 			claim: 'A command is a Zig function.',
@@ -188,7 +188,7 @@ export const landing: Record<Lang, LandingText> = {
 		},
 		event: {
 			claim: 'Bir olay, üç iz.',
-			body: 'Sayfanız ve Zig çekirdeği, lepton:// şeması ve paylaşılan bellek üzerinden ikili çerçevelerle konuşur. Yolda hiç JSON ayrıştırılmaz. Pencere çekirdeğindir; gerisini masaüstünden ister.',
+			body: 'Sayfanız ve Zig çekirdeği, uygulamanın kendi şeması ve paylaşılan bellek üzerinden ikili çerçevelerle konuşur. Yolda hiç JSON ayrıştırılmaz. Pencere çekirdeğindir; gerisini masaüstünden ister.',
 			page: 'Sayfanız',
 			pageNote: 'React, Vue, Svelte, Solid, Preact, Lit, Angular, Next.js, Astro ya da düz TypeScript ve JavaScript, sistemin web motorunda',
 			frames: 'İkili çerçeveler',
@@ -196,9 +196,9 @@ export const landing: Record<Lang, LandingText> = {
 			core: 'Zig çekirdek',
 			coreNote: 'pencere, komutlar, izinler, eklentiler',
 			system: 'Masaüstü',
-			systemNote: 'Wayland ya da X11, masaüstü portalları, her uygulamaya bir systemd kapsamı',
+			systemNote: 'Wayland, X11 ya da Win32; Linux’ta masaüstü portalları ve systemd kapsamı',
 			engine: 'Sistemin web motoru',
-			engineNote: 'Sayfanızı WPE WebKit çizer; Lepton tarayıcı taşımaz',
+			engineNote: 'Sayfanızı WPE WebKit ya da WebView2 çizer; Lepton tarayıcı taşımaz',
 		},
 		code: {
 			claim: 'Bir komut, bir Zig fonksiyonudur.',
