@@ -7,10 +7,20 @@ Lepton, masaüstü uygulamalarını **Zig çekirdek** ve **web arayüzü** ile k
 
 ## Gerekenler
 
-- Wayland ya da X11 ile Linux
-- [Zig 0.16](https://ziglang.org/download/)
-- WPE Platform API'siyle derlenmiş WPE WebKit 2.54 ya da üstü (`pkg-config wpe-webkit-2.0 wpe-platform-2.0`) ve libsoup 3. Platform API'si 2.54'ten beri kararlı ve varsayılan olarak açık; bu yolda libwpe ve WPEBackend-fdo kullanılmaz.
+Her platformda:
+
+- [Zig 0.16](https://ziglang.org/download/) (0.17 Lepton'ı henüz derleyemiyor)
 - Node 20 ya da üstü; npm, pnpm, Yarn veya Bun
+
+**Linux**'ta:
+
+- Wayland ya da X11
+- WPE Platform API'siyle derlenmiş WPE WebKit 2.54 ya da üstü (`pkg-config wpe-webkit-2.0 wpe-platform-2.0`) ve libsoup 3. Platform API'si 2.54'ten beri kararlı ve varsayılan olarak açık; bu yolda libwpe ve WPEBackend-fdo kullanılmaz.
+
+**Windows**'ta *0.1.9-beta.0*, betada (`npm create lepton-app@beta`):
+
+- Windows 10 (1709 ya da sonrası) veya Windows 11
+- Windows'la gelen WebView2 çalışma zamanı; uygulamanızla hiçbir şey gitmez
 
 `lepton info` makineyi denetler ve neyin eksik olduğunu söyler:
 
@@ -30,7 +40,7 @@ Her dağıtım WPE WebKit 2.54'ü paketlemiyor; nereden edinileceği ve her plat
 npm create lepton-app@latest
 ```
 
-Sihirbaz bir ad, bir arayüz (düz TypeScript ya da JavaScript, React, Vue, Svelte, Solid; betada ayrıca Preact, Lit, Angular, Next.js ve Astro) ve uygulamanın nasıl çizileceğini sorar. Sayfanızı WPE WebKit'te açmak için **webview**'ı seçin; **native**, web motoru olmadan doğrudan pencereye çizer.
+Sihirbaz bir ad, bir arayüz (düz TypeScript ya da JavaScript, React, Vue, Svelte, Solid; betada ayrıca Preact, Lit, Angular, Next.js ve Astro) ve uygulamanın nasıl çizileceğini sorar. Sayfanızı sistemin web motorunda (Linux'ta WPE WebKit, Windows'ta WebView2) açmak için **webview**'ı seçin; **native**, web motoru olmadan doğrudan pencereye çizer.
 
 Soru sormadan:
 

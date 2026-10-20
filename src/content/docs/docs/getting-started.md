@@ -7,10 +7,20 @@ Lepton builds desktop applications with a **Zig core** and a **web front end**. 
 
 ## What you need
 
-- Linux, with Wayland or X11
-- [Zig 0.16](https://ziglang.org/download/)
-- WPE WebKit 2.54 or newer, built with its WPE Platform API (`pkg-config wpe-webkit-2.0 wpe-platform-2.0`), and libsoup 3. The Platform API is stable and on by default since 2.54; libwpe and WPEBackend-fdo are not used on this path.
+On every platform:
+
+- [Zig 0.16](https://ziglang.org/download/) (0.17 cannot build Lepton yet)
 - Node 20 or newer, and npm, pnpm, Yarn or Bun
+
+On **Linux**:
+
+- Wayland or X11
+- WPE WebKit 2.54 or newer, built with its WPE Platform API (`pkg-config wpe-webkit-2.0 wpe-platform-2.0`), and libsoup 3. The Platform API is stable and on by default since 2.54; libwpe and WPEBackend-fdo are not used on this path.
+
+On **Windows** *0.1.9-beta.0*, in the beta (`npm create lepton-app@beta`):
+
+- Windows 10 (1709 or later) or Windows 11
+- The WebView2 runtime, which comes with Windows; nothing ships with your app
 
 `lepton info` checks the machine and says what is missing:
 
@@ -30,7 +40,7 @@ Not every distribution ships WPE WebKit 2.54; [System requirements](/docs/requir
 npm create lepton-app@latest
 ```
 
-The wizard asks for a name, a front end (plain TypeScript or JavaScript, React, Vue, Svelte, Solid; in the beta also Preact, Lit, Angular, Next.js and Astro) and how the app renders. Choose **webview** to load your page in WPE WebKit; **native** draws straight to the window with no web engine.
+The wizard asks for a name, a front end (plain TypeScript or JavaScript, React, Vue, Svelte, Solid; in the beta also Preact, Lit, Angular, Next.js and Astro) and how the app renders. Choose **webview** to load your page in the system's web engine (WPE WebKit on Linux, WebView2 on Windows); **native** draws straight to the window with no web engine.
 
 Without questions:
 
