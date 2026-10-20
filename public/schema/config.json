@@ -9,16 +9,21 @@
   "properties": {
     "$schema": { "type": "string" },
     "productName": {
-      "description": "The application's name. The binary is named after it.",
+      "description": "The application's name. The binary is named after it. No control characters, no / or \\, not . or ..",
       "type": "string",
-      "pattern": "\\S"
+      "pattern": "^(?!\\s*\\.{1,2}\\s*$)[^\\u0000-\\u001f\\u007f/\\\\]*[^\\s\\u0000-\\u001f\\u007f/\\\\][^\\u0000-\\u001f\\u007f/\\\\]*$"
     },
     "identifier": {
-      "description": "Reverse-DNS identifier: the desktop entry, the window's app id and the per-application data directory.",
+      "description": "Reverse-DNS identifier: the desktop entry, the window's app id and the per-application data directory. ASCII letters, digits, '.', '_' and '-'; not . or ..",
       "type": "string",
-      "pattern": "^[^/]+$"
+      "pattern": "^(?!\\.{1,2}$)[A-Za-z0-9._-]+$"
     },
-    "version": { "type": "string", "default": "0.1.0" },
+    "version": {
+      "description": "Letters, digits, '.', '+', '~' and '-'; it is part of package file names.",
+      "type": "string",
+      "default": "0.1.0",
+      "pattern": "^[A-Za-z0-9+~-][A-Za-z0-9.+~-]*$"
+    },
     "renderPath": {
       "description": "webview: the page in WPE WebKit (Linux) or WebView2 (Windows). native: the core draws the window, no web engine.",
       "enum": ["webview", "native"],
@@ -63,7 +68,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "title": { "type": "string" },
+        "title": { "type": "string", "pattern": "^[^\\u0000-\\u001f\\u007f]*$" },
         "width": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 },
         "height": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 }
       }
