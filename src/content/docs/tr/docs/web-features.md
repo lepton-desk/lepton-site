@@ -56,3 +56,7 @@ Hata ayıklama derlemelerinde — `lepton dev` ve `--release` olmadan `lepton ru
 
 - Pencere başlığı sayfanın `document.title`'ını izler.
 - Motor başlamadan uygulama kendi systemd kapsamına, `app-<identifier>-<pid>.scope`'a geçer; böylece sistem izleyicisi onu ve WebKit süreçlerini tek uygulama olarak, masaüstü girdisindeki adıyla gösterir. Kapsamı zaten oluşturan bir başlatıcıdan açıldıysa bir şey değişmez.
+
+## Windows'ta *0.1.9-beta.0*
+
+Aynı yapılandırma ve aynı sayfa kodu WebView2'de de çalışır; değişen, yanıtı kimin verdiği. `webPermissions` WebView2'nin izin isteklerine uygulanır (`ask` sayfaya aynı yoldan gelir), izin verilmiş bir `new Notification()`'ı WebView2 kendisi gösterir, indirmeler kullanıcının İndirilenler klasörüne aynı `download.*` olaylarıyla gider, uygulamanın kendi sayfası için `window.open` çekirdeği çağırabilen ikinci bir pencere açar. Hata ayıklama derlemelerinde WebView2'nin geliştirici araçları, bağlam menüsü ve tarayıcı tuşları vardır; yayın derlemeleri bunları kapatır. Lepton'ın systemd kapsamı Linux'a özgüdür: Windows'ta motorun süreçleri zaten uygulamanın alt süreçleridir.

@@ -28,7 +28,7 @@ The function names follow Tauri's plugins, so moving code over is mostly an impo
 
 A scope entry is a base directory — `$APPDATA` `$APPCONFIG` `$APPCACHE` `$HOME` `$DOCUMENT` `$DOWNLOAD` `$DESKTOP` `$PICTURE` `$MUSIC` `$VIDEO` — optionally followed by names below it. No wildcards, no `..`. Without a scope every path is refused. The user directories come from `user-dirs.dirs`; on a Turkish desktop `$DOCUMENT` is `~/Belgeler`.
 
-Every path is opened with the kernel's `RESOLVE_BENEATH`, so a symbolic link inside an allowed directory cannot lead out of it; a path outside the scope rejects with `denied`, and so does `exists` — answering `false` would tell the page what is where it may not look.
+On Linux every path is opened with the kernel's `RESOLVE_BENEATH`, so a symbolic link inside an allowed directory cannot lead out of it; a path outside the scope rejects with `denied`, and so does `exists` — answering `false` would tell the page what is where it may not look.
 
 - `writeFile(path, data, { append: true })` adds to the end; `mkdir(path, { recursive: true })` makes missing parents.
 - `remove(path, { recursive: true })` removes a directory with everything in it; links inside are removed, not followed. *0.1.5*
@@ -43,7 +43,7 @@ With `"chosen": true` in the `fs` settings, what the user picks in `@lepton-desk
 
 ## `@lepton-desk/plugin-dialog`
 
-`open(options)` and `save(options)`, drawn by the desktop through xdg-desktop-portal, so the dialog looks like the rest of the desktop. Each resolves with the chosen path(s), or `null` when the user cancels; the promise stays pending as long as the dialog is open.
+`open(options)` and `save(options)`, drawn by the desktop through xdg-desktop-portal on Linux and by Windows' own file dialogs on Windows, so the dialog looks like the rest of the desktop. Each resolves with the chosen path(s), or `null` when the user cancels; the promise stays pending as long as the dialog is open.
 
 ```ts
 import { open, save } from "@lepton-desk/plugin-dialog";

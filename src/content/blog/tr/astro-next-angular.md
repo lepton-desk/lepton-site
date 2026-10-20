@@ -56,7 +56,7 @@ Pencerede başlangıç tablosu üçünde de çekirdeğin paylaşımlı bellek ka
 
 ## Windows ve editörünüz için bir şema
 
-0.1.9-beta.0 aynı zamanda içinde Windows olan ilk sürüm: web yolu WebView2'de çalışıyor, `lepton package` da `.zip` ve WiX'siz bir MSI yazıyor. Ölçümler [değişiklikler sayfasında](/tr/docs/changelog/). Linux'tan çapraz derleme bağlama adımında düşüyordu, çünkü derleme Windows ikilisine makinede bulduğu Linux kütüphanelerini veriyordu. Linux'ta `lepton build --windows` artık yalnızca Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe` üretiyor. Bu `.exe` henüz Windows'ta açılmadı; sıradaki denetim bu.
+0.1.9-beta.0 aynı zamanda içinde Windows olan ilk sürüm: web yolu WebView2'de çalışıyor, `lepton package` da `.zip` ve WiX'siz bir MSI yazıyor. Ölçümler [değişiklikler sayfasında](/tr/docs/changelog/). Linux'tan çapraz derleme bağlama adımında düşüyordu, çünkü derleme Windows ikilisine makinede bulduğu Linux kütüphanelerini veriyordu. Linux'ta `lepton build --windows` artık yalnızca Windows'un kendi DLL'lerini içe aktaran 1,1 MB'lık bir `.exe` üretiyor. Bu `.exe` henüz Windows'ta açılmadı; sıradaki denetim bu. *(Güncelleme: açıldı. Bir Next.js projesinden derlenen `.exe` Windows 10'da açıldı, sayfası çekirdeğe ulaştı ve kapanınca geride WebView2 süreci kalmadı.)*
 
 Her projenin `lepton.config.json`'ı `$schema`'sını hiç çözülmeyen bir adrese gösteriyordu, bu yüzden editörler şemayı yükleyemiyordu. Şema artık [bu siteyle birlikte yayında](/schema/config.json). 19 şablonun ayarlarına ve 14 bozuk ayara karşı denendi; CLI'nin eskiden yok saydığı `devArg` gibi bir yazım hatasını işaretliyor. `lepton update` var olan projeleri yeni adrese taşıyor.
 

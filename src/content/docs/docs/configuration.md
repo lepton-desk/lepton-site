@@ -24,7 +24,7 @@ description: lepton.config.json, field by field.
 | `productName` | What the desktop shows. The binary is named after it in lowercase, with every other run of characters made one `-` (`My App` → `my-app`). |
 | `identifier` | The application id: desktop entry, window `app_id`, data directories (`~/.local/share/<identifier>`). Changed after `lepton new`, only the desktop entry and package names follow; the window `app_id`, data directories and systemd scope keep the id written into `src-lepton/main.zig`. |
 | `version` | Used in package names. Default `0.1.0`. |
-| `renderPath` | `webview` (your page in WPE WebKit, the default) or `native` (drawn by the core, no web engine). |
+| `renderPath` | `webview` (your page in WPE WebKit on Linux, WebView2 on Windows; the default) or `native` (drawn by the core, no web engine). |
 | `target` | The framework `lepton new` scaffolded: `vanilla-ts`, `react`, `vue`, `svelte`, `solid`, `preact`, `lit`, `angular`, `astro` or `next`. A record; changing it changes nothing. |
 | `window` | Title and initial size. The size is read on every build *0.1.7*; the title is written into `src-lepton/main.zig` and the page by `lepton new`, and at run time the window follows the page's `<title>`. Default 1200×800, titled with `productName`. |
 | `permissions` | The commands the page may call, each by name. No wildcards. |

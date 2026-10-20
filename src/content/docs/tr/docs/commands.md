@@ -35,7 +35,7 @@ const name = new TextDecoder().decode(bytes);
 
 `invoke(komut, args?, options?)` bir `Uint8Array` ile çözülür. `args` bir `Uint8Array` ya da `ArrayBuffer`'dır; `options.signal` isteği iptal eder. Reddedilen ya da başarısız bir çağrı `InvokeError` fırlatır; `reason` durumu adlandırır: komut `permissions`'ta yoksa `denied`, ayrıca `unknown_command`, `too_large` (yanıt sığmadı), `malformed` (istek çerçevesi ya da argümanı komutun okuduğu biçimde değil), `failed` (işleyici hata döndürdü) ya da `no_reply` (yanıt çerçevesi gelmedi).
 
-Sayfa ve çekirdek JSON değil **ikili çerçeveler** alışverişi yapar: `invoke`, `lepton://localhost/__lepton/invoke` adresine tek bir istek çerçevesi gönderir ve yanıt çerçevesi cevaptır. Her derleme `src/lepton-commands.d.ts` dosyasını yeniden üretir, böylece komut adları tiplidir.
+Sayfa ve çekirdek JSON değil **ikili çerçeveler** alışverişi yapar: `invoke`, `lepton://localhost/__lepton/invoke` adresine (Windows'ta `http://lepton.localhost/__lepton/invoke`: WebView2, Microsoft'un yükleyicisi olmadan özel şema almıyor) tek bir istek çerçevesi gönderir ve yanıt çerçevesi cevaptır. Her derleme `src/lepton-commands.d.ts` dosyasını yeniden üretir, böylece komut adları tiplidir.
 
 ## Olaylar
 

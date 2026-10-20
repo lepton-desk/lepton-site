@@ -56,7 +56,7 @@ In the window, the starter's table filled from the core's shared-memory channel 
 
 ## Windows, and a schema for your editor
 
-0.1.9-beta.0 is also the first release with Windows in it: the webview path runs on WebView2, and `lepton package` writes a `.zip` and an MSI without WiX. The [changes page](/docs/changelog/) has the measurements. A cross-build from Linux used to fail at the link step, because the build handed the Windows binary the Linux libraries it had found on the machine. A `lepton build --windows` on Linux now produces a 1.1 MB `.exe` that imports only Windows' own DLLs. It has not been started on Windows yet; that is the next thing we check.
+0.1.9-beta.0 is also the first release with Windows in it: the webview path runs on WebView2, and `lepton package` writes a `.zip` and an MSI without WiX. The [changes page](/docs/changelog/) has the measurements. A cross-build from Linux used to fail at the link step, because the build handed the Windows binary the Linux libraries it had found on the machine. A `lepton build --windows` on Linux now produces a 1.1 MB `.exe` that imports only Windows' own DLLs. It has not been started on Windows yet; that is the next thing we check. *(Update: it has. Built from a Next.js project, it opened on Windows 10, its page reached the core, and closing it left no WebView2 process behind.)*
 
 Every project's `lepton.config.json` pointed its `$schema` at an address that never resolved, so editors could not load it. The schema is now [published with this site](/schema/config.json). It was checked against the configs of all 19 templates and 14 broken ones, and it flags a typo such as `devArg` that the CLI used to ignore. `lepton update` moves existing projects to the new address.
 

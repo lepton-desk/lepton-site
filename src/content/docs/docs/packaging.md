@@ -28,7 +28,7 @@ npm run lepton package
 
 Packages are reproducible: sorted entries, `root:root`, and `SOURCE_DATE_EPOCH`. Each archive gets a `.sha256` file. A format that can't be built is an error, never a silent skip.
 
-The application does not carry a browser: a React app from `lepton new` packaged to a 173,852-byte `.tar.gz` here, depending on the system's `wpewebkit`.
+The application does not carry a browser: a React app from `lepton new` packaged to a 176,601-byte `.tar.gz` here (0.1.9-beta.1, 2026-10-20), depending on the system's `wpewebkit`.
 
 ## `--verify`
 

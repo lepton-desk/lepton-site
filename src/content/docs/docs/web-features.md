@@ -56,3 +56,7 @@ In debug builds — `lepton dev` and `lepton run` without `--release` — F12 or
 
 - The window's title follows the page's `document.title`.
 - Before the engine starts, the application moves into its own systemd scope, `app-<identifier>-<pid>.scope`, so a system monitor shows it and its WebKit processes as one application, named by its desktop entry. Started from a launcher that already made one, nothing changes.
+
+## On Windows *0.1.9-beta.0*
+
+The same configuration and the same page code work under WebView2; what differs is who answers. `webPermissions` is applied to WebView2's permission requests (`ask` comes to the page the same way), an allowed `new Notification()` is shown by WebView2 itself, downloads go to the user's Downloads folder with the same `download.*` events, and `window.open` for the app's own page opens a second window that can call the core. Debug builds have WebView2's developer tools, its context menu and its browser keys; release builds turn them off. Lepton's systemd scope is Linux's: on Windows the engine's processes are already the app's children.

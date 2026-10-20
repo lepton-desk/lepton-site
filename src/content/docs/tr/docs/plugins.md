@@ -28,7 +28,7 @@ Fonksiyon adları Tauri'nin eklentileriyle aynıdır; kodu taşımak çoğunlukl
 
 Kapsam girdisi bir temel dizindir (`$APPDATA` `$APPCONFIG` `$APPCACHE` `$HOME` `$DOCUMENT` `$DOWNLOAD` `$DESKTOP` `$PICTURE` `$MUSIC` `$VIDEO`), isteğe bağlı olarak altındaki adlarla. Joker karakter yok, `..` yok. Kapsam yoksa her yol reddedilir. Kullanıcı dizinleri `user-dirs.dirs`'ten gelir; Türkçe masaüstünde `$DOCUMENT`, `~/Belgeler`'dir.
 
-Her yol çekirdeğin `RESOLVE_BENEATH`'iyle açılır; izinli bir dizindeki sembolik bağlantı dışarı çıkaramaz. Kapsam dışındaki yol `denied` ile reddedilir, `exists` de öyle — `false` yanıtı sayfaya bakamayacağı yerde ne olduğunu söylerdi.
+Linux'ta her yol çekirdeğin `RESOLVE_BENEATH`'iyle açılır; izinli bir dizindeki sembolik bağlantı dışarı çıkaramaz. Kapsam dışındaki yol `denied` ile reddedilir, `exists` de öyle — `false` yanıtı sayfaya bakamayacağı yerde ne olduğunu söylerdi.
 
 - `writeFile(yol, veri, { append: true })` sona ekler; `mkdir(yol, { recursive: true })` eksik üst dizinleri de oluşturur.
 - `remove(yol, { recursive: true })` dizini içindekilerle siler; içerideki bağlantılar izlenmez, kendileri silinir. *0.1.5*
@@ -43,7 +43,7 @@ Her yol çekirdeğin `RESOLVE_BENEATH`'iyle açılır; izinli bir dizindeki semb
 
 ## `@lepton-desk/plugin-dialog`
 
-`open(options)` ve `save(options)`; diyaloğu masaüstü xdg-desktop-portal ile çizer, böylece masaüstünün geri kalanına benzer. Her biri seçilen yol(lar) ile, kullanıcı vazgeçerse `null` ile çözülür; diyalog açık kaldıkça söz bekler.
+`open(options)` ve `save(options)`; diyaloğu Linux'ta masaüstü xdg-desktop-portal ile, Windows'ta Windows'un kendi dosya pencereleri çizer; böylece masaüstünün geri kalanına benzer. Her biri seçilen yol(lar) ile, kullanıcı vazgeçerse `null` ile çözülür; diyalog açık kaldıkça söz bekler.
 
 ```ts
 import { open, save } from "@lepton-desk/plugin-dialog";

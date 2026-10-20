@@ -5,10 +5,17 @@ description: What changed in each Lepton release, what is on trunk for the next 
 
 Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository.
 
+## On trunk, for 0.1.9-beta.2 *not released*
+
+- **Lepton picks a Zig 0.16 itself.** Zig 0.17 stops at Lepton's own `build.zig` (8 errors, measured), and Arch moved its `zig` to 0.17. The CLI now takes `LEPTON_ZIG` when set, else the first of `zig` and `zig-0.16` on `PATH` that reports 0.16, and names the version it found when none fits. The Arch packages depend on the AUR's `zig0.16-bin` and hand it to the CLI, so the system's `zig` can be upgraded. [System requirements](/docs/requirements/)
+- **Debug builds link again on an up-to-date Arch.** glibc 2.44's `crt1.o` carries an `.sframe` section that Zig 0.16's own linker, which Debug builds use, cannot read; `zig build` in a new webview project failed at its command-types helper, and the core's tests failed the same way. Every Linux binary now links through LLVM and LLD, which read it (as Zig 0.17's linker does).
+- **`--servo` is refused with its reason.** It used to exit 0 with a WPE WebKit binary, because nothing linked Servo. Servo itself is being built and measured in CI, outside any release: a page served on `lepton://` loaded, and a binary body the page posted reached the handler intact.
+
 ## 0.1.9-beta.1 *2026-10-20, beta*
 
-- **Every plugin runs on Windows.** `plugin-dialog` opens Windows' own file dialogs; `plugin-fs` keeps its scope with one `NtCreateFile` relative to the scope folder and refuses every link out of it, stricter than on Linux (a junction planted inside the folder opened without the flag and is refused with it, measured); `plugin-os` reports the Windows version, host name and locale. `$APPDATA`, `$APPCACHE` and the other folders come from Windows' Known Folders.
+- **The plugins on Windows.** `os`, `fs` and `dialog` were measured end to end in a WebView2 app; `clipboard` is built for Windows but not measured there yet (a window driven for the test has no focus, and `writeText` waits for it). `plugin-dialog` opens Windows' own file dialogs; `plugin-fs` keeps its scope with one `NtCreateFile` relative to the scope folder and refuses every link out of it, stricter than on Linux (a junction planted inside the folder opened without the flag and is refused with it, measured); `plugin-os` reports the Windows version, host name and locale. `$APPDATA`, `$APPCACHE` and the other folders come from Windows' Known Folders.
 - **No console error on a new project under WebView2.** WebView2 asks for `/favicon.ico` on every page; the 404 is now an empty 204.
+- **The `.exe` cross-built from Linux opens on Windows.** One built from a Next.js project opened on Windows 10: its table filled, its origin was `http://lepton.localhost`, and closing it left no WebView2 process behind.
 - 0.1.9-beta.0's Windows binary went out before the plugins ran there, and npm takes a version once, so every package moved to beta.1 together.
 
 ## 0.1.9-beta.0 *2026-10-19, beta*
@@ -30,7 +37,7 @@ Published under the `beta` tag: `npm create lepton-app@beta`, or with pnpm the e
 ### The rest
 
 - **A JSON schema for `lepton.config.json`,** [published with this site](/schema/config.json): every rule the CLI checks, and unknown fields flagged, so a typo such as `devArg` shows in the editor. Projects used to point at an address that never resolved.
-- **A Windows build from Linux links.** `lepton build --windows` handed the Windows binary the Linux libraries pkg-config found; it is now a 1.1 MB `.exe` that imports only Windows DLLs. Not started on Windows yet.
+- **A Windows build from Linux links.** `lepton build --windows` handed the Windows binary the Linux libraries pkg-config found; it is now a 1.1 MB `.exe` that imports only Windows DLLs. It had not been started on Windows at this release; it has since (0.1.9-beta.1).
 - `create-lepton-app` names WebView2, not WPE WebKit, when the engine is missing on Windows.
 
 ## 0.1.8 *2026-10-18*

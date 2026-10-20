@@ -24,7 +24,7 @@ description: lepton.config.json, alan alan.
 | `productName` | Masaüstünün gösterdiği ad. İkilinin adı bundan türer: küçük harf, diğer karakter dizileri tek `-` (`My App` → `my-app`). |
 | `identifier` | Uygulama kimliği: masaüstü girdisi, pencerenin `app_id`'si, veri dizinleri (`~/.local/share/<identifier>`). `lepton new`'den sonra değişirse yalnız masaüstü girdisi ve paket adları izler; pencerenin `app_id`'si, veri dizinleri ve systemd kapsamı `src-lepton/main.zig`'e yazılan kimlikte kalır. |
 | `version` | Paket adlarında kullanılır. Varsayılan `0.1.0`. |
-| `renderPath` | `webview` (sayfanız WPE WebKit'te; varsayılan) ya da `native` (çekirdek çizer, web motoru yok). |
+| `renderPath` | `webview` (sayfanız Linux'ta WPE WebKit'te, Windows'ta WebView2'de; varsayılan) ya da `native` (çekirdek çizer, web motoru yok). |
 | `target` | `lepton new`'in kurduğu çatı: `vanilla-ts`, `react`, `vue`, `svelte`, `solid`, `preact`, `lit`, `angular`, `astro` ya da `next`. Yalnız kayıt; değiştirmek bir şey değiştirmez. |
 | `window` | Başlık ve ilk boyut. Boyut her derlemede okunur *0.1.7*; başlığı `lepton new` `src-lepton/main.zig`'e ve sayfaya yazar, çalışırken pencere sayfanın `<title>`'ını izler. Varsayılan 1200×800, başlık `productName`. |
 | `permissions` | Sayfanın çağırabileceği komutlar, her biri adıyla. Joker karakter yok. |

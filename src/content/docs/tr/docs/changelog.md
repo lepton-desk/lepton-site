@@ -5,10 +5,17 @@ description: Her Lepton sürümünde ne değişti, bir sonraki sürüm için tru
 
 Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı.
 
+## Trunk'ta, 0.1.9-beta.2 için *yayınlanmadı*
+
+- **Lepton bir Zig 0.16'yı kendisi seçiyor.** Zig 0.17, Lepton'ın kendi `build.zig`'inde duruyor (8 hata, ölçüldü) ve Arch `zig`'ini 0.17'ye taşıdı. CLI artık `LEPTON_ZIG` verilmişse onu, yoksa `PATH`'teki `zig` ve `zig-0.16`'dan 0.16 diyen ilkini kullanıyor; uygun yoksa bulduğu sürümü söylüyor. Arch paketleri AUR'daki `zig0.16-bin`'e bağlı ve onu CLI'ye veriyor; sistemin `zig`'i güncellenebilir. [Sistem gereksinimleri](/tr/docs/requirements/)
+- **Güncel Arch'ta hata ayıklama derlemeleri yeniden bağlanıyor.** glibc 2.44'ün `crt1.o`'su, Zig 0.16'nın hata ayıklama derlemelerinde kullandığı kendi bağlayıcısının okuyamadığı bir `.sframe` bölümü taşıyor; yeni bir webview projesinde `zig build` komut tiplerini üreten yardımcıda düştü, çekirdeğin testleri de aynı yerde. Artık her Linux ikilisi bu bölümü okuyabilen LLVM ve LLD ile bağlanıyor (Zig 0.17'nin bağlayıcısı da okuyor).
+- **`--servo` gerekçesiyle reddediliyor.** Servo'yu hiçbir şey bağlamadığı için 0 ile çıkıp WPE WebKit'li bir ikili veriyordu. Servo'nun kendisi, hiçbir sürümün parçası olmadan CI'da derlenip ölçülüyor: `lepton://` üzerinden sunulan bir sayfa yüklendi ve sayfanın gönderdiği ikili gövde işleyiciye bozulmadan ulaştı.
+
 ## 0.1.9-beta.1 *2026-10-20, beta*
 
-- **Her eklenti Windows'ta çalışıyor.** `plugin-dialog` Windows'un kendi dosya pencerelerini açıyor; `plugin-fs` kapsamını kapsam klasörüne göre tek bir `NtCreateFile` ile koruyor ve klasörden dışarı çıkan her bağlantıyı reddediyor; Linux'takinden de katı (klasörün içine konmuş bir junction bayrak olmadan açıldı, bayrakla reddediliyor; ölçüldü). `plugin-os` Windows sürümünü, makine adını ve yerel ayarı veriyor. `$APPDATA`, `$APPCACHE` ve diğer klasörler Windows'un Known Folders'ından geliyor.
+- **Windows'ta eklentiler.** `os`, `fs` ve `dialog` bir WebView2 uygulamasında uçtan uca ölçüldü; `clipboard` Windows için yazıldı ama orada henüz ölçülmedi (test için sürülen pencerede odak yok, `writeText` de odağı bekliyor). `plugin-dialog` Windows'un kendi dosya pencerelerini açıyor; `plugin-fs` kapsamını kapsam klasörüne göre tek bir `NtCreateFile` ile koruyor ve klasörden dışarı çıkan her bağlantıyı reddediyor; Linux'takinden de katı (klasörün içine konmuş bir junction bayrak olmadan açıldı, bayrakla reddediliyor; ölçüldü). `plugin-os` Windows sürümünü, makine adını ve yerel ayarı veriyor. `$APPDATA`, `$APPCACHE` ve diğer klasörler Windows'un Known Folders'ından geliyor.
 - **WebView2'de yeni projede konsol hatası yok.** WebView2 her sayfada `/favicon.ico` istiyor; 404 artık boş bir 204.
+- **Linux'tan çapraz derlenen `.exe` Windows'ta açılıyor.** Bir Next.js projesinden derlenen Windows 10'da açıldı: tablosu doldu, kökeni `http://lepton.localhost` idi ve kapanınca geride WebView2 süreci kalmadı.
 - 0.1.9-beta.0'ın Windows ikilisi eklentiler orada çalışmadan önce yayımlanmıştı ve npm bir sürümü bir kez alıyor; bu yüzden bütün paketler birlikte beta.1'e geçti.
 
 ## 0.1.9-beta.0 *2026-10-19, beta*
@@ -30,7 +37,7 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
 ### Diğerleri
 
 - **`lepton.config.json` için bir JSON şeması,** [bu siteyle yayında](/schema/config.json): CLI'nin denetlediği her kural ve bilinmeyen alanların işaretlenmesi; `devArg` gibi bir yazım hatası editörde görünüyor. Projeler eskiden hiç çözülmeyen bir adrese gösteriyordu.
-- **Linux'tan Windows derlemesi bağlanıyor.** `lepton build --windows`, Windows ikilisine pkg-config'in bulduğu Linux kütüphanelerini veriyordu; artık yalnızca Windows DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`. Henüz Windows'ta açılmadı.
+- **Linux'tan Windows derlemesi bağlanıyor.** `lepton build --windows`, Windows ikilisine pkg-config'in bulduğu Linux kütüphanelerini veriyordu; artık yalnızca Windows DLL'lerini içe aktaran 1,1 MB'lık bir `.exe`. Bu sürümde henüz Windows'ta açılmamıştı; sonra açıldı (0.1.9-beta.1).
 - `create-lepton-app`, Windows'ta motor eksikse WPE WebKit'i değil WebView2'yi söylüyor.
 
 ## 0.1.8 *2026-10-18*

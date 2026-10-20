@@ -35,7 +35,7 @@ const name = new TextDecoder().decode(bytes);
 
 `invoke(command, args?, options?)` resolves with a `Uint8Array`. `args` is a `Uint8Array` or an `ArrayBuffer`; `options.signal` aborts the request. A refused or failed call rejects with `InvokeError`, whose `reason` names the status: `denied` when `permissions` does not list the command, `unknown_command`, `too_large` (the reply did not fit), `malformed` (the request frame or its argument was not what the command reads), `failed` (the handler returned an error), or `no_reply` (no reply frame arrived).
 
-The page and the core exchange **binary frames**, not JSON: `invoke` posts one request frame to `lepton://localhost/__lepton/invoke` and the reply frame is the response. Every build regenerates `src/lepton-commands.d.ts`, so the command names are typed.
+The page and the core exchange **binary frames**, not JSON: `invoke` posts one request frame to `lepton://localhost/__lepton/invoke` (on Windows `http://lepton.localhost/__lepton/invoke`, since WebView2 takes no custom scheme without Microsoft's loader) and the reply frame is the response. Every build regenerates `src/lepton-commands.d.ts`, so the command names are typed.
 
 ## Events
 

@@ -28,7 +28,7 @@ npm run lepton package
 
 Paketler tekrarlanabilir: sıralı girdiler, `root:root` ve `SOURCE_DATE_EPOCH`. Her arşive bir `.sha256` dosyası eşlik eder. Yazılamayan bir biçim hatadır; sessizce atlanmaz.
 
-Uygulama tarayıcı taşımaz: `lepton new` ile oluşturulan bir React uygulaması burada 173 852 baytlık bir `.tar.gz` oldu ve sistemin `wpewebkit` paketine bağlı.
+Uygulama tarayıcı taşımaz: `lepton new` ile oluşturulan bir React uygulaması burada 176 601 baytlık bir `.tar.gz` oldu (0.1.9-beta.1, 2026-10-20) ve sistemin `wpewebkit` paketine bağlı.
 
 ## `--verify`
 
