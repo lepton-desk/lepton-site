@@ -70,7 +70,11 @@
       "properties": {
         "title": { "type": "string", "pattern": "^[^\\u0000-\\u001f\\u007f]*$" },
         "width": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 },
-        "height": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 }
+        "height": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "decorations": {
+          "description": "false: no system title bar; the page draws its own and moves the window with window.start_drag (Windows). Default true.",
+          "type": "boolean"
+        }
       }
     },
     "permissions": {
