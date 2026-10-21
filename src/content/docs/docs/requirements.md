@@ -13,6 +13,7 @@ Lepton runs on **Linux**, and on **Windows** through WebView2 in the 0.1.9 beta.
 | Display | Wayland or X11 | The core opens its own window on either. |
 | Web engine (webview apps) | WPE WebKit 2.54 or newer, with its WPE Platform API | The API the core uses; stable and on by default since 2.54. Native apps need no engine. |
 | To build WPE WebKit 2.54 | GLib 2.70, ICU 70.1, GStreamer 1.18.4, Wayland 1.20, libinput 1.19; Clang 18 or GCC 12 | WebKit's own build checks. This is what decides which distributions can have 2.54 at all. |
+| Servo instead (`--servo`, experimental) *0.1.9-beta.2* | Linux x86-64, X11 (XWayland on Wayland); `@lepton-desk/servo-linux-x64` in the project; libX11 and libxkbcommon with their headers (`libx11-dev libxkbcommon-dev` on Debian and Ubuntu; part of `libx11` and `libxkbcommon` on Arch) | Servo draws into the core's X11 window, and the core reads keys through Xlib and xkbcommon. Windows always uses WebView2. |
 
 To **develop**, add [Zig 0.16 or 0.17](https://ziglang.org/download/), Node 20 or newer, and npm, pnpm, Yarn or Bun. `lepton info` checks all of it. *0.1.9-beta.2* The CLI takes the first of `zig`, `zig-0.17` and `zig-0.16` on `PATH` that is 0.16 or 0.17, or the one `LEPTON_ZIG` names, and says so when it finds only another version. Both build the same core, plugins and projects (measured: core tests, a webview app with every plugin, a native app, and the Windows build, with each).
 

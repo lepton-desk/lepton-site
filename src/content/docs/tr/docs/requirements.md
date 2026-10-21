@@ -13,6 +13,7 @@ Lepton **Linux**'ta, 0.1.9 betasında da WebView2 ile **Windows**'ta çalışıy
 | Görüntü | Wayland ya da X11 | Çekirdek kendi penceresini ikisinde de açar. |
 | Web motoru (webview uygulamaları) | WPE Platform API'siyle WPE WebKit 2.54 ya da üstü | Çekirdeğin kullandığı API; 2.54'ten beri kararlı ve varsayılan. Native uygulamalar motor istemez. |
 | WPE WebKit 2.54'ü derlemek için | GLib 2.70, ICU 70.1, GStreamer 1.18.4, Wayland 1.20, libinput 1.19; Clang 18 ya da GCC 12 | WebKit'in kendi derleme denetimleri. Hangi dağıtımda 2.54 olabileceğini bu belirler. |
+| Yerine Servo (`--servo`, deneysel) *0.1.9-beta.2* | Linux x86-64, X11 (Wayland'de XWayland); projede `@lepton-desk/servo-linux-x64`; başlıklarıyla libX11 ve libxkbcommon (Debian ve Ubuntu'da `libx11-dev libxkbcommon-dev`; Arch'ta `libx11` ve `libxkbcommon`'un içinde) | Servo çekirdeğin X11 penceresine çizer, çekirdek tuşları Xlib ve xkbcommon ile okur. Windows her zaman WebView2 kullanır. |
 
 **Geliştirmek** için ayrıca [Zig 0.16 ya da 0.17](https://ziglang.org/download/), Node 20 ya da üstü ve npm, pnpm, Yarn veya Bun gerekir. `lepton info` hepsini denetler. *0.1.9-beta.2* CLI, `PATH`'teki `zig`, `zig-0.17` ve `zig-0.16`'dan 0.16 ya da 0.17 olan ilkini ya da `LEPTON_ZIG`'in gösterdiğini alır; yalnız başka bir sürüm bulursa bunu söyler. İkisi de aynı çekirdeği, eklentileri ve projeleri derler (ölçüldü: her biriyle çekirdek testleri, bütün eklentileriyle bir webview uygulaması, bir yerel uygulama ve Windows derlemesi).
 
