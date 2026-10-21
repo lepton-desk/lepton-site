@@ -117,6 +117,6 @@ The menu closes, choosing nothing, on Escape, a press outside it, or when the ap
 | `decorations: false` | yes; resize borders, shadow and snap stay | yes | not yet: the title bar stays |
 | `dragRegion` / `window.start_drag` | yes, and CSS `app-region: drag` | yes | not yet (`failed`) |
 | `popupMenu` / `window.menu` | the system's menu | Lepton's menu | not yet (`failed`) |
-| Title bar follows the page | dark or light from `color-scheme` and `theme-color` (measured on Windows 10); Windows 11 is also given the colour itself (not yet measured there) | no | no |
+| Title bar follows the page | dark or light from `color-scheme` and `theme-color` (measured on Windows 10); on Windows 11 the bar takes the colour itself (measured on Windows Server 2025, build 26100: `#ffd700` drew an `rgb(255, 215, 0)` bar with black text) | no | no |
 
 On Windows the title bar follows the page with nothing to configure: `<meta name="theme-color">` and CSS `color-scheme`, as they change. On Linux the compositor draws the title bar and offers no way to colour it (measured on COSMIC). WPE WebKit's own Wayland platform cannot leave the frame to the page or move the window for it; Lepton's own WPE platform, which will, is planned for 0.1.9-beta.3.

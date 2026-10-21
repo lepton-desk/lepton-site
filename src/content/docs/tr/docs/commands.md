@@ -117,6 +117,6 @@ Menü Esc'de, dışına basılınca ya da uygulama odağı kaybedince bir şey s
 | `decorations: false` | evet; boyutlandırma kenarları, gölge ve yaslama kalır | evet | henüz değil: başlık çubuğu kalır |
 | `dragRegion` / `window.start_drag` | evet, CSS `app-region: drag` da | evet | henüz değil (`failed`) |
 | `popupMenu` / `window.menu` | sistemin menüsü | Lepton'ın menüsü | henüz değil (`failed`) |
-| Başlık çubuğu sayfayı izler | `color-scheme` ve `theme-color`'dan koyu ya da açık (Windows 10'da ölçüldü); Windows 11'e rengin kendisi de verilir (orada henüz ölçülmedi) | hayır | hayır |
+| Başlık çubuğu sayfayı izler | `color-scheme` ve `theme-color`'dan koyu ya da açık (Windows 10'da ölçüldü); Windows 11'de çubuk rengin kendisini alır (Windows Server 2025, derleme 26100'de ölçüldü: `#ffd700` siyah yazılı `rgb(255, 215, 0)` bir çubuk çizdi) | hayır | hayır |
 
 Windows'ta başlık çubuğu hiçbir ayar olmadan sayfayı izler: `<meta name="theme-color">` ve CSS `color-scheme`, değiştikçe. Linux'ta başlık çubuğunu bileşimci çizer ve rengini değiştirmenin yolunu vermez (COSMIC'te ölçüldü). WPE WebKit'in kendi Wayland platformu çerçeveyi sayfaya bırakamıyor, pencereyi onun için taşıyamıyor; bunları yapacak olan Lepton'ın kendi WPE platformu 0.1.9-beta.3 için planlandı.
