@@ -44,6 +44,12 @@ Yanıt yerleşik `permission.respond` komutuyla gider; onu `permissions`'a ekley
 
 `notifications` izinliyse `new Notification(başlık, { body })` masaüstüne `org.freedesktop.Notifications` üzerinden, uygulamanın adı ve masaüstü girdisiyle ulaşır.
 
+## Depolama ve çerezler *0.1.9-beta.2*
+
+`localStorage`, `sessionStorage` ve IndexedDB sayfanın verisini uygulamanın kendi veri klasöründe (`$APPDATA`), başka her uygulamadan ayrı tutar; veri bir sonraki açılışta yerindedir (WPE WebKit ve Servo'da ölçüldü).
+
+Paketlenmiş sayfa `lepton://localhost/`'tan sunulur ve Linux'taki iki motor da HTML standardının dediği gibi http(s) dışındaki bir şemadaki sayfaya çerez vermez: `document.cookie` `""` okur, yazılanı atar. Lepton o sayfa için `document.cookie`'yi kendisi tanımlar ve `localStorage`'da `__lepton.cookies` altında tutar: `Max-Age`, `Expires`, `Max-Age=0` ile silme ve `Path` tarayıcıdaki gibi çalışır; betik `HttpOnly` çerez koyamaz, `localhost` dışındaki bir `Domain` reddedilir, tarayıcıdaki gibi. Çerezler yalnız sayfanındır: isteklerle gönderilmez, `localStorage.clear()` onları da siler. Dev sunucusundan gelen sayfada ve Windows'taki her sayfada (`http://lepton.localhost`) motorun kendi çerezleri vardır.
+
 ## Bağlantılar ve yeni pencereler
 
 Kullanıcının tıkladığı web bağlantısı — `localhost`, `127.0.0.1` ya da `[::1]` dışındaki bir adrese `http(s)`, ya da `mailto:`, `tel:` ve diğer şemalar — `OpenURI` portalı üzerinden masaüstünün varsayılan uygulamasında açılır; pencere sayfanızda kalır. `window.open` da aynı kuralı izler: dış adres masaüstüne gider ve `null` döner; uygulamanın kendi sayfası aynı motorda ikinci bir pencere açar ve o pencere de çekirdeği ilki gibi çağırabilir.

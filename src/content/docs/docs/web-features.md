@@ -44,6 +44,12 @@ Answering is the built-in command `permission.respond`, so list it under `permis
 
 With `notifications` allowed, `new Notification(title, { body })` reaches the desktop through `org.freedesktop.Notifications`, under the application's name and desktop entry.
 
+## Storage and cookies *0.1.9-beta.2*
+
+`localStorage`, `sessionStorage` and IndexedDB keep the page's data in the application's own data folder (`$APPDATA`), apart from every other application, and it is still there at the next start (measured on WPE WebKit and Servo).
+
+A packaged page is served from `lepton://localhost/`, and both Linux engines give a page on a scheme other than http(s) no cookies, as the HTML standard says they should: `document.cookie` reads `""` and drops what is written. Lepton defines `document.cookie` for that page itself, kept in `localStorage` under `__lepton.cookies`: `Max-Age`, `Expires`, deleting with `Max-Age=0` and `Path` work as in a browser; a script cannot set an `HttpOnly` cookie, and a `Domain` other than `localhost` is refused, as in a browser. The cookies are the page's alone: requests do not carry them, and `localStorage.clear()` clears them too. A page from the dev server and every page on Windows (`http://lepton.localhost`) have the engine's own cookies.
+
 ## Links and new windows
 
 A web link the user clicks — `http(s)` to any host other than `localhost`, `127.0.0.1` or `[::1]`, or `mailto:`, `tel:` and other schemes — opens in the desktop's default application through the `OpenURI` portal; the window stays on your page. `window.open` follows the same rule: an outside address goes to the desktop and returns `null`, the application's own page opens a second window on the same engine, which can call the core like the first.
