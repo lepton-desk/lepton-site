@@ -26,7 +26,7 @@ description: lepton.config.json, field by field.
 | `version` | Used in package names. Default `0.1.0`. |
 | `renderPath` | `webview` (your page in WPE WebKit on Linux, WebView2 on Windows; the default) or `native` (drawn by the core, no web engine). |
 | `target` | The framework `lepton new` scaffolded: `vanilla-ts`, `react`, `vue`, `svelte`, `solid`, `preact`, `lit`, `angular`, `astro` or `next`. A record; changing it changes nothing. |
-| `window` | Title and initial size. The size is read on every build *0.1.7*; the title is written into `src-lepton/main.zig` and the page by `lepton new`, and at run time the window follows the page's `<title>`. Default 1200×800, titled with `productName`. |
+| `window` | Title and initial size. The size is read on every build *0.1.7*; the title is written into `src-lepton/main.zig` and the page by `lepton new`, and at run time the window follows the page's `<title>`. Default 1200×800, titled with `productName`. `"decorations": false` leaves the title bar to the page *0.1.9-beta.2* ([Commands](/docs/commands/#your-own-title-bar-and-menus-019-beta2)). On a screen too small for the size, the window is fitted to the work area and centred. |
 | `permissions` | The commands the page may call, each by name. No wildcards. |
 | `plugins` | Settings for plugins, by the plugin's name, e.g. `plugins.fs.scope`. |
 | `deepLinks` | URL schemes the app opens, e.g. `["myapp"]` for `myapp://…` *0.1.9-beta.2*; see below. |

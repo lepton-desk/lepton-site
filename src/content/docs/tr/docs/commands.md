@@ -74,6 +74,9 @@ const stop = await listen("notes.saved", (event) => {
 | `window.close` | Başlık çubuğundaki kapatma düğmesi gibi uygulamadan kapanmasını ister. |
 | `window.minimize`, `window.maximize`, `window.unmaximize` | Adlarındaki işi yapar. Wayland'de küçültülmüş pencereyi yalnız kullanıcı geri getirebilir. |
 | `window.state` | Durum bitleri: büyütülmüş, tam ekran, odakta. |
+| `window.start_drag` | Sayfanın kendi başlık çubuğundaki bir basıştan pencereyi işaretçiyle taşır. *0.1.9-beta.2* |
+| `window.menu` | İşaretçide yerel bir menü açar, seçilen öğeyle yanıtlar. *0.1.9-beta.2* |
+| `app.args` | Uygulamanın başlatıldığı argümanlar ve sonraki başlatmaların devrettikleri (son 8). Yeni projenin izinlerinde; kayıtlarda maskelenir. *0.1.9-beta.2* |
 | `permission.respond` | Bir `permission.request`'i yanıtlar. *0.1.5* |
 
 `@lepton-desk/api/window` pencere komutlarını sarar:
@@ -87,3 +90,33 @@ await onResized(({ width, height }) => console.log(width, height)); // mantıksa
 ```
 
 `window.state` ve `window.resized` olaylarını dinlemek izin gerektirmez.
+
+## Kendi başlık çubuğunuz ve menüleriniz *0.1.9-beta.2*
+
+`"window": { "decorations": false }` ile sistem başlık çubuğu çizmez, sayfa kendisininkini çizer. `dragRegion` bir öğeyi çubuk yapar: üzerine basmak (içindeki düğme, bağlantı ya da alan dışında) pencereyi taşır, çift tıklamak büyütür ya da geri alır. `popupMenu` işaretçide yerel bir menü açar, seçilen `id` ile, menü kapatıldıysa `null` ile döner.
+
+```ts
+import { dragRegion, popupMenu } from "@lepton-desk/api/window";
+
+dragRegion(document.querySelector("header")!);          // window.start_drag gerekir
+addEventListener("contextmenu", async (event) => {
+  event.preventDefault();
+  const chosen = await popupMenu([                       // window.menu gerekir
+    { id: 1, label: "Kopyala" },
+    { id: 2, label: "Yapıştır", disabled: true },
+    { separator: true },
+    { id: 3, label: "Satır numaraları", checked: true },
+  ]);
+});
+```
+
+Menü Esc'de, dışına basılınca ya da uygulama odağı kaybedince bir şey seçmeden kapanır. Hangisi nerede çalışır:
+
+| | Windows (WebView2) | Linux, Servo | Linux, WPE WebKit |
+| --- | --- | --- | --- |
+| `decorations: false` | evet; boyutlandırma kenarları, gölge ve yaslama kalır | evet | henüz değil: başlık çubuğu kalır |
+| `dragRegion` / `window.start_drag` | evet, CSS `app-region: drag` da | evet | henüz değil (`failed`) |
+| `popupMenu` / `window.menu` | sistemin menüsü | Lepton'ın menüsü | henüz değil (`failed`) |
+| Başlık çubuğu sayfayı izler | `color-scheme` ve `theme-color`'dan koyu ya da açık (Windows 10'da ölçüldü); Windows 11'e rengin kendisi de verilir (orada henüz ölçülmedi) | hayır | hayır |
+
+Windows'ta başlık çubuğu hiçbir ayar olmadan sayfayı izler: `<meta name="theme-color">` ve CSS `color-scheme`, değiştikçe. Linux'ta başlık çubuğunu bileşimci çizer ve rengini değiştirmenin yolunu vermez (COSMIC'te ölçüldü). WPE WebKit'in kendi Wayland platformu çerçeveyi sayfaya bırakamıyor, pencereyi onun için taşıyamıyor; bunları yapacak olan Lepton'ın kendi WPE platformu 0.1.9-beta.3 için planlandı.

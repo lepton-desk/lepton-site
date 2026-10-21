@@ -74,6 +74,9 @@ The core has its own commands. Like yours, each works only when `permissions` li
 | `window.close` | Asks the application to close, as the titlebar's close button does. |
 | `window.minimize`, `window.maximize`, `window.unmaximize` | As named. On Wayland only the user can restore a minimized window. |
 | `window.state` | The state bits: maximized, fullscreen, focused. |
+| `window.start_drag` | Moves the window with the pointer, from a press on the page's own title bar *0.1.9-beta.2* |
+| `window.menu` | Shows a native menu at the pointer and answers with the chosen item *0.1.9-beta.2* |
+| `app.args` | The arguments the app was started with, and those later starts handed on (the last 8). In a new project's permissions; masked in recordings *0.1.9-beta.2* |
 | `permission.respond` | Answers a `permission.request` *0.1.5* |
 
 `@lepton-desk/api/window` wraps the window commands:
@@ -87,3 +90,33 @@ await onResized(({ width, height }) => console.log(width, height)); // logical p
 ```
 
 Listening to `window.state` and `window.resized` needs no permission.
+
+## Your own title bar and menus *0.1.9-beta.2*
+
+With `"window": { "decorations": false }` the system draws no title bar and the page draws its own. `dragRegion` makes an element the bar: a press on it (not on a button, link or field inside) moves the window, a double click maximizes or restores it. `popupMenu` shows a native menu at the pointer and resolves with the chosen `id`, or `null` when the menu was dismissed.
+
+```ts
+import { dragRegion, popupMenu } from "@lepton-desk/api/window";
+
+dragRegion(document.querySelector("header")!);          // needs window.start_drag
+addEventListener("contextmenu", async (event) => {
+  event.preventDefault();
+  const chosen = await popupMenu([                       // needs window.menu
+    { id: 1, label: "Copy" },
+    { id: 2, label: "Paste", disabled: true },
+    { separator: true },
+    { id: 3, label: "Line numbers", checked: true },
+  ]);
+});
+```
+
+The menu closes, choosing nothing, on Escape, a press outside it, or when the app loses the focus. Where each part works:
+
+| | Windows (WebView2) | Linux, Servo | Linux, WPE WebKit |
+| --- | --- | --- | --- |
+| `decorations: false` | yes; resize borders, shadow and snap stay | yes | not yet: the title bar stays |
+| `dragRegion` / `window.start_drag` | yes, and CSS `app-region: drag` | yes | not yet (`failed`) |
+| `popupMenu` / `window.menu` | the system's menu | Lepton's menu | not yet (`failed`) |
+| Title bar follows the page | dark or light from `color-scheme` and `theme-color` (measured on Windows 10); Windows 11 is also given the colour itself (not yet measured there) | no | no |
+
+On Windows the title bar follows the page with nothing to configure: `<meta name="theme-color">` and CSS `color-scheme`, as they change. On Linux the compositor draws the title bar and offers no way to colour it (measured on COSMIC). WPE WebKit's own Wayland platform cannot leave the frame to the page or move the window for it; Lepton's own WPE platform, which will, is planned for 0.1.9-beta.3.
