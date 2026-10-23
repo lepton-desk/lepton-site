@@ -69,5 +69,5 @@ npm run lepton package    # .tar.gz on Linux, .zip on Windows; .deb, Arch and MS
 See [Packaging](/docs/packaging/) for the formats, and [The CLI](/docs/cli/) for every command.
 
 :::note[Early]
-Lepton is at 0.1. The webview path works on the machines it is built and tested on, but is not yet verified end to end everywhere. Windows is in the 0.1.9 beta, with WebView2 only (no native drawing yet); macOS is planned, not built.
+Lepton is at 0.1. The webview path works on the machines it is built and tested on, but is not yet verified end to end everywhere. Windows is in the 0.1.9 beta, with WebView2 only (no native drawing yet); macOS is not supported.
 :::

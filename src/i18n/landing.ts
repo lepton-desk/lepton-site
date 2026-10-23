@@ -3,7 +3,7 @@
 
 export type Lang = 'en' | 'tr';
 
-export type Status = 'works' | 'experimental' | 'next' | 'planned';
+export type Status = 'works' | 'experimental' | 'next' | 'planned' | 'unsupported';
 
 export interface LandingText {
 	htmlLang: string;
@@ -93,7 +93,6 @@ export const landing: Record<Lang, LandingText> = {
 			rows: [
 				{ name: 'WPE WebKit', where: 'Linux', note: 'The engine Lepton uses today.', status: 'works' },
 				{ name: 'Servo', where: 'Linux', note: 'Optional, for those who’d rather avoid WebKit. Servo doesn’t cover the whole web yet, so it stays experimental. It is not in a release: --servo says so rather than building with WPE WebKit. Built in CI, it already serves a lepton:// page and carries the page’s calls to the core intact.', status: 'experimental' },
-				{ name: 'WKWebView', where: 'macOS', note: 'Planned.', status: 'planned' },
 				{ name: 'WebView2', where: 'Windows', note: 'In the 0.1.9 beta: apps build, run and package on Windows 10 and 11, without Microsoft’s loader. Chromium-based, but it comes with Windows; your app doesn’t carry it.', status: 'next' },
 			],
 		},
@@ -139,11 +138,11 @@ export const landing: Record<Lang, LandingText> = {
 				{ item: 'lepton update', state: 'works', note: 'Brings a project’s packages, core and src-lepton/ files to the new version and keeps your edits.' },
 				{ item: 'Native render path', state: 'works', note: 'Drawn by the core on the GPU with GLES 3, no web engine; shared memory without a GPU.' },
 				{ item: 'Windows', state: 'next', note: 'WebView2 apps build, run and package as .zip and an MSI made without WiX. The os, fs and dialog plugins were measured there, clipboard not yet; native drawing comes later.' },
-				{ item: 'macOS', state: 'planned', note: 'WKWebView.' },
+				{ item: 'macOS', state: 'unsupported', note: 'Signing and notarizing need a paid Apple account and Mac hardware; a single maintainer cannot keep that up.' },
 				{ item: 'Native UI with web tech', state: 'planned', note: 'React, HTML/CSS and JS drawn by Lepton itself, 0.2.0.' },
 				{ item: 'Vulkan rendering', state: 'planned', note: '0.2.0. Its floor is measured on a Radeon R7 240: Vulkan 1.3.' },
 			],
-			labels: { works: 'works', experimental: 'experimental', next: 'in the beta', planned: 'planned' },
+			labels: { works: 'works', experimental: 'experimental', next: 'in the beta', planned: 'planned', unsupported: 'not supported' },
 			memory: 'Web engines use memory, and WebView RAM can be high. We know that, and we won’t pretend otherwise.',
 		},
 		close: {
@@ -182,7 +181,6 @@ export const landing: Record<Lang, LandingText> = {
 			rows: [
 				{ name: 'WPE WebKit', where: 'Linux', note: 'Lepton’un bugün kullandığı motor.', status: 'works' },
 				{ name: 'Servo', where: 'Linux', note: 'WebKit istemeyenler için isteğe bağlı. Servo henüz webin tamamını karşılamıyor, bu yüzden deneysel. Henüz bir sürümde yok: --servo, WPE WebKit ile derlemek yerine bunu söylüyor. CI’da derlenen Servo, lepton:// üzerinden bir sayfa sunuyor ve sayfanın çekirdeğe çağrılarını bozulmadan taşıyor.', status: 'experimental' },
-				{ name: 'WKWebView', where: 'macOS', note: 'Planlanıyor.', status: 'planned' },
 				{ name: 'WebView2', where: 'Windows', note: '0.1.9 betasında: uygulamalar Windows 10 ve 11’de, Microsoft’un yükleyicisi olmadan derleniyor, çalışıyor ve paketleniyor. Chromium tabanlı ama Windows’la gelir; uygulamanız onu taşımaz.', status: 'next' },
 			],
 		},
@@ -228,11 +226,11 @@ export const landing: Record<Lang, LandingText> = {
 				{ item: 'lepton update', state: 'works', note: 'Projenin paketlerini, çekirdeğini ve src-lepton/ dosyalarını yeni sürüme getirir, düzenlemelerinizi korur.' },
 				{ item: 'Yerel çizim yolu', state: 'works', note: 'Web motoru olmadan, çekirdek GPU’da GLES 3 ile çizer; GPU yoksa paylaşımlı bellekle.' },
 				{ item: 'Windows', state: 'next', note: 'WebView2 uygulamaları derleniyor, çalışıyor; .zip ve WiX’siz bir MSI olarak paketleniyor. os, fs ve dialog eklentileri orada ölçüldü, clipboard henüz değil; yerel çizim sonra.' },
-				{ item: 'macOS', state: 'planned', note: 'WKWebView.' },
+				{ item: 'macOS', state: 'unsupported', note: 'İmzalama ve noter onayı ücretli bir Apple hesabı ve Mac donanımı istiyor; tek geliştirici bunu sürdüremez.' },
 				{ item: 'Web teknolojisiyle yerel arayüz', state: 'planned', note: 'React, HTML/CSS ve JS’yi Lepton kendisi çizer, 0.2.0.' },
 				{ item: 'Vulkan ile çizim', state: 'planned', note: '0.2.0. Tabanı bir Radeon R7 240’ta ölçüldü: Vulkan 1.3.' },
 			],
-			labels: { works: 'çalışıyor', experimental: 'deneysel', next: 'betada', planned: 'planlanıyor' },
+			labels: { works: 'çalışıyor', experimental: 'deneysel', next: 'betada', planned: 'planlanıyor', unsupported: 'desteklenmiyor' },
 			memory: 'Web motorları bellek kullanır; WebView’in RAM tüketimi yüksek olabilir. Bunu biliyoruz ve saklamıyoruz.',
 		},
 		close: {

@@ -3,7 +3,7 @@ title: System requirements
 description: What a machine needs to build a Lepton app, and what a user's machine needs to run one, on each platform.
 ---
 
-Lepton runs on **Linux**, and on **Windows** through WebView2 in the 0.1.9 beta. macOS (through WKWebView) is planned, not built. The floors below come from the tools themselves, checked on 2026-10-17; they are not guesses at what usually works.
+Lepton runs on **Linux**, and on **Windows** through WebView2 in the 0.1.9 beta. macOS is not supported. The floors below come from the tools themselves, checked on 2026-10-17; they are not guesses at what usually works.
 
 ## Linux
 
@@ -55,6 +55,6 @@ Through WebView2, the Chromium-based engine that comes with Windows; your app do
 - **Windows 10 (1709 and later, and the LTSC releases) and Windows 11**: the versions Microsoft supports WebView2 on.
 - **Windows 8.1, 8 and 7: not supported.** WebView2 stopped at version 109 on them in January 2023 and gets no security fixes there; a web app on an unpatched engine would put its users at risk. Zig 0.16 also supports Windows 10 and newer only. A separate path without a web engine is being considered.
 
-## macOS *planned*
+## macOS: not supported
 
-Through WKWebView, the engine that comes with macOS. Zig 0.16 supports macOS 13 and newer, so that is the floor to expect.
+Lepton does not support macOS and does not plan to. Signing and notarizing for macOS needs a paid Apple developer account, and testing needs Mac hardware; Lepton cannot keep that up. `lepton build --macos` is refused with that reason.

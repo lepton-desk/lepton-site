@@ -3,7 +3,7 @@ title: Sistem gereksinimleri
 description: Lepton uygulamasını derlemek için makinede ne gerekir, kullanıcının makinesinde çalıştırmak için ne gerekir; platform platform.
 ---
 
-Lepton **Linux**'ta, 0.1.9 betasında da WebView2 ile **Windows**'ta çalışıyor. macOS (WKWebView ile) planlı, henüz yapılmadı. Aşağıdaki alt sınırlar araçların kendisinden geliyor, 2026-10-17'de denetlendi; "genelde çalışır" tahmini değil.
+Lepton **Linux**'ta, 0.1.9 betasında da WebView2 ile **Windows**'ta çalışıyor. macOS desteklenmiyor. Aşağıdaki alt sınırlar araçların kendisinden geliyor, 2026-10-17'de denetlendi; "genelde çalışır" tahmini değil.
 
 ## Linux
 
@@ -55,6 +55,6 @@ Windows'la gelen Chromium tabanlı WebView2 ile; uygulamanız onu taşımaz. Çe
 - **Windows 10 (1709 ve sonrası, LTSC sürümleri) ve Windows 11**: Microsoft'un WebView2'yi desteklediği sürümler.
 - **Windows 8.1, 8 ve 7: desteklenmiyor.** WebView2 bunlarda Ocak 2023'te 109. sürümde durdu ve güvenlik düzeltmesi almıyor; yamasız bir motorda çalışan web uygulaması kullanıcısını riske atar. Zig 0.16 de yalnız Windows 10 ve üstünü destekliyor. Web motoru olmayan ayrı bir yol düşünülüyor.
 
-## macOS *planlı*
+## macOS: desteklenmiyor
 
-macOS'la gelen WKWebView ile. Zig 0.16 macOS 13 ve üstünü destekliyor; beklenecek alt sınır bu.
+Lepton macOS'u desteklemiyor ve bunu planlamıyor. macOS için imzalama ve noter onayı ücretli bir Apple geliştirici hesabı, denemek için de Mac donanımı istiyor; Lepton bunu sürdüremez. `lepton build --macos` bu gerekçeyle reddedilir.
