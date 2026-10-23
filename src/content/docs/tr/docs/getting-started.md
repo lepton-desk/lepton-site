@@ -69,5 +69,5 @@ npm run lepton package    # Linux'ta .tar.gz, Windows'ta .zip; istenirse .deb, A
 Biçimler için [Paketleme](/tr/docs/packaging/), tüm komutlar için [CLI](/tr/docs/cli/) sayfasına bakın.
 
 :::note[Erken aşama]
-Lepton 0.1 sürümünde. Webview yolu, derlendiği ve denendiği makinelerde çalışıyor ama henüz her yerde uçtan uca doğrulanmadı. Windows 0.1.9 betasında, yalnız WebView2 ile (henüz yerel çizim yok); macOS desteklenmiyor.
+Lepton 0.1 sürümünde. Webview yolu, derlendiği ve denendiği makinelerde çalışıyor ama henüz her yerde uçtan uca doğrulanmadı. Windows 0.1.9 betasında, WebView2 ve yerel çizim yoluyla (şimdilik CPU'da); macOS desteklenmiyor.
 :::
