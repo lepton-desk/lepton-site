@@ -37,6 +37,28 @@ Every figure on this page was measured on the project's own machine (Radeon R7 2
 - **On Windows 11 the title bar takes the page's colour (measured).** Lepton's `windows` workflow builds and opens the template app on Windows Server 2025 (Windows 11's base, build 26100): with `theme-color: #ffd700` the bar is `rgb(255, 215, 0)` with black text; with `rgb(27 29 28)` it is that colour with white text. The same job installs the MSI, runs the installed app through the same checks and removes it, leaving no folder.
 - **`lepton new` works on Windows where npm is a `.cmd`.** Node's installer gives npm as `npm.cmd` (so does a pnpm installed by npm); the CLI looked only for `.exe` and said "`npm` is not found on PATH" with npm installed (measured in CI). A name is now looked up in `PATHEXT` order, as the shell does. `lepton new` on Windows now names the engine WebView2.
 - **Zig 0.17 on Windows.** The core's tests, the plugins, the tools and the template app build and run with 0.17 too (Windows 10), with the same results as 0.16.
+- **Three GPU backends for the Windows native path.** Vulkan, Direct3D 11 and OpenGL 3.3 are tried in that order, and the CPU is the last resort; `LEPTON_GPU=vulkan|d3d11|gl|cpu` forces one. Vulkan is used only when the device meets the renderer's threshold (Vulkan 1.3, dynamic rendering, synchronization2). Measured on a Radeon R7 240 with a 2001-shape scene, unlimited:
+  - Direct3D 11: 1046–1188 frames a second, 0.7 ms of GPU a frame;
+  - OpenGL 3.3: 1002–1039, 0.45 ms;
+  - Vulkan: 689–706, 0.45 ms. Presenting to the window costs this driver about 0.9 ms more a frame.
+
+  Its Vulkan 1.2 misses the threshold, so the app opens Direct3D 11. All three were paced at 59 a second on a 60 Hz screen. The older swap chains (Windows 8's flip-sequential, Windows 7's blt model) were forced one by one and drew correctly.
+- **The page's notifications are the app's own Windows notifications.** They carry the app's name and icon, not "lepton.localhost". `onshow`, `onclick`, `onclose` and `close()` work (measured from the screen). `webPermissions` now reaches the page before it asks: with `notifications: "allow"`, `Notification.permission` and `permissions.query` say `granted`. Before, they said `default` and `prompt`, and a notification made before `requestPermission` failed. The MSI registers the name and icon and removes them on uninstall (ICE: 0 errors).
+- **`identifier`, `productName`, `channel.name` and `window.title` are read from `lepton.config.json` on every build.** `lepton new` used to write them into `main.zig`. An identifier changed later, such as the `com.example` default before release, reached the installer but not the program. Measured: a renamed project's program now uses the new identifier. A project made before this keeps its `main.zig` until `lepton update`.
+- **Smaller Windows fixes, all measured on Windows 10:**
+  - A popup follows `webPermissions` and the download rules.
+  - Signing out closes the app cleanly (exit 0).
+  - `lepton dev` and `run` register `deepLinks`.
+  - A Debug build prints the page's console in the terminal.
+  - The CLI asks children to close before it ends them.
+  - A missing WebView2 is offered through `winget`.
+  - Cookies on the dev server's page last across runs.
+- **On Linux, written but not yet run on Linux:**
+  - WPE WebKit fits a window that is larger than the screen.
+  - Servo's window takes the app's identifier and resizes from its edges when frameless; its menu draws `&` correctly.
+  - `bundle.icon` takes an `.svg` for Linux packages.
+  - `LEPTON_GPU` is read there too.
+  - The native path's tests now run in CI, under Mesa.
 
 ## 0.1.9-beta.1 *2026-10-20, beta*
 

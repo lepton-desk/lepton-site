@@ -37,6 +37,28 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
 - **Windows 11'de başlık çubuğu sayfanın rengini alır (ölçüldü).** Lepton'ın `windows` iş akışı Windows Server 2025'te (Windows 11'in tabanı, derleme 26100) şablon uygulamayı derleyip açıyor: sayfa `theme-color: #ffd700` verince çubuk `rgb(255, 215, 0)`, yazı siyah; `rgb(27 29 28)` verince çubuk o renk, yazı beyaz. Aynı iş MSI'yı kuruyor, kurulu uygulamayı aynı denetimlerden geçiriyor ve geride klasör bırakmadan kaldırıyor.
 - **npm `.cmd` olarak kuruluyken Windows'ta `lepton new` çalışır.** Node'un kurucusu npm'i `npm.cmd` olarak veriyor (npm ile kurulan pnpm da öyle); CLI yalnız `.exe` arıyordu ve npm kuruluyken "`npm` is not found on PATH" diyordu (CI'da ölçüldü). Artık ad, kabuğun yaptığı gibi `PATHEXT` sırasıyla aranıyor. `lepton new` Windows'ta motoru artık WebView2 diye yazıyor.
 - **Windows'ta Zig 0.17.** Çekirdek testleri, eklentiler, araçlar ve şablon uygulama 0.17 ile de derlenip çalıştı (Windows 10), 0.16 ile aynı sonuçla.
+- **Windows'ta yerel yol için üç GPU arka ucu.** Vulkan, Direct3D 11 ve OpenGL 3.3 bu sırayla deneniyor; son çare CPU. `LEPTON_GPU=vulkan|d3d11|gl|cpu` birini zorluyor. Vulkan yalnız aygıt çizicinin eşiğini karşılarsa seçiliyor (Vulkan 1.3, dynamic rendering, synchronization2). Radeon R7 240'ta 2001 şekilli sahne, sınırsız, ölçüldü:
+  - Direct3D 11: saniyede 1046–1188 kare, kare başına 0,7 ms GPU;
+  - OpenGL 3.3: 1002–1039, 0,45 ms;
+  - Vulkan: 689–706, 0,45 ms. Bu sürücüde pencereye sunum kare başına yaklaşık 0,9 ms daha ekliyor.
+
+  Kartın Vulkan 1.2'si eşiği karşılamıyor, bu yüzden uygulama Direct3D 11 açıyor. Üçü de 60 Hz ekranda saniyede 59 karede tutuldu. Eski takas zincirleri (Windows 8'in flip-sequential'ı, Windows 7'nin blt modeli) tek tek zorlandı ve doğru çizdi.
+- **Sayfanın bildirimleri uygulamanın kendi Windows bildirimleri.** "lepton.localhost" yerine uygulamanın adını ve simgesini taşıyorlar. `onshow`, `onclick`, `onclose` ve `close()` çalışıyor (ekrandan ölçüldü). `webPermissions` sayfaya artık sormadan önce ulaşıyor: `notifications: "allow"` ile `Notification.permission` ve `permissions.query` `granted` diyor. Önceden `default` ve `prompt` diyorlardı; `requestPermission`'dan önce yapılan bildirim başarısız oluyordu. MSI adı ve simgeyi kaydediyor, kaldırırken siliyor (ICE: 0 hata).
+- **`identifier`, `productName`, `channel.name` ve `window.title` her derlemede `lepton.config.json`'dan okunuyor.** `lepton new` bunları önceden `main.zig`'e yazıyordu. Sonradan değiştirilen kimlik, örneğin yayından önce değiştirilen `com.example` varsayılanı, kurucuya ulaşıyor ama programa ulaşmıyordu. Ölçüldü: kimliği değiştirilen projenin programı artık yeni kimliği kullanıyor. Bundan önce yapılmış bir proje `main.zig`'ini `lepton update`'e kadar koruyor.
+- **Windows'ta küçük düzeltmeler, hepsi Windows 10'da ölçüldü:**
+  - Açılır pencere `webPermissions`'a ve indirme kurallarına uyuyor.
+  - Oturum kapanınca uygulama temiz kapanıyor (çıkış 0).
+  - `lepton dev` ve `run` `deepLinks`'i kaydediyor.
+  - Debug derlemesi sayfanın konsolunu terminale yazıyor.
+  - CLI çocuk süreçlere önce kapanmalarını söylüyor, sonra sonlandırıyor.
+  - WebView2 yoksa `winget` ile kurulum öneriliyor.
+  - Dev sunucusu sayfasındaki çerezler oturumlar arasında kalıyor.
+- **Linux'ta yazıldı, Linux'ta henüz çalıştırılmadı:**
+  - WPE WebKit ekrandan büyük pencereyi ekrana sığdırıyor.
+  - Servo penceresi uygulamanın kimliğini alıyor, çerçevesizken kenarlarından boyutlanıyor ve menüsünde `&` doğru çiziliyor.
+  - `bundle.icon` Linux paketleri için `.svg` alıyor.
+  - `LEPTON_GPU` orada da okunuyor.
+  - Native yolun testleri artık CI'da Mesa ile çalışıyor.
 
 ## 0.1.9-beta.1 *2026-10-20, beta*
 
