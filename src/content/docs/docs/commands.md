@@ -110,6 +110,20 @@ addEventListener("contextmenu", async (event) => {
 });
 ```
 
+**The application's name in the bar** *0.1.9-beta.3*. `info()` (`@lepton-desk/api/app`) is `productName`, `version` and `identifier` from `lepton.config.json`; `title()` (`@lepton-desk/api/window`) is the window's name — the page's `document.title`, or `window.title` while the page has none, the rule the system title bar follows too — and `onTitleChanged` calls back when it changes. All three need no permission and no waiting: the core writes them into the page before its scripts run.
+
+```ts
+import { info } from "@lepton-desk/api/app";
+import { onTitleChanged, title } from "@lepton-desk/api/window";
+
+const label = document.querySelector("header span")!;
+const show = (name: string) => (label.textContent = `${info().name} — ${name}`);
+show(title());
+await onTitleChanged(show);
+```
+
+Measured on Linux in WPE and Servo: the bar showed "Ad Test 2.3.4 — Ad Penceresi", then "Belge 1" after `document.title = "Belge 1"`, then the configured title again when it was cleared.
+
 The menu closes, choosing nothing, on Escape, a press outside it, or when the app loses the focus. Where each part works:
 
 | | Windows (WebView2) | Linux, Servo | Linux, WPE WebKit |
@@ -119,4 +133,4 @@ The menu closes, choosing nothing, on Escape, a press outside it, or when the ap
 | `popupMenu` / `window.menu` | the system's menu | Lepton's menu | not yet (`failed`) |
 | Title bar follows the page | dark or light from `color-scheme` and `theme-color` (measured on Windows 10); on Windows 11 the bar takes the colour itself (measured on Windows Server 2025, build 26100: `#ffd700` drew an `rgb(255, 215, 0)` bar with black text) | no | no |
 
-On Windows the title bar follows the page with nothing to configure: `<meta name="theme-color">` and CSS `color-scheme`, as they change. On Linux the compositor draws the title bar and offers no way to colour it (measured on COSMIC). WPE WebKit's own Wayland platform cannot leave the frame to the page or move the window for it; Lepton's own WPE platform, which will, is planned for 0.1.9-beta.3.
+On Windows the title bar follows the page with nothing to configure: `<meta name="theme-color">` and CSS `color-scheme`, as they change. On Linux the compositor draws the title bar and offers no way to colour it (measured on COSMIC). WPE WebKit's own Wayland platform cannot leave the frame to the page or move the window for it; Lepton's own WPE platform, which will, is planned for 0.2.0.

@@ -110,6 +110,20 @@ addEventListener("contextmenu", async (event) => {
 });
 ```
 
+**Çubukta uygulamanın adı** *0.1.9-beta.3*. `info()` (`@lepton-desk/api/app`), `lepton.config.json`'daki `productName`, `version` ve `identifier`'dır; `title()` (`@lepton-desk/api/window`) pencerenin adıdır — sayfanın `document.title`'ı, sayfada yokken `window.title`; sistemin başlık çubuğu da bu kurala uyar — ve `onTitleChanged` ad değişince haber verir. Üçü de izin istemez ve beklemez: çekirdek bunları sayfanın betiklerinden önce sayfaya yazar.
+
+```ts
+import { info } from "@lepton-desk/api/app";
+import { onTitleChanged, title } from "@lepton-desk/api/window";
+
+const label = document.querySelector("header span")!;
+const show = (name: string) => (label.textContent = `${info().name} — ${name}`);
+show(title());
+await onTitleChanged(show);
+```
+
+Linux'ta WPE ve Servo'da ölçüldü: çubuk önce "Ad Test 2.3.4 — Ad Penceresi", `document.title = "Belge 1"` sonrası "Belge 1", başlık silinince yine yapılandırılmış başlığı gösterdi.
+
 Menü Esc'de, dışına basılınca ya da uygulama odağı kaybedince bir şey seçmeden kapanır. Hangisi nerede çalışır:
 
 | | Windows (WebView2) | Linux, Servo | Linux, WPE WebKit |
@@ -119,4 +133,4 @@ Menü Esc'de, dışına basılınca ya da uygulama odağı kaybedince bir şey s
 | `popupMenu` / `window.menu` | sistemin menüsü | Lepton'ın menüsü | henüz değil (`failed`) |
 | Başlık çubuğu sayfayı izler | `color-scheme` ve `theme-color`'dan koyu ya da açık (Windows 10'da ölçüldü); Windows 11'de çubuk rengin kendisini alır (Windows Server 2025, derleme 26100'de ölçüldü: `#ffd700` siyah yazılı `rgb(255, 215, 0)` bir çubuk çizdi) | hayır | hayır |
 
-Windows'ta başlık çubuğu hiçbir ayar olmadan sayfayı izler: `<meta name="theme-color">` ve CSS `color-scheme`, değiştikçe. Linux'ta başlık çubuğunu bileşimci çizer ve rengini değiştirmenin yolunu vermez (COSMIC'te ölçüldü). WPE WebKit'in kendi Wayland platformu çerçeveyi sayfaya bırakamıyor, pencereyi onun için taşıyamıyor; bunları yapacak olan Lepton'ın kendi WPE platformu 0.1.9-beta.3 için planlandı.
+Windows'ta başlık çubuğu hiçbir ayar olmadan sayfayı izler: `<meta name="theme-color">` ve CSS `color-scheme`, değiştikçe. Linux'ta başlık çubuğunu bileşimci çizer ve rengini değiştirmenin yolunu vermez (COSMIC'te ölçüldü). WPE WebKit'in kendi Wayland platformu çerçeveyi sayfaya bırakamıyor, pencereyi onun için taşıyamıyor; bunları yapacak olan Lepton'ın kendi WPE platformu 0.2.0 için planlandı.
