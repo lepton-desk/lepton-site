@@ -69,7 +69,7 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
   - `bundle.icon` Linux paketleri için `.svg` alıyor, `share/icons` altına bayt bayt kuruluyor; `.png` gerekçesiyle reddediliyor.
   - `LEPTON_GPU=cpu` orada da okunuyor; yalnız Windows'a ait bir değer uyarıyla GLES'e düşüyor.
   - Native yolun testleri CI'da Mesa ile çalışıyor.
-  - Linux'ta `lepton package --windows` her çalıştırmada aynı dosyaları yapıyor; MSI'ı Windows'ta kuruluyor ve orada yapılanla aynı denetimlerden geçiyor. İki makinenin paketleri yalnız `.exe`'de farklı; nedeni henüz ölçülmedi.
+  - Linux'ta `lepton package --windows` her çalıştırmada aynı dosyaları yapıyor; MSI'ı Windows'ta kuruluyor ve orada yapılanla aynı denetimlerden geçiyor. İki makinenin paketleri yalnız `.exe`'de farklıydı: Windows'ta Zig o makinenin kendi Windows sürümü için derliyordu ve standart kitaplığın Windows 10 1803'ten itibaren eklediği kod da geliyordu. Windows derlemeleri artık en eski Windows'u açıkça söylüyor: web görünümlü uygulama için Windows 10, programı da bunu başlığında söylüyor, Windows 8.1 ve öncesi onu başlatmayı reddediyor; native uygulama için Windows 7 SP1.
 - **Yayın derlemeleri düz x86-64 için.** Bulunulan platform için yapılan derleme o makinenin kendi işlemcisine göre yapılıyordu; paket eski bir işlemcide "illegal instruction" ile durabiliyordu (ölçüldü: burada derlenen native uygulamada önce 2253 AVX komutu vardı, şimdi hiç yok).
 
 ## 0.1.9-beta.1 *2026-10-19, beta*
