@@ -110,7 +110,7 @@ addEventListener("contextmenu", async (event) => {
 });
 ```
 
-**Çubukta uygulamanın adı** *0.1.9-beta.3*. `info()` (`@lepton-desk/api/app`), `lepton.config.json`'daki `productName`, `version` ve `identifier`'dır; `title()` (`@lepton-desk/api/window`) pencerenin adıdır — sayfanın `document.title`'ı, sayfada yokken `window.title`; sistemin başlık çubuğu da bu kurala uyar — ve `onTitleChanged` ad değişince haber verir. Üçü de izin istemez ve beklemez: çekirdek bunları sayfanın betiklerinden önce sayfaya yazar.
+**Çubukta uygulamanın adı** *0.1.9-beta.3*. `info()` (`@lepton-desk/api/app`), `lepton.config.json`'daki `productName`, `version` ve `identifier`'dır; `title()` (`@lepton-desk/api/window`) pencerenin adıdır — sayfanın `document.title`'ı, sayfada yokken `window.title`; sistemin başlık çubuğu da bu kurala uyar — ve `onTitleChanged` ad değişince haber verir. `info()` izin istemez ve beklemez: çekirdek onu sayfanın betiklerinden önce sayfaya yazar. Pencerenin adını, motor ne olursa olsun, çekirdek tutar: `title()` onu sorar ve `permissions`'ta `window.title` ister; `onTitleChanged` çekirdeğin `window.title` olayını dinler, o izin istemez.
 
 ```ts
 import { info } from "@lepton-desk/api/app";
@@ -118,8 +118,8 @@ import { onTitleChanged, title } from "@lepton-desk/api/window";
 
 const label = document.querySelector("header span")!;
 const show = (name: string) => (label.textContent = `${info().name} — ${name}`);
-show(title());
 await onTitleChanged(show);
+show(await title());
 ```
 
 Linux'ta WPE ve Servo'da ölçüldü: çubuk önce "Ad Test 2.3.4 — Ad Penceresi", `document.title = "Belge 1"` sonrası "Belge 1", başlık silinince yine yapılandırılmış başlığı gösterdi.

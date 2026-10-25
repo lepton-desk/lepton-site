@@ -44,7 +44,12 @@
         "next"
       ]
     },
-    "sdkScope": { "type": "string", "default": "@lepton-desk" },
+    "sdkScope": {
+      "description": "The npm scope this project's Lepton packages come from: lepton update moves the dependencies under it, and lepton dev rebuilds the linked ones. A mirror or fork that publishes Lepton as @acme/api names \"@acme\".",
+      "type": "string",
+      "pattern": "^@[a-z0-9-][a-z0-9._-]*$",
+      "default": "@lepton-desk"
+    },
     "channel": {
       "type": "object",
       "additionalProperties": false,
@@ -69,11 +74,25 @@
       "additionalProperties": false,
       "properties": {
         "title": { "type": "string", "pattern": "^[^\\u0000-\\u001f\\u007f]*$" },
-        "width": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 },
-        "height": { "description": "Physical pixels.", "type": "integer", "minimum": 1, "maximum": 4294967295 },
+        "width": {
+          "description": "Physical pixels.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "height": {
+          "description": "Physical pixels.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
         "decorations": {
           "description": "false: no system title bar; the page draws its own and moves the window with window.start_drag (Windows). Default true.",
           "type": "boolean"
+        },
+        "frameRate": {
+          "description": "How fast a native app draws: \"display\" (default) at the screen's refresh, \"unlimited\" as fast as the machine can. LEPTON_FRAME_RATE overrides it when the program runs.",
+          "enum": ["display", "unlimited"]
         }
       }
     },
@@ -108,7 +127,19 @@
       "items": {
         "type": "string",
         "pattern": "^[a-z][a-z0-9+.-]{0,63}$",
-        "not": { "enum": ["http", "https", "file", "mailto", "ftp", "data", "javascript", "about", "lepton"] }
+        "not": {
+          "enum": [
+            "http",
+            "https",
+            "file",
+            "mailto",
+            "ftp",
+            "data",
+            "javascript",
+            "about",
+            "lepton"
+          ]
+        }
       }
     },
     "plugins": {
@@ -167,9 +198,16 @@
           }
         },
         "icon": {
-          "description": "An .ico file, relative to the project, for the Windows installer's shortcut and Apps entry.",
-          "type": "string",
-          "pattern": "\\.[iI][cC][oO]\\s*$"
+          "description": "The app's icon, relative to the project: an .ico for Windows (the program, the installer's shortcut and Apps entry), an .svg for Linux (the desktop entry and packages), or a list with one of each.",
+          "oneOf": [
+            { "type": "string", "pattern": "\\.([iI][cC][oO]|[sS][vV][gG])\\s*$" },
+            {
+              "type": "array",
+              "items": { "type": "string", "pattern": "\\.([iI][cC][oO]|[sS][vV][gG])\\s*$" },
+              "minItems": 1,
+              "maxItems": 2
+            }
+          ]
         }
       }
     },

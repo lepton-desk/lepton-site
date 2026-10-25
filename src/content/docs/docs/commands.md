@@ -110,7 +110,7 @@ addEventListener("contextmenu", async (event) => {
 });
 ```
 
-**The application's name in the bar** *0.1.9-beta.3*. `info()` (`@lepton-desk/api/app`) is `productName`, `version` and `identifier` from `lepton.config.json`; `title()` (`@lepton-desk/api/window`) is the window's name — the page's `document.title`, or `window.title` while the page has none, the rule the system title bar follows too — and `onTitleChanged` calls back when it changes. All three need no permission and no waiting: the core writes them into the page before its scripts run.
+**The application's name in the bar** *0.1.9-beta.3*. `info()` (`@lepton-desk/api/app`) is `productName`, `version` and `identifier` from `lepton.config.json`; `title()` (`@lepton-desk/api/window`) is the window's name — the page's `document.title`, or `window.title` while the page has none, the rule the system title bar follows too — and `onTitleChanged` calls back when it changes. `info()` needs no permission and no waiting: the core writes it into the page before its scripts run. The window's name is kept by the core, whatever the engine: `title()` asks for it and needs `window.title` under `permissions`; `onTitleChanged` listens to the core's `window.title` event, which needs none.
 
 ```ts
 import { info } from "@lepton-desk/api/app";
@@ -118,8 +118,8 @@ import { onTitleChanged, title } from "@lepton-desk/api/window";
 
 const label = document.querySelector("header span")!;
 const show = (name: string) => (label.textContent = `${info().name} — ${name}`);
-show(title());
 await onTitleChanged(show);
+show(await title());
 ```
 
 Measured on Linux in WPE and Servo: the bar showed "Ad Test 2.3.4 — Ad Penceresi", then "Belge 1" after `document.title = "Belge 1"`, then the configured title again when it was cleared.
