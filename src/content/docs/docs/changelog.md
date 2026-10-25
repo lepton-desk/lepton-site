@@ -69,7 +69,8 @@ The last beta of 0.1.9: its API is frozen here, and what comes after it is 0.1.9
   - `bundle.icon` takes an `.svg` for Linux packages, installed byte for byte under `share/icons`; a `.png` is refused with the reason.
   - `LEPTON_GPU=cpu` is read there too; a Windows-only value falls back to GLES with a warning.
   - The native path's tests run in CI, under Mesa.
-  - `lepton package --windows` on Linux makes the same files on every run; its MSI installs on Windows and passes the same checks as one made there. The two machines' packages differed only in the `.exe`: a build for the platform you are on was made for that machine's own CPU. Release builds are now for the plain x86-64, so a package no longer stops with "illegal instruction" on an older processor (measured: 2253 AVX instructions in a native app built here before, none now).
+  - `lepton package --windows` on Linux makes the same files on every run; its MSI installs on Windows and passes the same checks as one made there. The two machines' packages differ only in the `.exe`; why is not measured yet.
+- **Release builds are for the plain x86-64.** A build for the platform you are on used to be made for that machine's own CPU, so a package could stop with "illegal instruction" on an older processor (measured: 2253 AVX instructions in a native app built here before, none now).
 
 ## 0.1.9-beta.1 *2026-10-19, beta*
 
