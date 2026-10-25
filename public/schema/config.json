@@ -90,6 +90,10 @@
           "description": "false: no system title bar; the page draws its own and moves the window with window.start_drag (Windows). Default true.",
           "type": "boolean"
         },
+        "contextMenu": {
+          "description": "The default right-click menu where the page does not take the click: Cut, Copy, Paste, Select All (Inspect in a developer's build). Default true; false shows none. A page's own contextmenu handler with preventDefault() always wins.",
+          "type": "boolean"
+        },
         "frameRate": {
           "description": "How fast a native app draws: \"display\" (default) at the screen's refresh, \"unlimited\" as fast as the machine can. LEPTON_FRAME_RATE overrides it when the program runs.",
           "enum": ["display", "unlimited"]

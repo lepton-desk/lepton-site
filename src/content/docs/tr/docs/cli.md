@@ -59,7 +59,7 @@ Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bay
 
 ## `lepton package`
 
-`--native` / `--webview`, son derlemeyi paketlemek için `--no-build` ve `--verify`: yazılan her paket boş bir dizine açılır, başlatılır, ölçülür ve kapatılır; başlamazsa ya da arkada süreç bırakırsa komut başarısız olur.
+`--native` / `--webview`, son derlemeyi paketlemek için `--no-build` ve `--verify`: yazılan her paket boş bir dizine açılır, başlatılır, ölçülür ve kapatılır; başlamazsa ya da arkada süreç bırakırsa komut başarısız olur. `--servo` (`--linux` ile) bir Servo derlemesini paketler, **deneysel** *0.1.9-beta.3*: `liblepton_servo.so` paketin `lib/<ad>/` dizinine girer (Arch ve Debian paketlerinde `/usr/lib/<ad>/`) ve binary onu yalnız orada arar; paket, projenin `node_modules`'u olmayan bir makinede de çalışır. `.tar.gz`'ye yaklaşık 45 MB ekler. beta.3'ten önce oluşturulan bir projede önce `lepton update` çalıştırın. `lepton build --servo`'dan sonra `--no-build` reddedilir: o binary Servo'yu yalnız onu derleyen makinede bulur.
 
 ## `lepton record` ve `lepton replay` *0.1.5*
 

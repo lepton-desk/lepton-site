@@ -59,7 +59,7 @@ The dev server is started with the project's `frontend.devArgs` (Vite's flags wi
 
 ## `lepton package`
 
-`--native` / `--webview`, `--no-build` to package the last build, and `--verify`: each written package is unpacked into an empty directory, started, measured and closed, and the command fails if it does not start or leaves a process behind.
+`--native` / `--webview`, `--no-build` to package the last build, and `--verify`: each written package is unpacked into an empty directory, started, measured and closed, and the command fails if it does not start or leaves a process behind. `--servo` (with `--linux`) packages a Servo build, **experimental** *0.1.9-beta.3*: `liblepton_servo.so` goes into the package's `lib/<name>/` (`/usr/lib/<name>/` in the Arch and Debian packages) and the binary looks for it only there, so the package runs on a machine without the project's `node_modules`; it adds about 45 MB to a `.tar.gz`. Run `lepton update` first in a project made before beta.3. `--no-build` after `lepton build --servo` is refused: that binary finds Servo only on the machine that built it.
 
 ## `lepton record` and `lepton replay` *0.1.5*
 
