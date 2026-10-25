@@ -1,17 +1,26 @@
 ---
 title: Changes
-description: What changed in each Lepton release, what is on trunk for the next one, and how far 0.2.0 has come. Every figure was measured.
+description: What changed in each Lepton release, what the next one brings, and how far 0.2.0 has come. Every figure was measured.
 ---
 
 Every figure on this page was measured on the project's own machine (Radeon R7 240, Linux, Wayland), with the command recorded in the repository.
 
-## On trunk, for 0.1.9-beta.2 *not released*
+## 0.1.9-beta.3 *not released yet*
 
+The last beta of 0.1.9: its API is frozen here, and what comes after it is 0.1.9 itself and its fixes. 0.1.9-beta.2 went out only in part, from Windows (`@lepton-desk/cli-win32-x64`, `api`, `plugin-clipboard`, `plugin-dialog`); every package moves to beta.3 together, so everything below arrives at once. To update a project: `npm run lepton update` (or `pnpm lepton update`) once beta.3 is out; it also brings the core and `src-lepton/` files.
+
+- **Your app's name in a title bar the page draws.** `info()` from `@lepton-desk/api/app` gives `productName`, `version` and `identifier`; `title()` and `onTitleChanged()` from `@lepton-desk/api/window` give the window's name. No permission, no waiting. Measured on Linux in WPE WebKit and Servo. [Commands](/docs/commands/#your-own-title-bar-and-menus-019-beta2)
+- **The dock knows a WPE WebKit app.** Its window used to carry an `org.webkit.app-…` name with no icon; it now carries the app's identifier, and COSMIC's dock shows the app's icon and name (measured).
+- **Servo: cursors, and top-level `await`.** The pointer now changes over links, text and the edges of a frameless window (measured from the screen: `pointer`, `text`, `grab`, `not-allowed`, `none`, `n-resize`). A module with top-level `await` no longer reports `uncaught exception: undefined`, and a real rejection there now reaches the page's `error` event, which it never did.
+- **Packages carry only the current frontend.** A rebuilt app's package could hold the previous build's script files beside the new ones; it no longer does.
+- **The native app's title bar shows its title on the CPU path too.** It was empty there; on the GPU it now shows `window.title`, like the system's.
+- **`src-lepton/native.zig`.** The native program moved out of `main.zig`, which keeps your commands, state and events; `lepton update` adds the new file.
+- **The app's folders are its own.** Its data and cache folders are narrowed to the owner (0700) when an older version or the engine left them wider.
 - **One running copy, and deep links.** A second start hands its arguments to the running copy, whose page hears it as `app.opened`; `deepLinks` in `lepton.config.json` registers URL schemes (the desktop entry on Linux, `HKCU\Software\Classes` in the MSI). `@lepton-desk/api/app` gives `launchArgs()` and `onOpened()`. Measured on Linux: `xdg-open myapp://open/43` reached the running page and no second window opened; a link started a closed app with it in `launchArgs()`. [Configuration](/docs/configuration/#deeplinks-and-the-single-running-copy-019-beta2)
 - **`fs.watch`.** A watched folder's changes reach the page as they happen, with no polling: a write from the page and one from another program were both reported (`created`, `modified`). On Linux and on Windows (below). [Plugins](/docs/plugins/)
 - **Reading the clipboard needs the user.** `readText` answers only within five seconds of a key or button press in the window, judged by the core from real input; a read at page load is refused (`NotAllowedError`), one after a click answers (measured). `"plugins": { "clipboard": { "read": "always" } }` for a clipboard manager.
 - **The native render path on Windows.** `--target native` makes an app that opens a Win32 window with no web engine: drawn on the GPU with Direct3D 11 (the CPU and GDI when the machine gives no device, or with `LEPTON_GPU=cpu`), its text set by DirectWrite (Segoe UI, Consolas and the system's fallback fonts), at the display's refresh, a dark title bar to match the page. Measured with `lepton new --target native` and `lepton run` on Windows 10: a 565 KB release binary, the template's screen, a resize redrawn, exit 0 on close. On the GPU: 59.8 frames a second, 156 ms of CPU in 5 s; on the CPU, 59.8 and 1594 ms. [System requirements](/docs/requirements/)
-- **Unlimited frames, if you want the number.** `"window": { "frameRate": "unlimited" }` (or `LEPTON_FRAME_RATE=unlimited` when the program runs) lets a native app draw as fast as the machine can instead of at the display's refresh, which stays the default (`"display"`). On Windows the GPU presents without waiting and tears where the system allows it; on Linux the GLES swap interval is 0 and no frame waits for the compositor. Measured on a Radeon R7 240 with a 60 Hz screen: the template's screen at 2881 frames a second on the GPU and 271 on the CPU, against 59.8 paced; a 2001-shape scene at 1046–1188 a second, 0.7 ms of GPU a frame. Frames the screen cannot show are dropped or torn, and the CPU or GPU runs flat out. Not yet measured on Linux.
+- **Unlimited frames, if you want the number.** `"window": { "frameRate": "unlimited" }` (or `LEPTON_FRAME_RATE=unlimited` when the program runs) lets a native app draw as fast as the machine can instead of at the display's refresh, which stays the default (`"display"`). On Windows the GPU presents without waiting and tears where the system allows it; on Linux the GLES swap interval is 0 and no frame waits for the compositor. Measured on a Radeon R7 240 with a 60 Hz screen: the template's screen at 2881 frames a second on the GPU and 271 on the CPU, against 59.8 paced; a 2001-shape scene at 1046–1188 a second, 0.7 ms of GPU a frame. Frames the screen cannot show are dropped or torn, and the CPU or GPU runs flat out. On Linux (Wayland, the same card): 3870 frames a second on GLES and 169 on the CPU, against 59.8 and 58.0 paced.
 - **macOS is not supported, and `--macos` says so.** `lepton build --macos` used to cross-compile for `aarch64-macos` and hand over a binary nobody had run; it is now refused before anything is built, with the reason: signing and notarizing for macOS need a paid Apple account and Mac hardware, which Lepton cannot keep up. [System requirements](/docs/requirements/)
 - **Lepton's mark as the default icon.** New projects get `src-lepton/icon.svg`; Linux packages install it under `share/icons` with `Icon=` in the entry, and the MSI uses an `.ico` of it when `bundle.icon` is not set.
 - **A new identifier is `com.<owner>.<app>`.** The wizard asks who publishes the app (default: Git's `user.name`), and `--owner` says it on the command line. It used to be the bare app name.
@@ -54,14 +63,15 @@ Every figure on this page was measured on the project's own machine (Radeon R7 2
   - The CLI asks children to close before it ends them.
   - A missing WebView2 is offered through `winget`.
   - Cookies on the dev server's page last across runs.
-- **On Linux, written but not yet run on Linux:**
-  - WPE WebKit fits a window that is larger than the screen.
-  - Servo's window takes the app's identifier and resizes from its edges when frameless; its menu draws `&` correctly.
-  - `bundle.icon` takes an `.svg` for Linux packages.
-  - `LEPTON_GPU` is read there too.
-  - The native path's tests now run in CI, under Mesa.
+- **On Linux, measured there afterwards:**
+  - WPE WebKit fits a window larger than the screen to it (1200×800 → 1200×768). COSMIC proposes its own first size to every new window, a GTK 4 one included (910×458 for 1200×800), and that wins.
+  - Servo's window takes the app's identifier (the dock shows its icon) and resizes from its edges when frameless; its menu draws `&` correctly.
+  - `bundle.icon` takes an `.svg` for Linux packages, installed byte for byte under `share/icons`; a `.png` is refused with the reason.
+  - `LEPTON_GPU=cpu` is read there too; a Windows-only value falls back to GLES with a warning.
+  - The native path's tests run in CI, under Mesa.
+  - `lepton package --windows` on Linux makes the same files on every run; its MSI installs on Windows and passes the same checks as one made there, though the two machines' files are not yet identical byte for byte.
 
-## 0.1.9-beta.1 *2026-10-20, beta*
+## 0.1.9-beta.1 *2026-10-19, beta*
 
 - **The plugins on Windows.** `os`, `fs` and `dialog` were measured end to end in a WebView2 app; `clipboard` is built for Windows but not measured there yet (a window driven for the test has no focus, and `writeText` waits for it). `plugin-dialog` opens Windows' own file dialogs; `plugin-fs` keeps its scope with one `NtCreateFile` relative to the scope folder and refuses every link out of it, stricter than on Linux (a junction planted inside the folder opened without the flag and is refused with it, measured); `plugin-os` reports the Windows version, host name and locale. `$APPDATA`, `$APPCACHE` and the other folders come from Windows' Known Folders.
 - **No console error on a new project under WebView2.** WebView2 asks for `/favicon.ico` on every page; the 404 is now an empty 204.
@@ -122,7 +132,7 @@ Published under the `beta` tag: `npm create lepton-app@beta`, or with pnpm the e
 
 ## 0.2.0 *in preparation*
 
-0.2.0 is planned as a `@beta` release: a native renderer that draws on the GPU directly, a JavaScript engine for native apps, and native UI. The groundwork so far:
+0.2.0 is published as a beta first, then as 0.2.0: a native renderer that draws on the GPU directly, a JavaScript engine for native apps, native UI, and Lepton's own WPE platform, which lets a WPE WebKit page draw its own title bar, move the window and show a native menu. The groundwork so far:
 
 - **The Vulkan floor is the Radeon R7 240's.** Vulkan 1.3 with dynamic rendering, synchronization2, timeline semaphores, descriptor indexing and buffer device address; a device without them gets the GLES 3 path. `zig build vulkan-check` checks a machine and draws with exactly those features; under Khronos validation it reports no errors.
 - **A draw command list, drawn by the GPU.** Rectangles with rounded corners and borders, soft shadows and text are 64 bytes each and drawn in one call. A 1200×800 scene of 2001 shapes takes 0.65 ms on the R7 240; 128 KB a frame reaches the GPU, where today's native path uploads a 3.84 MB frame. Text is shaped by HarfBuzz and each glyph is uploaded once.

@@ -1,17 +1,26 @@
 ---
 title: Değişiklikler
-description: Her Lepton sürümünde ne değişti, bir sonraki sürüm için trunk'ta ne var ve 0.2.0 ne kadar ilerledi. Her sayı ölçüldü.
+description: Her Lepton sürümünde ne değişti, bir sonraki sürüm ne getiriyor ve 0.2.0 ne kadar ilerledi. Her sayı ölçüldü.
 ---
 
 Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland) ölçüldü; komutu depoda kayıtlı.
 
-## Trunk'ta, 0.1.9-beta.2 için *yayınlanmadı*
+## 0.1.9-beta.3 *henüz yayınlanmadı*
 
+0.1.9'un son betası: API burada donuyor, sonrasında 0.1.9'un kendisi ve düzeltmeleri geliyor. 0.1.9-beta.2 yalnız kısmen, Windows'tan çıktı (`@lepton-desk/cli-win32-x64`, `api`, `plugin-clipboard`, `plugin-dialog`); bütün paketler birlikte beta.3'e geçiyor, aşağıdakilerin hepsi bir arada geliyor. Bir projeyi güncellemek için beta.3 çıkınca `npm run lepton update` (ya da `pnpm lepton update`); çekirdeği ve `src-lepton/` dosyalarını da getirir.
+
+- **Sayfanın çizdiği başlık çubuğunda uygulamanın adı.** `@lepton-desk/api/app`'ten `info()`, `productName`, `version` ve `identifier`'ı; `@lepton-desk/api/window`'dan `title()` ve `onTitleChanged()` pencerenin adını verir. İzin yok, bekleme yok. Linux'ta WPE WebKit ve Servo'da ölçüldü. [Komutlar](/tr/docs/commands/)
+- **Rıhtım WPE WebKit uygulamasını tanıyor.** Penceresi simgesiz, `org.webkit.app-…` adıyla görünüyordu; artık uygulamanın kimliğini taşıyor ve COSMIC'in rıhtımı uygulamanın simgesini ve adını gösteriyor (ölçüldü).
+- **Servo: imleçler ve üst düzey `await`.** İşaretçi artık bağlantıların, metnin ve çerçevesiz pencerenin kenarlarının üzerinde değişiyor (ekrandan ölçüldü: `pointer`, `text`, `grab`, `not-allowed`, `none`, `n-resize`). Üst düzey `await` içeren modül artık `uncaught exception: undefined` bildirmiyor; oradaki gerçek bir ret de artık sayfanın `error` olayına ulaşıyor, önceden hiç ulaşmıyordu.
+- **Paketlerde yalnız güncel ön yüz var.** Yeniden derlenen uygulamanın paketinde eski derlemenin betik dosyaları yenilerin yanında kalabiliyordu; artık kalmıyor.
+- **Native uygulamanın başlık çubuğu CPU yolunda da başlığı gösteriyor.** Orada boştu; GPU'da da artık sistemin gibi `window.title`'ı gösteriyor.
+- **`src-lepton/native.zig`.** Native program `main.zig`'den ayrıldı; `main.zig`'de komutlarınız, durumunuz ve olaylarınız kalıyor. `lepton update` yeni dosyayı ekliyor.
+- **Uygulamanın klasörleri yalnız onun.** Veri ve önbellek klasörleri, eski bir sürüm ya da motor daha geniş bıraktıysa sahibine (0700) daraltılıyor.
 - **Tek çalışan kopya ve derin bağlantılar.** İkinci başlangıç argümanlarını çalışan kopyaya verir; onun sayfası bunu `app.opened` olarak duyar. `lepton.config.json`'daki `deepLinks` URL şemalarını kaydeder (Linux'ta masaüstü girdisi, MSI'da `HKCU\Software\Classes`). `@lepton-desk/api/app` `launchArgs()` ve `onOpened()` verir. Linux'ta ölçüldü: `xdg-open myapp://open/43` çalışan sayfaya ulaştı, ikinci pencere açılmadı; kapalı bir uygulamayı açan bağlantı `launchArgs()`'ta geldi. [Yapılandırma](/tr/docs/configuration/)
 - **`fs.watch`.** İzlenen klasörün değişiklikleri sayfaya olduğu anda ulaşır, yoklama yok: sayfanın kendi yazdığı ve başka bir programın yazdığı ikisi de bildirildi (`created`, `modified`). Linux'ta ve Windows'ta (aşağıda). [Eklentiler](/tr/docs/plugins/)
 - **Panoyu okumak kullanıcıyı gerektiriyor.** `readText` yalnızca pencerede bir tuşa ya da düğmeye basıldıktan sonraki beş saniyede cevap verir; kararı çekirdek gerçek girdiden verir. Sayfa yüklenirken okuma reddedilir (`NotAllowedError`), bir tıklamadan sonraki cevaplanır (ölçüldü). Pano yöneticisi için `"plugins": { "clipboard": { "read": "always" } }`.
 - **Windows'ta yerel çizim yolu.** `--target native` web motoru olmadan Win32 penceresi açan bir uygulama yapıyor: GPU'da Direct3D 11 ile çiziliyor (makine aygıt vermezse ya da `LEPTON_GPU=cpu` ile CPU ve GDI), metni DirectWrite yazıyor (Segoe UI, Consolas ve sistemin yedek yazı tipleri), ekranın tazelemesinde, sayfaya uyan koyu başlık çubuğu. Windows 10'da `lepton new --target native` ve `lepton run` ile ölçüldü: 565 KB'lık sürüm ikilisi, şablonun ekranı, boyut değişince yeniden çizim, kapatınca çıkış 0. GPU'da saniyede 59,8 kare, 5 sn'de 156 ms CPU; CPU'da 59,8 ve 1594 ms. [Sistem gereksinimleri](/tr/docs/requirements/)
-- **İsteyene sınırsız kare.** `"window": { "frameRate": "unlimited" }` (ya da çalışırken `LEPTON_FRAME_RATE=unlimited`) native uygulamanın ekranın tazelemesi yerine makinenin yetebildiği kadar hızlı çizmesini sağlar; varsayılan yine ekrandır (`"display"`). Windows'ta GPU beklemeden basar, sistem izin veriyorsa yırtılmaya (tearing) izin verir; Linux'ta GLES takas aralığı 0, hiçbir kare bileşiciyi beklemez. Radeon R7 240 ve 60 Hz ekranda ölçüldü: şablonun ekranı GPU'da saniyede 2881, CPU'da 271 kare (ekrana bağlıyken 59,8); 2001 şekillik sahne saniyede 1046–1188 kare, kare başına 0,7 ms GPU. Ekranın gösteremediği kareler atılır ya da yırtılır, CPU veya GPU tam yükte çalışır. Linux'ta henüz ölçülmedi.
+- **İsteyene sınırsız kare.** `"window": { "frameRate": "unlimited" }` (ya da çalışırken `LEPTON_FRAME_RATE=unlimited`) native uygulamanın ekranın tazelemesi yerine makinenin yetebildiği kadar hızlı çizmesini sağlar; varsayılan yine ekrandır (`"display"`). Windows'ta GPU beklemeden basar, sistem izin veriyorsa yırtılmaya (tearing) izin verir; Linux'ta GLES takas aralığı 0, hiçbir kare bileşiciyi beklemez. Radeon R7 240 ve 60 Hz ekranda ölçüldü: şablonun ekranı GPU'da saniyede 2881, CPU'da 271 kare (ekrana bağlıyken 59,8); 2001 şekillik sahne saniyede 1046–1188 kare, kare başına 0,7 ms GPU. Ekranın gösteremediği kareler atılır ya da yırtılır, CPU veya GPU tam yükte çalışır. Linux'ta (Wayland, aynı kart): GLES'te saniyede 3870, CPU'da 169 kare (ekrana bağlıyken 59,8 ve 58,0).
 - **macOS desteklenmiyor, `--macos` bunu söylüyor.** `lepton build --macos` önceden `aarch64-macos` için çapraz derleyip kimsenin çalıştırmadığı bir ikili veriyordu; artık hiçbir şey derlenmeden gerekçesiyle reddediliyor: macOS için imzalama ve noter onayı ücretli bir Apple hesabı ve Mac donanımı istiyor, Lepton bunu sürdüremez. [Sistem gereksinimleri](/tr/docs/requirements/)
 - **Varsayılan simge Lepton'ın işareti.** Yeni projeler `src-lepton/icon.svg` alır; Linux paketleri onu `share/icons` altına kurar ve girdiye `Icon=` yazar; `bundle.icon` verilmemişse MSI onun `.ico`'sunu kullanır.
 - **Yeni kimlik `com.<sahip>.<uygulama>`.** Sihirbaz uygulamayı kimin yayımladığını sorar (varsayılan: Git'in `user.name`'i), `--owner` bunu komut satırında söyler. Önceden çıplak uygulama adıydı.
@@ -54,14 +63,15 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
   - CLI çocuk süreçlere önce kapanmalarını söylüyor, sonra sonlandırıyor.
   - WebView2 yoksa `winget` ile kurulum öneriliyor.
   - Dev sunucusu sayfasındaki çerezler oturumlar arasında kalıyor.
-- **Linux'ta yazıldı, Linux'ta henüz çalıştırılmadı:**
-  - WPE WebKit ekrandan büyük pencereyi ekrana sığdırıyor.
-  - Servo penceresi uygulamanın kimliğini alıyor, çerçevesizken kenarlarından boyutlanıyor ve menüsünde `&` doğru çiziliyor.
-  - `bundle.icon` Linux paketleri için `.svg` alıyor.
-  - `LEPTON_GPU` orada da okunuyor.
-  - Native yolun testleri artık CI'da Mesa ile çalışıyor.
+- **Linux'ta, sonradan orada ölçüldü:**
+  - WPE WebKit ekrandan büyük pencereyi ekrana sığdırıyor (1200×800 → 1200×768). COSMIC her yeni pencereye, bir GTK 4 penceresi de dahil, kendi ilk boyutunu öneriyor (1200×800 için 910×458) ve o geçerli oluyor.
+  - Servo penceresi uygulamanın kimliğini alıyor (rıhtım simgesini gösteriyor), çerçevesizken kenarlarından boyutlanıyor ve menüsünde `&` doğru çiziliyor.
+  - `bundle.icon` Linux paketleri için `.svg` alıyor, `share/icons` altına bayt bayt kuruluyor; `.png` gerekçesiyle reddediliyor.
+  - `LEPTON_GPU=cpu` orada da okunuyor; yalnız Windows'a ait bir değer uyarıyla GLES'e düşüyor.
+  - Native yolun testleri CI'da Mesa ile çalışıyor.
+  - Linux'ta `lepton package --windows` her çalıştırmada aynı dosyaları yapıyor; MSI'ı Windows'ta kuruluyor ve orada yapılanla aynı denetimlerden geçiyor, ama iki makinenin dosyaları henüz bayt bayt aynı değil.
 
-## 0.1.9-beta.1 *2026-10-20, beta*
+## 0.1.9-beta.1 *2026-10-19, beta*
 
 - **Windows'ta eklentiler.** `os`, `fs` ve `dialog` bir WebView2 uygulamasında uçtan uca ölçüldü; `clipboard` Windows için yazıldı ama orada henüz ölçülmedi (test için sürülen pencerede odak yok, `writeText` de odağı bekliyor). `plugin-dialog` Windows'un kendi dosya pencerelerini açıyor; `plugin-fs` kapsamını kapsam klasörüne göre tek bir `NtCreateFile` ile koruyor ve klasörden dışarı çıkan her bağlantıyı reddediyor; Linux'takinden de katı (klasörün içine konmuş bir junction bayrak olmadan açıldı, bayrakla reddediliyor; ölçüldü). `plugin-os` Windows sürümünü, makine adını ve yerel ayarı veriyor. `$APPDATA`, `$APPCACHE` ve diğer klasörler Windows'un Known Folders'ından geliyor.
 - **WebView2'de yeni projede konsol hatası yok.** WebView2 her sayfada `/favicon.ico` istiyor; 404 artık boş bir 204.
@@ -122,7 +132,7 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
 
 ## 0.2.0 *hazırlanıyor*
 
-0.2.0 bir `@beta` sürümü olarak planlandı: doğrudan GPU'da çizen bir native çizici, native uygulamalar için bir JavaScript motoru ve native arayüz. Şimdiye kadarki temel:
+0.2.0 önce beta, sonra 0.2.0 olarak yayınlanacak: doğrudan GPU'da çizen bir native çizici, native uygulamalar için bir JavaScript motoru, native arayüz ve WPE WebKit sayfasının kendi başlık çubuğunu çizmesini, pencereyi taşımasını ve native menü göstermesini sağlayacak Lepton'ın kendi WPE platformu. Şimdiye kadarki temel:
 
 - **Vulkan tabanı Radeon R7 240'ınki.** Dynamic rendering, synchronization2, timeline semaphore, descriptor indexing ve buffer device address ile Vulkan 1.3; bunları olmayan cihaz GLES 3 yolunu alır. `zig build vulkan-check` bir makineyi denetler ve tam bu özelliklerle çizer; Khronos doğrulaması altında hata bildirmiyor.
 - **GPU'nun çizdiği bir komut listesi.** Yuvarlak köşeli ve kenarlıklı dikdörtgenler, yumuşak gölgeler ve metin şekil başına 64 bayt ve tek çağrıda çiziliyor. 2001 şekillik 1200×800 bir sahne R7 240'ta 0,65 ms; karede GPU'ya 128 KB gidiyor, bugünkü native yol ise 3,84 MB'lık kareyi yüklüyor. Metni HarfBuzz şekillendiriyor, her glif bir kez yükleniyor.
