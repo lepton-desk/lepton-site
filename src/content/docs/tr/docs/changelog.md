@@ -69,7 +69,7 @@ Bu sayfadaki her sayı projenin kendi makinesinde (Radeon R7 240, Linux, Wayland
   - `bundle.icon` Linux paketleri için `.svg` alıyor, `share/icons` altına bayt bayt kuruluyor; `.png` gerekçesiyle reddediliyor.
   - `LEPTON_GPU=cpu` orada da okunuyor; yalnız Windows'a ait bir değer uyarıyla GLES'e düşüyor.
   - Native yolun testleri CI'da Mesa ile çalışıyor.
-  - Linux'ta `lepton package --windows` her çalıştırmada aynı dosyaları yapıyor; MSI'ı Windows'ta kuruluyor ve orada yapılanla aynı denetimlerden geçiyor, ama iki makinenin dosyaları henüz bayt bayt aynı değil.
+  - Linux'ta `lepton package --windows` her çalıştırmada aynı dosyaları yapıyor; MSI'ı Windows'ta kuruluyor ve orada yapılanla aynı denetimlerden geçiyor. İki makinenin paketleri yalnız `.exe`'de farklıydı: bulunulan platform için yapılan derleme o makinenin kendi işlemcisine göre yapılıyordu. Yayın derlemeleri artık düz x86-64 için; paket eski bir işlemcide "illegal instruction" ile durmuyor (ölçüldü: burada derlenen native uygulamada önce 2253 AVX komutu vardı, şimdi hiç yok).
 
 ## 0.1.9-beta.1 *2026-10-19, beta*
 
