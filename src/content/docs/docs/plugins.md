@@ -100,11 +100,11 @@ A plugin is an npm package whose `package.json` points at its Zig file:
 "lepton": { "plugin": "zig/plugin.zig", "settings": "myplugin" }
 ```
 
-`plugin.zig` exports its commands. They take no app state — only the request bytes and the reply buffer:
+`plugin.zig` exports its commands. They take no app state — only the request bytes and the reply buffer (`core.commands` from 0.1.9-beta.3; a plugin that must also build in older projects uses `core.webviewRegistry`, the same declarations):
 
 ```zig
 const core = @import("lepton_core");
-const Registry = core.webviewRegistry;
+const Registry = core.commands;
 
 pub const commands = [_]Registry.PluginCommand{
     .{ .name = "myplugin.hello", .run = &hello },
@@ -122,4 +122,4 @@ The TypeScript half calls them with `invoke` from `@lepton-desk/api/core` (a pee
 
 - `settings` names the plugin's section in `lepton.config.json` (`plugins.myplugin`); the core reads it at compile time with `core.pluginConfig`.
 - `pub const private = .{ "myplugin.secret" };` keeps a command's bytes out of [`lepton record`](/docs/cli/) recordings.
-- A plugin that watches something exports `pub fn tick(bridge: anytype) void`; the application's loop calls it on every turn (at least every 250 ms), and it emits with `bridge.emit("myplugin.changed", bytes)` (at most 256 bytes). Its TypeScript half declares the event in `AppEvents` (`@lepton-desk/api/event`). *0.1.9-beta.2*
+- A plugin that watches something exports `pub fn tick(target: anytype) void`; the application's loop calls it on every turn (at least every 250 ms) with an event target (`core.events.Target` from 0.1.9-beta.3, the bridge itself before), and it emits with `target.emit("myplugin.changed", bytes)` (at most 256 bytes). Its TypeScript half declares the event in `AppEvents` (`@lepton-desk/api/event`). *0.1.9-beta.2*

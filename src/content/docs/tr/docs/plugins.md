@@ -100,11 +100,11 @@ Eklenti, `package.json`'ı Zig dosyasını gösteren bir npm paketidir:
 "lepton": { "plugin": "zig/plugin.zig", "settings": "eklentim" }
 ```
 
-`plugin.zig` komutlarını dışa verir. Uygulama durumu almazlar — yalnız istek baytlarını ve yanıt arabelleğini:
+`plugin.zig` komutlarını dışa verir. Uygulama durumu almazlar — yalnız istek baytlarını ve yanıt arabelleğini (`core.commands` 0.1.9-beta.3'ten; daha eski projelerde de derlenmesi gereken eklenti aynı bildirimleri taşıyan `core.webviewRegistry`'yi kullanır):
 
 ```zig
 const core = @import("lepton_core");
-const Registry = core.webviewRegistry;
+const Registry = core.commands;
 
 pub const commands = [_]Registry.PluginCommand{
     .{ .name = "eklentim.merhaba", .run = &merhaba },
@@ -122,4 +122,4 @@ TypeScript yarısı onları `@lepton-desk/api/core`'daki `invoke` ile çağırı
 
 - `settings`, eklentinin `lepton.config.json`'daki bölümünü adlandırır (`plugins.eklentim`); çekirdek onu derleme anında `core.pluginConfig` ile okur.
 - `pub const private = .{ "eklentim.gizli" };` bir komutun baytlarını [`lepton record`](/tr/docs/cli/) kayıtlarından uzak tutar.
-- Bir şeyi izleyen eklenti `pub fn tick(bridge: anytype) void` dışa aktarır; uygulamanın döngüsü onu her turda çağırır (en az 250 ms'de bir), o da `bridge.emit("eklentim.degisti", baytlar)` ile olay yayar (en çok 256 bayt). TypeScript yarısı olayı `AppEvents`'te bildirir (`@lepton-desk/api/event`). *0.1.9-beta.2*
+- Bir şeyi izleyen eklenti `pub fn tick(target: anytype) void` dışa aktarır; uygulamanın döngüsü onu her turda bir olay hedefiyle çağırır (en az 250 ms'de bir; 0.1.9-beta.3'ten `core.events.Target`, öncesinde köprünün kendisi), o da `target.emit("eklentim.degisti", baytlar)` ile olay yayar (en çok 256 bayt). TypeScript yarısı olayı `AppEvents`'te bildirir (`@lepton-desk/api/event`). *0.1.9-beta.2*

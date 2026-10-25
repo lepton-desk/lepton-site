@@ -8,16 +8,16 @@ description: Sayfadan Zig çağırmak ve olayları geri göndermek.
 Bir komut, `src-lepton/main.zig` içindeki bir Zig fonksiyonudur. Uygulama durumunuzu, istek baytlarını ve yanıt için bir arabelleği alır; kaç bayt yazdığını döndürür.
 
 ```zig
-pub const commands = core.webviewRegistry.checkedWith(
+pub const commands = core.commands.checkedWith(
     AppState,
     &.{
         .{ .name = "app.name", .run = &appName },
     },
-    core.webviewRegistry.pluginCommands(@import("lepton_plugins").all),
-    core.webviewRegistry.permissionList(@import("build_options").permissions),
+    core.commands.pluginCommands(@import("lepton_plugins").all),
+    core.commands.permissionList(@import("build_options").permissions),
 );
 
-fn appName(state: *AppState, _: []const u8, out: []u8) core.webviewRegistry.HandlerError!usize {
+fn appName(state: *AppState, _: []const u8, out: []u8) core.commands.HandlerError!usize {
     if (state.product.len > out.len) return error.TooLarge;
     @memcpy(out[0..state.product.len], state.product);
     return state.product.len;
@@ -42,13 +42,13 @@ Sayfa ve çekirdek JSON değil **ikili çerçeveler** alışverişi yapar: `invo
 Çekirdeğin gönderebileceği olayları bildirin:
 
 ```zig
-pub const events = core.webviewEvents.Declared(&.{ "notes.saved" });
+pub const events = core.events.Declared(&.{ "notes.saved" });
 ```
 
 Zig'den gönderin (bildirilmemiş bir ad derlenmez):
 
 ```zig
-_ = try events.emit(&view.bridge, "notes.saved", bytes);
+_ = try events.emit(view.bridge.eventTarget(), "notes.saved", bytes);
 ```
 
 ve sayfada dinleyin:
