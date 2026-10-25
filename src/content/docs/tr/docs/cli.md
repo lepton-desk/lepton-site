@@ -71,7 +71,7 @@ Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bay
 
 ## `lepton update` *0.1.7*
 
-Çekirdeği projeye yalnız `lepton new` yazar; sonradan gelen düzeltmeler var olan projeye bu komutla ulaşır. `src-lepton/vendor/lepton-core`'u değiştirir, `main.zig`, `build.zig` ve `lepton-commands.zig`'i güncel şablona getirir:
+Çekirdeği projeye yalnız `lepton new` yazar; sonradan gelen düzeltmeler var olan projeye bu komutla ulaşır. `src-lepton/vendor/lepton-core`'u değiştirir, `main.zig`, `build.zig`, `native.zig` *(0.1.9-beta.3)* ve `lepton-commands.zig`'i güncel şablona getirir:
 
 - hiç düzenlemediğiniz dosya değiştirilir;
 - düzenlenmiş dosya üç yollu birleştirilir — yapıldığı sürüm, sizin dosyanız, bugünkü şablon — komutlarınız ve durumunuz kalır;

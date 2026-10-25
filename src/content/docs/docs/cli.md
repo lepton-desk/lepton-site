@@ -71,7 +71,7 @@ Without `-o` the file is `recording-<unix seconds>.lrec` in the project. `replay
 
 ## `lepton update` *0.1.7*
 
-Only `lepton new` writes the core into a project, so fixes made later reach an existing project through this command. It replaces `src-lepton/vendor/lepton-core` and brings `main.zig`, `build.zig` and `lepton-commands.zig` up to the current template:
+Only `lepton new` writes the core into a project, so fixes made later reach an existing project through this command. It replaces `src-lepton/vendor/lepton-core` and brings `main.zig`, `build.zig`, `native.zig` *(0.1.9-beta.3)* and `lepton-commands.zig` up to the current template:
 
 - a file you never edited is replaced;
 - an edited one is merged three ways — the release it was made from, your file, today's template — so your commands and state stay;
