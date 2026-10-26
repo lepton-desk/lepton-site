@@ -31,6 +31,7 @@ description: lepton.config.json, alan alan.
 | `plugins` | Eklenti ayarları, eklentinin adıyla; ör. `plugins.fs.scope`. |
 | `deepLinks` | Uygulamanın açtığı URL şemaları; ör. `myapp://…` için `["myapp"]` *0.1.9-beta.2*; aşağıda. |
 | `webPermissions` | Web motorunun kendi istekleri (bildirim, kamera…) için yanıtlar: `allow`, `deny` ya da `ask`. Listelenmeyenler reddedilir. *0.1.5* |
+| `wasm` | `"threads": true` sayfaya WebAssembly thread'leri verir *0.1.9-beta.3*; aşağıda. |
 | `bundle` | Paket biçimleri ve bilgileri; [Paketleme](/tr/docs/packaging/) sayfasına bakın. |
 | `frontend` | Derlemenin nereye gittiği ve dev sunucusunun nasıl başlatıldığı *0.1.9-beta.0*; aşağıda. Yoksa proje bir Vite projesidir. |
 | `sdkScope`, `channel` | `lepton new` yazar (`@lepton-desk`; paylaşımlı bellek kanalı `/lepton-<identifier>` ve boyutu). Kanal adı bir kez `src-lepton/main.zig`'e yazılır; burada değiştirmek etkisizdir. |
@@ -54,6 +55,22 @@ Lepton bir ön yüzden iki şey bilmek ister: derlemesinin yazdığı klasör ve
 | `devArgs` | `<yönetici> run dev`'den sonraki bayraklar. `{port}` ve `{host}`, pencerenin yüklediği port ve adresle değiştirilir; ikisi de geçmelidir, yoksa CLI dosyayı reddeder. |
 
 Şablonu olmayan bir çatı da aynı yolla çalışır: çıktı klasörünü ve dev sunucusunun aldığı bayrakları yazın. Sunucu dolu bir portta başka porta geçmemeli, durmalı; çünkü pencereye port zaten söylenmiş olur.
+
+## `wasm.threads` *0.1.9-beta.3*
+
+WebAssembly thread'leri `SharedArrayBuffer` ister; tarayıcı motorları onu yalnız cross-origin isolated (kökenler arası yalıtılmış) bir sayfaya verir. `"wasm": { "threads": true }` sayfayı derlenmiş uygulamada da `lepton dev`'de de böyle yapar:
+
+```json
+{ "wasm": { "threads": true } }
+```
+
+- Çekirdek yanıtlarına `Cross-Origin-Opener-Policy: same-origin` ve `Cross-Origin-Embedder-Policy: require-corp` koyar. `lepton dev`'de sayfayı dev sunucusu verdiği için her şablonun dev ayarı aynı ayarı okuyup aynı başlıkları gönderir (`vite.config`, `astro.config.mjs`, `next dev` için `next.config`). Angular'ın `angular.json`'u başka bir dosyayı okuyamaz: onun `frontend.devArgs`'ında `{isolation}` vardır, `lepton dev` onu `--headers` bayraklarına çevirir.
+- Yalıtılmış bir sayfa başka bir kökenden bir kaynağı (CDN'den bir betik, bir görsel) ancak o köken CORS ya da `Cross-Origin-Resource-Policy` ile izin verirse yükler. Sayfanın thread'e ihtiyacı yoksa ayarı kapalı bırakın.
+- Linux'ta WPE WebKit 2.54 yalıtılmış sayfaya da `SharedArrayBuffer` vermiyor; bu yüzden çekirdek uygulamanın web süreci için JavaScriptCore'un kendi seçeneğini de açar. Bu seçenek köken başına değildir: uygulamanın gösterdiği her sayfada `SharedArrayBuffer` olur, yalnız kendi sayfasında değil.
+
+Linux'ta WPE WebKit 2.54'te ve Windows'ta WebView2'de ölçüldü: ayar açıkken sayfa yalıtılmış ve bir Worker paylaşımlı `WebAssembly.Memory`'yi okuyup yazıyor; kapalıyken `SharedArrayBuffer` yok. Servo'da ayar açık da olsa kapalı da olsa WebAssembly thread'i yok (`SharedArrayBuffer` yok); `lepton build --servo` bunu söyler ve uygulamayı thread'siz derler.
+
+0.1.9-beta.3'ten önceki bir proje: `lepton update`, `lepton new`'in yazdığı haliyle duran dev ayarını yenisiyle değiştirir, düzenlediğiniz bir dosyaya eklenecek satırları yazar ve Angular projesinin bayraklarına `{isolation}` ekler.
 
 ## `deepLinks` ve tek çalışan kopya *0.1.9-beta.2*
 

@@ -31,6 +31,7 @@ description: lepton.config.json, field by field.
 | `plugins` | Settings for plugins, by the plugin's name, e.g. `plugins.fs.scope`. |
 | `deepLinks` | URL schemes the app opens, e.g. `["myapp"]` for `myapp://…` *0.1.9-beta.2*; see below. |
 | `webPermissions` | Answers for the web engine's own requests (notifications, camera…): `allow`, `deny` or `ask`. Unlisted kinds are denied. *0.1.5* |
+| `wasm` | `"threads": true` gives the page WebAssembly threads *0.1.9-beta.3*; see below. |
 | `bundle` | Package formats and metadata; see [Packaging](/docs/packaging/). |
 | `frontend` | Where the build goes and how the dev server is started *0.1.9-beta.0*; see below. Without it a project is a Vite project. |
 | `sdkScope`, `channel` | Written by `lepton new` (`@lepton-desk`; the shared-memory channel `/lepton-<identifier>` and its size). The channel name goes into `src-lepton/main.zig` once; changing either here has no effect. |
@@ -54,6 +55,22 @@ Lepton needs two things from a front end: the folder its build writes, and how i
 | `devArgs` | The flags after `<manager> run dev`. `{port}` and `{host}` are replaced by the port and address the window loads; both must appear, or the CLI refuses the file. |
 
 A framework without a template works the same way: give its output folder and the flags its dev server takes. The server must stop on a port that is already taken rather than move to another one, because the window has already been told the port.
+
+## `wasm.threads` *0.1.9-beta.3*
+
+WebAssembly threads need `SharedArrayBuffer`, which a browser engine gives only to a cross-origin isolated page. `"wasm": { "threads": true }` makes the page one, in a built app and under `lepton dev`:
+
+```json
+{ "wasm": { "threads": true } }
+```
+
+- The core answers with `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`. Under `lepton dev` the page comes from the dev server, so each template's dev configuration reads the same setting and sends the same headers (`vite.config`, `astro.config.mjs`, `next.config` for `next dev`). Angular's `angular.json` cannot read another file: its `frontend.devArgs` carry `{isolation}`, which `lepton dev` turns into `--headers` flags.
+- An isolated page loads a resource from another origin (a CDN script, an image) only when that origin allows it with CORS or `Cross-Origin-Resource-Policy`. Leave the setting off unless the page needs threads.
+- On Linux, WPE WebKit 2.54 gives no `SharedArrayBuffer` even to an isolated page, so the core also turns on JavaScriptCore's own option for the app's web process. That option is not per origin: every page the app shows has `SharedArrayBuffer`, not only its own.
+
+Measured on Linux in WPE WebKit 2.54 and on Windows in WebView2: with the setting on, the page is isolated and a worker reads and writes a shared `WebAssembly.Memory`; with it off, it has no `SharedArrayBuffer`. Servo has no WebAssembly threads with the setting or without it (no `SharedArrayBuffer`); `lepton build --servo` says so and builds the app without them.
+
+A project from before 0.1.9-beta.3: `lepton update` replaces a dev configuration that is still the one `lepton new` wrote, prints the lines to add to one you edited, and adds `{isolation}` to an Angular project's flags.
 
 ## `deepLinks` and the single running copy *0.1.9-beta.2*
 
