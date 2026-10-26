@@ -124,6 +124,17 @@
       },
       "additionalProperties": { "enum": ["allow", "deny", "ask"] }
     },
+    "wasm": {
+      "description": "WebAssembly in the page.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "threads": {
+          "description": "true: WebAssembly threads (SharedArrayBuffer). The page is cross-origin isolated: the core and the dev server send Cross-Origin-Opener-Policy: same-origin and Cross-Origin-Embedder-Policy: require-corp, so a resource from another origin loads only with CORS or Cross-Origin-Resource-Policy. On Linux WPE also turns on JavaScriptCore's SharedArrayBuffer for the app's web process. Default false.",
+          "type": "boolean"
+        }
+      }
+    },
     "deepLinks": {
       "description": "URL schemes the application opens (\"myapp\" for myapp://…). A link starts the app, or reaches the running copy as the app.opened event (@lepton-desk/api/app); list app.args under permissions to read it.",
       "type": "array",
