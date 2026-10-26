@@ -54,6 +54,12 @@ Paketlenmiş sayfa `lepton://localhost/`'tan sunulur ve Linux'taki iki motor da 
 
 Kullanıcının tıkladığı web bağlantısı — `localhost`, `127.0.0.1` ya da `[::1]` dışındaki bir adrese `http(s)`, ya da `mailto:`, `tel:` ve diğer şemalar — `OpenURI` portalı üzerinden masaüstünün varsayılan uygulamasında açılır; pencere sayfanızda kalır. `window.open` da aynı kuralı izler: dış adres masaüstüne gider ve `null` döner; uygulamanın kendi sayfası aynı motorda ikinci bir pencere açar ve o pencere de çekirdeği ilki gibi çağırabilir.
 
+## Sayfanızın içindeki çerçeveler
+
+`__lepton`'ı ve bu çalıştırmanın anahtarını yalnız uygulamanızın kendi sayfası alır; içindeki bir çerçeve ikisini de almaz. Ama sayfanızla aynı kökendeki bir çerçeve, webin her yerinde olduğu gibi, üst çerçevesini okuyabilir: bir `<iframe srcdoc>`, betiğinizin doldurduğu bir `about:blank` çerçevesi ya da kendi sayfalarınızdan biri. Böyle bir çerçeve anahtarı `parent.__lepton`'dan alır ve çekirdeği sayfanızın yetkileriyle çağırır. `permissions` ona da uygulanır. WPE WebKit'te ölçüldü: bir `srcdoc` ve bir `about:blank` çerçevesi anahtarı okudu, `app.args`'ı çalıştırdı (`ok`) ve uygulamanın `permissions` listesinde olmayan `window.title` için `denied` aldı.
+
+Tam güvenmediğiniz içeriği `allow-same-origin` olmadan `<iframe sandbox="allow-scripts">` içine koyun. Çerçevenin kökeni o zaman opak olur: `parent.__lepton`'ı okumak `SecurityError` verir ve anahtarı hiç almaz (ölçüldü). `allow-same-origin` eklenirse yine sayfanızın yetkilerine sahip olur. Yalnız WPE WebKit'te ölçüldü; WebView2 ve Servo henüz ölçülmedi.
+
 ## Web Inspector
 
 Hata ayıklama derlemelerinde — `lepton dev` ve `--release` olmadan `lepton run` — F12 ya da Ctrl+Shift+I WebKit'in denetleyicisini açar. Sürüm derlemeleri (`lepton build`, `lepton package`) onu içermez.

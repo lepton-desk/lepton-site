@@ -54,6 +54,12 @@ A packaged page is served from `lepton://localhost/`, and both Linux engines giv
 
 A web link the user clicks — `http(s)` to any host other than `localhost`, `127.0.0.1` or `[::1]`, or `mailto:`, `tel:` and other schemes — opens in the desktop's default application through the `OpenURI` portal; the window stays on your page. `window.open` follows the same rule: an outside address goes to the desktop and returns `null`, the application's own page opens a second window on the same engine, which can call the core like the first.
 
+## Frames inside your page
+
+Only your application's own page gets `__lepton` and this run's key; a frame inside it gets neither. A frame on your page's origin can still read its parent, as same-origin frames can anywhere on the web: an `<iframe srcdoc>`, an `about:blank` frame your script fills, or another of your own pages. Such a frame takes the key from `parent.__lepton` and calls the core with your page's rights. `permissions` still apply to it. Measured on WPE WebKit: a `srcdoc` frame and an `about:blank` frame each read the key, ran `app.args` (`ok`) and got `denied` for `window.title`, which the app's `permissions` did not list.
+
+Put content you do not fully trust in `<iframe sandbox="allow-scripts">`, without `allow-same-origin`. The frame then has an opaque origin: reading `parent.__lepton` throws `SecurityError`, and it never gets the key (measured). With `allow-same-origin` added it has your page's rights again. Measured on WPE WebKit only; WebView2 and Servo are not measured yet.
+
 ## The Web Inspector
 
 In debug builds — `lepton dev` and `lepton run` without `--release` — F12 or Ctrl+Shift+I opens WebKit's inspector. Release builds (`lepton build`, `lepton package`) leave it out.
