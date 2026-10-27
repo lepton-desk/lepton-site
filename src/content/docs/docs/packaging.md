@@ -39,3 +39,15 @@ npm run lepton package -- --verify
 ```
 
 Unpacks every package into an empty directory, starts the app from there, measures its memory, closes it, and fails if it does not start or leaves a process behind. On Windows the app and every process it starts are held in a job object and closed as a user would close the window.
+
+### What an app costs in memory *0.1.9-beta.3*
+
+`--verify` prints it, three seconds after the start: on Windows the private working set of the app and every process it started, the figure Task Manager's Memory column shows (on Linux the tree's PSS). Measured on Windows Server 2025 in Lepton's CI, the same `vanilla-ts` template built both ways:
+
+| App | Processes | Memory |
+|---|---|---|
+| Web view (WebView2) | 7 | 69.4 MB |
+| Native, GPU (Direct3D 11) | 1 | 6.9 MB |
+| Native, CPU (`LEPTON_GPU=cpu`) | 1 | 5.9 MB |
+
+The web view's figure is WebView2's processes as much as your page's: two earlier runs gave 70.6 and 72.9 MB. The CI machine has no GPU, so Direct3D 11 there runs on Microsoft's software renderer (WARP, loaded in the process); a machine with a graphics card was not measured yet, nor Linux.

@@ -39,3 +39,15 @@ npm run lepton package -- --verify
 ```
 
 Her paketi boş bir dizine açar, uygulamayı oradan başlatır, belleğini ölçer, kapatır; başlamazsa ya da arkada süreç bırakırsa başarısız olur. Windows'ta uygulama ve başlattığı her süreç bir iş nesnesinde tutulur ve bir kullanıcının pencereyi kapatacağı gibi kapatılır.
+
+### Bir uygulamanın bellek maliyeti *0.1.9-beta.3*
+
+`--verify`, açılıştan üç saniye sonra bunu yazar: Windows'ta uygulamanın ve başlattığı her sürecin özel çalışma kümesi, yani Görev Yöneticisi'nin Bellek sütunundaki değer (Linux'ta ağacın PSS'i). Lepton'ın CI'ında Windows Server 2025'te ölçüldü, aynı `vanilla-ts` şablonu iki biçimde derlendi:
+
+| Uygulama | Süreç | Bellek |
+|---|---|---|
+| Web görünümü (WebView2) | 7 | 69,4 MB |
+| Native, GPU (Direct3D 11) | 1 | 6,9 MB |
+| Native, CPU (`LEPTON_GPU=cpu`) | 1 | 5,9 MB |
+
+Web görünümünün değeri sayfanız kadar WebView2'nin süreçlerinden de gelir: önceki iki çalıştırma 70,6 ve 72,9 MB verdi. CI makinesinde GPU yok; Direct3D 11 orada Microsoft'un yazılım çizicisiyle (WARP, süreçte yüklü) çalışıyor. Ekran kartı olan bir makine ve Linux henüz ölçülmedi.

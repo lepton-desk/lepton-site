@@ -143,7 +143,7 @@ export const landing: Record<Lang, LandingText> = {
 				{ item: 'Vulkan rendering', state: 'planned', note: '0.2.0. Its floor is measured on a Radeon R7 240: Vulkan 1.3.' },
 			],
 			labels: { works: 'works', experimental: 'experimental', next: 'in the beta', planned: 'planned', unsupported: 'not supported' },
-			memory: 'Web engines use memory, and WebView RAM can be high. We know that, and we won’t pretend otherwise.',
+			memory: 'Web engines use memory, and WebView RAM can be high. We know that, and we won’t pretend otherwise: on Windows the same template measured 69.4 MB as a web view app and 6.9 MB as a native one.',
 		},
 		close: {
 			claim: 'Try it on your machine.',
@@ -231,7 +231,7 @@ export const landing: Record<Lang, LandingText> = {
 				{ item: 'Vulkan ile çizim', state: 'planned', note: '0.2.0. Tabanı bir Radeon R7 240’ta ölçüldü: Vulkan 1.3.' },
 			],
 			labels: { works: 'çalışıyor', experimental: 'deneysel', next: 'betada', planned: 'planlanıyor', unsupported: 'desteklenmiyor' },
-			memory: 'Web motorları bellek kullanır; WebView’in RAM tüketimi yüksek olabilir. Bunu biliyoruz ve saklamıyoruz.',
+			memory: 'Web motorları bellek kullanır; WebView’in RAM tüketimi yüksek olabilir. Bunu biliyoruz ve saklamıyoruz: Windows’ta aynı şablon web görünümü olarak 69,4 MB, native olarak 6,9 MB ölçüldü.',
 		},
 		close: {
 			claim: 'Kendi makinenizde deneyin.',
