@@ -22,9 +22,26 @@ npm run lepton package
 | --- | --- |
 | `tar.gz` | Kurulum öneki; her yere açılabilir. |
 | `arch` | Arch Linux paketi (`.pkg.tar.zst`). Bağımlılıklar ikilinin bağlı kütüphanelerinden çıkarılır. |
-| `deb` | Debian paketi. `bundle.maintainer` gerekir. Bağımlılık adları `dpkg-query`'den ya da onun olmadığı makinede `bundle.deb.depends`'ten gelir; asla tahmin edilmez. |
+| `deb` | Debian paketi. `bundle.maintainer`, ayrıca Debian kuralının istediği copyright dosyası için `bundle.copyright` ve `bundle.license` *0.1.9-beta.3* gerekir. Bağımlılık adları `dpkg-query`'den ya da onun olmadığı makinede `bundle.deb.depends`'ten gelir; asla tahmin edilmez. |
 | `zip` | Windows *0.1.9-beta.0*: kurulum öneki, `bin\<ad>.exe` ve yanında ön yüz. |
 | `msi` | Windows *0.1.9-beta.0*: WiX olmadan Lepton'un kendisinin yazdığı bir Windows Installer paketi. Yönetici izni istemeden kullanıcı başına kurulur (`%LOCALAPPDATA%\Programs\<ürün>`), Başlat menüsüne kısayol ekler, eski sürümü yükseltir, aynı sürümün başka bir derlemesini onun yerine kurar *0.1.9-beta.2* (Windows Installer yalnız `major.minor.build`'i karşılaştırır; `1.0.0-beta.1` → `1.0.0-beta.2` onun için aynı sürümdür), sürüm düşürmeyi reddeder, temiz kaldırılır. `bundle.icon` (bir `.ico`) kısayolun ve Uygulamalar listesinin simgesidir. Windows SDK'nın ICE doğrulamasından hatasız geçer. |
+
+**Paketlerin uygulama hakkında söyledikleri** *0.1.9-beta.3*. `bundle` içinde isteğe bağlı altı alan:
+
+```json
+{
+  "bundle": {
+    "description": "Çevrimdışı notlar",
+    "longDescription": "Notlar notlarınızı makinenizde tutar.\n\nHesap yok, eşitleme yok.",
+    "license": "MIT",
+    "homepage": "https://example.com/notes",
+    "copyright": "© 2026 Örnek",
+    "category": "Office"
+  }
+}
+```
+
+`description` (tek satır) masaüstü girdisinin `Comment`'i, Arch'ın `pkgdesc`'i ve `.deb`'in özetidir; yoksa `productName`. `longDescription` `.deb`'in uzun açıklamasıdır. `license` (bir SPDX ifadesi) ve `homepage` Arch paketine (`license`, `url`) ve `.deb`'e (`Homepage`) gider. `copyright` ve `license` verilince Linux paketleri Debian'ın makine okunur biçiminde `share/doc/<paket>/copyright` taşır. `category` masaüstü girdisinin ana kategorisidir (`AudioVideo`, `Audio`, `Video`, `Development`, `Education`, `Game`, `Graphics`, `Network`, `Office`, `Science`, `Settings`, `System` ya da `Utility`); yoksa `Development`.
 
 **Simge.** `lepton new`, Lepton'ın işaretini `src-lepton/icon.svg`'ye koyar *0.1.9-beta.2*; kendinizinkiyle değiştirin. Linux'ta paket onu `share/icons/hicolor/scalable/apps/<identifier>.svg` olarak kurar ve masaüstü girdisi onu adlandırır (`Icon=<identifier>`); `lepton dev` ve `run` yazdıkları girdinin yanına kurar. `bundle.icon` kendi simgenizi verir: bir yol ya da bir liste; Windows için bir `.ico` (program, MSI), Linux için bir `.svg`, örneğin `"icon": ["assets/app.ico", "assets/app.svg"]`; oradaki `.svg` `src-lepton/icon.svg`'nin önüne geçer. Linux simgeleri ölçeklenebilir olduğu için `.png` tek bir boyutta kurulmak yerine reddedilir. Hiçbiri yoksa her sistem Lepton'ın işaretini alır. Linux paketleri ayrıca `hicolor/<n>x<n>/apps` altında 16'dan 512 px'e PNG'ler taşır *0.1.9-beta.3*; SVG okumayan masaüstleri ve mağazalar için: [`lepton icon`](/tr/docs/cli/#lepton-icon-019-beta3)'un `src-lepton/icons/`'a yazdıkları, yoksa paketlerken SVG'den çizilenler. Onun `icon.ico`'su, `bundle.icon` bir tane vermiyorsa Windows programının ve MSI'ın simgesidir.
 

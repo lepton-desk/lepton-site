@@ -22,9 +22,26 @@ npm run lepton package
 | --- | --- |
 | `tar.gz` | The install prefix, unpackable anywhere. |
 | `arch` | An Arch Linux package (`.pkg.tar.zst`). Dependencies come from the binary's linked libraries. |
-| `deb` | A Debian package. Needs `bundle.maintainer`. Dependency names come from `dpkg-query`, or from `bundle.deb.depends` on a machine without it — never guessed. |
+| `deb` | A Debian package. Needs `bundle.maintainer`, and `bundle.copyright` and `bundle.license` *0.1.9-beta.3* for the copyright file Debian policy requires. Dependency names come from `dpkg-query`, or from `bundle.deb.depends` on a machine without it — never guessed. |
 | `zip` | Windows *0.1.9-beta.0*: the install prefix, `bin\<name>.exe` and the front end beside it. |
 | `msi` | Windows *0.1.9-beta.0*: a Windows Installer package written by Lepton itself, without WiX. It installs per user (`%LOCALAPPDATA%\Programs\<product>`) without admin rights, adds a Start menu shortcut, upgrades an older version, replaces another build of the same version *0.1.9-beta.2* (Windows Installer compares only `major.minor.build`, so `1.0.0-beta.1` → `1.0.0-beta.2` is the same version to it), refuses a downgrade, and uninstalls cleanly. `bundle.icon` (an `.ico`) is its shortcut and Apps icon. It passes the Windows SDK's ICE validation with no errors. |
+
+**What the packages say about the app** *0.1.9-beta.3*. Six optional fields in `bundle`:
+
+```json
+{
+  "bundle": {
+    "description": "Take notes, offline",
+    "longDescription": "Notes keeps your notes on your machine.\n\nNo account, no sync.",
+    "license": "MIT",
+    "homepage": "https://example.com/notes",
+    "copyright": "© 2026 Example",
+    "category": "Office"
+  }
+}
+```
+
+`description` (one line) is the desktop entry's `Comment`, the Arch `pkgdesc` and the `.deb` synopsis; without it, `productName`. `longDescription` is the `.deb`'s extended description. `license` (an SPDX expression) and `homepage` reach the Arch package (`license`, `url`) and the `.deb` (`Homepage`). With `copyright` and `license`, Linux packages carry `share/doc/<package>/copyright` in Debian's machine-readable format. `category` is the desktop entry's main category (`AudioVideo`, `Audio`, `Video`, `Development`, `Education`, `Game`, `Graphics`, `Network`, `Office`, `Science`, `Settings`, `System` or `Utility`); without it, `Development`.
 
 **Icon.** `lepton new` puts Lepton's mark in `src-lepton/icon.svg` *0.1.9-beta.2*; replace it with your own. On Linux the package installs it as `share/icons/hicolor/scalable/apps/<identifier>.svg` and the desktop entry names it (`Icon=<identifier>`); `lepton dev` and `run` install it beside the entry they write. `bundle.icon` names your own: one path or a list, an `.ico` for Windows (the program, the MSI) and an `.svg` for Linux, for example `"icon": ["assets/app.ico", "assets/app.svg"]`; the `.svg` there wins over `src-lepton/icon.svg`. Linux icons are scalable, so a `.png` is refused rather than installed at one size. Without one, each system gets Lepton's mark. Linux packages also carry PNGs from 16 to 512 px under `hicolor/<n>x<n>/apps` *0.1.9-beta.3*, for desktops and stores that read no SVG: the ones [`lepton icon`](/docs/cli/#lepton-icon-019-beta3) wrote into `src-lepton/icons/`, else drawn from the SVG while packaging. Its `icon.ico` is the Windows program's and the MSI's when `bundle.icon` names none.
 

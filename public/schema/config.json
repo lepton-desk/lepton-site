@@ -1,252 +1,310 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://lepton-desk.vercel.app/schema/config.json",
-  "title": "lepton.config.json",
-  "description": "A Lepton project's configuration. Every rule here is one the lepton CLI enforces when it reads the file.",
-  "type": "object",
-  "required": ["productName"],
-  "additionalProperties": false,
-  "properties": {
-    "$schema": { "type": "string" },
-    "productName": {
-      "description": "The application's name. The binary is named after it. No control characters, no / or \\, not . or ..",
-      "type": "string",
-      "pattern": "^(?!\\s*\\.{1,2}\\s*$)[^\\u0000-\\u001f\\u007f/\\\\]*[^\\s\\u0000-\\u001f\\u007f/\\\\][^\\u0000-\\u001f\\u007f/\\\\]*$"
-    },
-    "identifier": {
-      "description": "Reverse-DNS identifier: the desktop entry, the window's app id and the per-application data directory. ASCII letters, digits, '.', '_' and '-'; not . or ..",
-      "type": "string",
-      "pattern": "^(?!\\.{1,2}$)[A-Za-z0-9._-]+$"
-    },
-    "version": {
-      "description": "Letters, digits, '.', '+', '~' and '-'; it is part of package file names.",
-      "type": "string",
-      "default": "0.1.0",
-      "pattern": "^[A-Za-z0-9+~-][A-Za-z0-9.+~-]*$"
-    },
-    "renderPath": {
-      "description": "webview: the page in WPE WebKit (Linux) or WebView2 (Windows). native: the core draws the window, no web engine.",
-      "enum": ["webview", "native"],
-      "default": "webview"
-    },
-    "target": {
-      "description": "The frontend framework the project was created with.",
-      "enum": [
-        "vanilla-ts",
-        "react",
-        "vue",
-        "svelte",
-        "solid",
-        "preact",
-        "lit",
-        "angular",
-        "astro",
-        "next"
-      ]
-    },
-    "sdkScope": {
-      "description": "The npm scope this project's Lepton packages come from: lepton update moves the dependencies under it, and lepton dev rebuilds the linked ones. A mirror or fork that publishes Lepton as @acme/api names \"@acme\".",
-      "type": "string",
-      "pattern": "^@[a-z0-9-][a-z0-9._-]*$",
-      "default": "@lepton-desk"
-    },
-    "channel": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "name": {
-          "description": "The shared-memory channel: starts with / and has no other /.",
-          "type": "string",
-          "pattern": "^/[^/]+$"
-        },
-        "geometry": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "cellCount": { "type": "integer", "minimum": 1 },
-            "payloadCapacity": { "type": "integer", "minimum": 1 }
-          }
-        }
-      }
-    },
-    "window": {
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "title": { "type": "string", "pattern": "^[^\\u0000-\\u001f\\u007f]*$" },
-        "width": {
-          "description": "Physical pixels.",
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 4294967295
-        },
-        "height": {
-          "description": "Physical pixels.",
-          "type": "integer",
-          "minimum": 1,
-          "maximum": 4294967295
-        },
-        "decorations": {
-          "description": "false: no system title bar; the page draws its own and moves the window with window.start_drag (Windows). Default true.",
-          "type": "boolean"
-        },
-        "contextMenu": {
-          "description": "The default right-click menu where the page does not take the click: Cut, Copy, Paste, Select All (Inspect in a developer's build). Default true; false shows none. A page's own contextmenu handler with preventDefault() always wins.",
-          "type": "boolean"
-        },
-        "frameRate": {
-          "description": "How fast a native app draws: \"display\" (default) at the screen's refresh, \"unlimited\" as fast as the machine can. LEPTON_FRAME_RATE overrides it when the program runs.",
-          "enum": ["display", "unlimited"]
-        }
-      }
-    },
-    "permissions": {
-      "description": "The commands the page may call, each by name: no wildcards. An unlisted command is refused.",
-      "type": "array",
-      "uniqueItems": true,
-      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$" }
-    },
-    "webPermissions": {
-      "description": "What the web engine may grant the page. Unlisted kinds are denied; \"ask\" needs \"permission.respond\" in permissions.",
-      "type": "object",
-      "propertyNames": {
-        "enum": [
-          "notifications",
-          "camera",
-          "microphone",
-          "geolocation",
-          "pointer-lock",
-          "device-info",
-          "media-keys",
-          "storage-access",
-          "xr"
-        ]
-      },
-      "additionalProperties": { "enum": ["allow", "deny", "ask"] }
-    },
-    "wasm": {
-      "description": "WebAssembly in the page.",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "threads": {
-          "description": "true: WebAssembly threads (SharedArrayBuffer). The page is cross-origin isolated: the core and the dev server send Cross-Origin-Opener-Policy: same-origin and Cross-Origin-Embedder-Policy: require-corp, so a resource from another origin loads only with CORS or Cross-Origin-Resource-Policy. On Linux WPE also turns on JavaScriptCore's SharedArrayBuffer for the app's web process. Default false.",
-          "type": "boolean"
-        }
-      }
-    },
-    "deepLinks": {
-      "description": "URL schemes the application opens (\"myapp\" for myapp://…). A link starts the app, or reaches the running copy as the app.opened event (@lepton-desk/api/app); list app.args under permissions to read it.",
-      "type": "array",
-      "uniqueItems": true,
-      "items": {
-        "type": "string",
-        "pattern": "^[a-z][a-z0-9+.-]{0,63}$",
-        "not": {
-          "enum": [
-            "http",
-            "https",
-            "file",
-            "mailto",
-            "ftp",
-            "data",
-            "javascript",
-            "about",
-            "lepton"
-          ]
-        }
-      }
-    },
-    "plugins": {
-      "description": "Settings for plugins that take them, by the section name the plugin declares (fs: { \"scope\": [\"$APPDATA\"] }, clipboard: { \"read\": \"always\" }).",
-      "type": "object",
-      "properties": {
-        "clipboard": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "read": {
-              "description": "When clipboard.read_text answers: \"input\" (default) only within 5 s of the user pressing a key or button in the window; \"always\" without one, for a clipboard manager.",
-              "enum": ["input", "always"]
-            }
-          }
-        }
-      },
-      "additionalProperties": {
-        "type": "object",
-        "propertyNames": { "pattern": "^[a-z0-9_]+$" },
-        "additionalProperties": {
-          "anyOf": [
-            { "type": "string", "pattern": "^[^\\n\\u0000]*$" },
-            { "type": "boolean" },
-            { "type": "array", "items": { "type": "string", "pattern": "^[^\\n\\u0000]*$" } }
-          ]
-        }
-      }
-    },
-    "bundle": {
-      "description": "What lepton package writes.",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "targets": {
-          "description": "Release formats, in order. Without it: tar.gz on Linux, zip on Windows. arch and deb are made only on Linux.",
-          "type": "array",
-          "minItems": 1,
-          "uniqueItems": true,
-          "items": { "enum": ["tar.gz", "arch", "deb", "zip", "msi"] }
-        },
-        "maintainer": {
-          "description": "Name <email>. Required for deb.",
-          "type": "string",
-          "pattern": "\\S"
-        },
-        "deb": {
-          "type": "object",
-          "additionalProperties": false,
-          "properties": {
-            "depends": {
-              "description": "Debian package names, for a machine without dpkg-query.",
-              "type": "array",
-              "items": { "type": "string" }
-            }
-          }
-        },
-        "icon": {
-          "description": "The app's icon, relative to the project: an .ico for Windows (the program, the installer's shortcut and Apps entry), an .svg for Linux (the desktop entry and packages), or a list with one of each.",
-          "oneOf": [
-            { "type": "string", "pattern": "\\.([iI][cC][oO]|[sS][vV][gG])\\s*$" },
-            {
-              "type": "array",
-              "items": { "type": "string", "pattern": "\\.([iI][cC][oO]|[sS][vV][gG])\\s*$" },
-              "minItems": 1,
-              "maxItems": 2
-            }
-          ]
-        }
-      }
-    },
-    "frontend": {
-      "description": "How the frontend is built and served. Without it: Vite's dist/ and flags.",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "dist": {
-          "description": "The bundler's output directory, inside the project (out for Next.js).",
-          "type": "string",
-          "default": "dist",
-          "pattern": "^(?![/\\\\])(?!.*:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$))(?!.*[/\\\\]{2}).*\\S.*$"
-        },
-        "devArgs": {
-          "description": "The flags after `<manager> run dev`, with {port} and {host} where the dev server takes them.",
-          "type": "array",
-          "items": { "type": "string" },
-          "allOf": [
-            { "contains": { "type": "string", "pattern": "\\{port\\}" } },
-            { "contains": { "type": "string", "pattern": "\\{host\\}" } }
-          ]
-        }
-      }
-    }
-  }
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://lepton-desk.vercel.app/schema/config.json",
+	"title": "lepton.config.json",
+	"description": "A Lepton project's configuration. Every rule here is one the lepton CLI enforces when it reads the file.",
+	"type": "object",
+	"required": ["productName"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"productName": {
+			"description": "The application's name. The binary is named after it. No control characters, no / or \\, not . or ..",
+			"type": "string",
+			"pattern": "^(?!\\s*\\.{1,2}\\s*$)[^\\u0000-\\u001f\\u007f/\\\\]*[^\\s\\u0000-\\u001f\\u007f/\\\\][^\\u0000-\\u001f\\u007f/\\\\]*$"
+		},
+		"identifier": {
+			"description": "Reverse-DNS identifier: the desktop entry, the window's app id and the per-application data directory. ASCII letters, digits, '.', '_' and '-'; not . or ..",
+			"type": "string",
+			"pattern": "^(?!\\.{1,2}$)[A-Za-z0-9._-]+$"
+		},
+		"version": {
+			"description": "Letters, digits, '.', '+', '~' and '-'; it is part of package file names.",
+			"type": "string",
+			"default": "0.1.0",
+			"pattern": "^[A-Za-z0-9+~-][A-Za-z0-9.+~-]*$"
+		},
+		"renderPath": {
+			"description": "webview: the page in WPE WebKit (Linux) or WebView2 (Windows). native: the core draws the window, no web engine.",
+			"enum": ["webview", "native"],
+			"default": "webview"
+		},
+		"target": {
+			"description": "The frontend framework the project was created with.",
+			"enum": [
+				"vanilla-ts",
+				"react",
+				"vue",
+				"svelte",
+				"solid",
+				"preact",
+				"lit",
+				"angular",
+				"astro",
+				"next"
+			]
+		},
+		"sdkScope": {
+			"description": "The npm scope this project's Lepton packages come from: lepton update moves the dependencies under it, and lepton dev rebuilds the linked ones. A mirror or fork that publishes Lepton as @acme/api names \"@acme\".",
+			"type": "string",
+			"pattern": "^@[a-z0-9-][a-z0-9._-]*$",
+			"default": "@lepton-desk"
+		},
+		"channel": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"name": {
+					"description": "The shared-memory channel: starts with / and has no other /.",
+					"type": "string",
+					"pattern": "^/[^/]+$"
+				},
+				"geometry": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"cellCount": { "type": "integer", "minimum": 1 },
+						"payloadCapacity": { "type": "integer", "minimum": 1 }
+					}
+				}
+			}
+		},
+		"window": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"title": {
+					"type": "string",
+					"pattern": "^[^\\u0000-\\u001f\\u007f]*$"
+				},
+				"width": {
+					"description": "Physical pixels.",
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 4294967295
+				},
+				"height": {
+					"description": "Physical pixels.",
+					"type": "integer",
+					"minimum": 1,
+					"maximum": 4294967295
+				},
+				"decorations": {
+					"description": "false: no system title bar; the page draws its own and moves the window with window.start_drag (Windows). Default true.",
+					"type": "boolean"
+				},
+				"contextMenu": {
+					"description": "The default right-click menu where the page does not take the click: Cut, Copy, Paste, Select All (Inspect in a developer's build). Default true; false shows none. A page's own contextmenu handler with preventDefault() always wins.",
+					"type": "boolean"
+				},
+				"frameRate": {
+					"description": "How fast a native app draws: \"display\" (default) at the screen's refresh, \"unlimited\" as fast as the machine can. LEPTON_FRAME_RATE overrides it when the program runs.",
+					"enum": ["display", "unlimited"]
+				}
+			}
+		},
+		"permissions": {
+			"description": "The commands the page may call, each by name: no wildcards. An unlisted command is refused.",
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"
+			}
+		},
+		"webPermissions": {
+			"description": "What the web engine may grant the page. Unlisted kinds are denied; \"ask\" needs \"permission.respond\" in permissions.",
+			"type": "object",
+			"propertyNames": {
+				"enum": [
+					"notifications",
+					"camera",
+					"microphone",
+					"geolocation",
+					"pointer-lock",
+					"device-info",
+					"media-keys",
+					"storage-access",
+					"xr"
+				]
+			},
+			"additionalProperties": { "enum": ["allow", "deny", "ask"] }
+		},
+		"wasm": {
+			"description": "WebAssembly in the page.",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"threads": {
+					"description": "true: WebAssembly threads (SharedArrayBuffer). The page is cross-origin isolated: the core and the dev server send Cross-Origin-Opener-Policy: same-origin and Cross-Origin-Embedder-Policy: require-corp, so a resource from another origin loads only with CORS or Cross-Origin-Resource-Policy. On Linux WPE also turns on JavaScriptCore's SharedArrayBuffer for the app's web process. Default false.",
+					"type": "boolean"
+				}
+			}
+		},
+		"deepLinks": {
+			"description": "URL schemes the application opens (\"myapp\" for myapp://…). A link starts the app, or reaches the running copy as the app.opened event (@lepton-desk/api/app); list app.args under permissions to read it.",
+			"type": "array",
+			"uniqueItems": true,
+			"items": {
+				"type": "string",
+				"pattern": "^[a-z][a-z0-9+.-]{0,63}$",
+				"not": {
+					"enum": [
+						"http",
+						"https",
+						"file",
+						"mailto",
+						"ftp",
+						"data",
+						"javascript",
+						"about",
+						"lepton"
+					]
+				}
+			}
+		},
+		"plugins": {
+			"description": "Settings for plugins that take them, by the section name the plugin declares (fs: { \"scope\": [\"$APPDATA\"] }, clipboard: { \"read\": \"always\" }).",
+			"type": "object",
+			"properties": {
+				"clipboard": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"read": {
+							"description": "When clipboard.read_text answers: \"input\" (default) only within 5 s of the user pressing a key or button in the window; \"always\" without one, for a clipboard manager.",
+							"enum": ["input", "always"]
+						}
+					}
+				}
+			},
+			"additionalProperties": {
+				"type": "object",
+				"propertyNames": { "pattern": "^[a-z0-9_]+$" },
+				"additionalProperties": {
+					"anyOf": [
+						{ "type": "string", "pattern": "^[^\\n\\u0000]*$" },
+						{ "type": "boolean" },
+						{
+							"type": "array",
+							"items": { "type": "string", "pattern": "^[^\\n\\u0000]*$" }
+						}
+					]
+				}
+			}
+		},
+		"bundle": {
+			"description": "What lepton package writes.",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"targets": {
+					"description": "Release formats, in order. Without it: tar.gz on Linux, zip on Windows. arch and deb are made only on Linux.",
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "enum": ["tar.gz", "arch", "deb", "zip", "msi"] }
+				},
+				"maintainer": {
+					"description": "Name <email>. Required for deb.",
+					"type": "string",
+					"pattern": "\\S"
+				},
+				"deb": {
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"depends": {
+							"description": "Debian package names, for a machine without dpkg-query.",
+							"type": "array",
+							"items": { "type": "string" }
+						}
+					}
+				},
+				"icon": {
+					"description": "The app's icon, relative to the project: an .ico for Windows (the program, the installer's shortcut and Apps entry), an .svg for Linux (the desktop entry and packages), or a list with one of each.",
+					"oneOf": [
+						{
+							"type": "string",
+							"pattern": "\\.([iI][cC][oO]|[sS][vV][gG])\\s*$"
+						},
+						{
+							"type": "array",
+							"items": {
+								"type": "string",
+								"pattern": "\\.([iI][cC][oO]|[sS][vV][gG])\\s*$"
+							},
+							"minItems": 1,
+							"maxItems": 2
+						}
+					]
+				},
+				"description": {
+					"description": "One line about the app: the desktop entry's Comment, the Arch pkgdesc and the .deb synopsis. Without it, productName.",
+					"type": "string",
+					"pattern": "^[^\\u0000-\\u001f\\u007f]*\\S[^\\u0000-\\u001f\\u007f]*$"
+				},
+				"longDescription": {
+					"description": "A few paragraphs, newlines allowed: the .deb's extended description.",
+					"type": "string",
+					"pattern": "^[^\\u0000-\\u0009\\u000b-\\u001f\\u007f]*\\S[^\\u0000-\\u0009\\u000b-\\u001f\\u007f]*$"
+				},
+				"license": {
+					"description": "An SPDX expression, e.g. MIT or MIT OR Apache-2.0: the Arch license and the Debian copyright file. Required for deb.",
+					"type": "string",
+					"pattern": "^[^\\u0000-\\u001f\\u007f]*\\S[^\\u0000-\\u001f\\u007f]*$"
+				},
+				"homepage": {
+					"description": "The app's web address: the Arch url, the .deb Homepage and the Debian copyright Source.",
+					"type": "string",
+					"pattern": "^https?://\\S+$"
+				},
+				"copyright": {
+					"description": "One line, e.g. © 2026 Example: the Debian copyright file. Required for deb.",
+					"type": "string",
+					"pattern": "^[^\\u0000-\\u001f\\u007f]*\\S[^\\u0000-\\u001f\\u007f]*$"
+				},
+				"category": {
+					"description": "The desktop entry's main category (freedesktop.org). Without it, Development.",
+					"enum": [
+						"AudioVideo",
+						"Audio",
+						"Video",
+						"Development",
+						"Education",
+						"Game",
+						"Graphics",
+						"Network",
+						"Office",
+						"Science",
+						"Settings",
+						"System",
+						"Utility"
+					]
+				}
+			}
+		},
+		"frontend": {
+			"description": "How the frontend is built and served. Without it: Vite's dist/ and flags.",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"dist": {
+					"description": "The bundler's output directory, inside the project (out for Next.js).",
+					"type": "string",
+					"default": "dist",
+					"pattern": "^(?![/\\\\])(?!.*:)(?!(.*[/\\\\])?\\.\\.([/\\\\]|$))(?!.*[/\\\\]{2}).*\\S.*$"
+				},
+				"devArgs": {
+					"description": "The flags after `<manager> run dev`, with {port} and {host} where the dev server takes them.",
+					"type": "array",
+					"items": { "type": "string" },
+					"allOf": [
+						{ "contains": { "type": "string", "pattern": "\\{port\\}" } },
+						{ "contains": { "type": "string", "pattern": "\\{host\\}" } }
+					]
+				}
+			}
+		}
+	}
 }
