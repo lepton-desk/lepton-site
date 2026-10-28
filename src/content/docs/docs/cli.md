@@ -61,6 +61,10 @@ The dev server is started with the project's `frontend.devArgs` (Vite's flags wi
 
 `--native` / `--webview`, `--no-build` to package the last build, and `--verify`: each written package is unpacked into an empty directory, started, measured and closed, and the command fails if it does not start or leaves a process behind. `--servo` (with `--linux`) packages a Servo build, **experimental** *0.1.9-beta.3*: `liblepton_servo.so` goes into the package's `lib/<name>/` (`/usr/lib/<name>/` in the Arch and Debian packages) and the binary looks for it only there, so the package runs on a machine without the project's `node_modules`; it adds about 45 MB to a `.tar.gz`. Run `lepton update` first in a project made before beta.3. `--no-build` after `lepton build --servo` is refused: that binary finds Servo only on the machine that built it.
 
+## `lepton icon` *0.1.9-beta.3*
+
+`lepton icon [source]` draws one square SVG, or a square PNG of at least 512 px, at every size a package needs, into `src-lepton/icons/`: PNGs from 16 to 512 px, `icon.ico` (16 to 256 px) and the SVG itself. Without a source it takes `src-lepton/icon.svg`; `--out <dir>` writes elsewhere. The same source gives the same bytes. Packages use what it wrote ([Packaging](/docs/packaging/)).
+
 ## `lepton record` and `lepton replay` *0.1.5*
 
 `lepton record -o session.lrec` writes every request, reply and event. Private commands (file contents, the clipboard, chosen paths) keep only their frame headers unless `--unmasked`. `lepton replay session.lrec` runs the recording through the real handlers with no window and exits `1` if a reply differs; `--page` opens the window and answers the page's calls from the recording instead.

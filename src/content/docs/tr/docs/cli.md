@@ -61,6 +61,10 @@ Dev sunucusu projenin `frontend.devArgs`'ıyla başlatılır (yoksa Vite'ın bay
 
 `--native` / `--webview`, son derlemeyi paketlemek için `--no-build` ve `--verify`: yazılan her paket boş bir dizine açılır, başlatılır, ölçülür ve kapatılır; başlamazsa ya da arkada süreç bırakırsa komut başarısız olur. `--servo` (`--linux` ile) bir Servo derlemesini paketler, **deneysel** *0.1.9-beta.3*: `liblepton_servo.so` paketin `lib/<ad>/` dizinine girer (Arch ve Debian paketlerinde `/usr/lib/<ad>/`) ve binary onu yalnız orada arar; paket, projenin `node_modules`'u olmayan bir makinede de çalışır. `.tar.gz`'ye yaklaşık 45 MB ekler. beta.3'ten önce oluşturulan bir projede önce `lepton update` çalıştırın. `lepton build --servo`'dan sonra `--no-build` reddedilir: o binary Servo'yu yalnız onu derleyen makinede bulur.
 
+## `lepton icon` *0.1.9-beta.3*
+
+`lepton icon [kaynak]`, kare bir SVG'yi ya da en az 512 px'lik kare bir PNG'yi bir paketin istediği her boyutta `src-lepton/icons/`'a çizer: 16'dan 512 px'e PNG'ler, `icon.ico` (16–256 px) ve SVG'nin kendisi. Kaynak verilmezse `src-lepton/icon.svg`'yi alır; `--out <dizin>` başka yere yazar. Aynı kaynak aynı baytları verir. Paketler onun yazdıklarını kullanır ([Paketleme](/tr/docs/packaging/)).
+
 ## `lepton record` ve `lepton replay` *0.1.5*
 
 `lepton record -o oturum.lrec` her isteği, yanıtı ve olayı yazar. Özel komutlar (dosya içerikleri, pano, seçilen yollar) `--unmasked` verilmedikçe yalnızca çerçeve başlıklarını tutar. `lepton replay oturum.lrec` kaydı pencere açmadan gerçek işleyicilerden geçirir ve bir yanıt farklıysa `1` ile çıkar; `--page` pencereyi açar ve sayfanın çağrılarını kayıttan yanıtlar.
