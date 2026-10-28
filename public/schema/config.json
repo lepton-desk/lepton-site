@@ -199,11 +199,11 @@
 			"additionalProperties": false,
 			"properties": {
 				"targets": {
-					"description": "Release formats, in order. Without it: tar.gz on Linux, zip on Windows. arch and deb are made only on Linux.",
+					"description": "Release formats, in order. Without it: tar.gz on Linux, zip on Windows. appimage, arch and deb are made only on Linux.",
 					"type": "array",
 					"minItems": 1,
 					"uniqueItems": true,
-					"items": { "enum": ["tar.gz", "arch", "deb", "zip", "msi"] }
+					"items": { "enum": ["tar.gz", "appimage", "arch", "deb", "zip", "msi"] }
 				},
 				"maintainer": {
 					"description": "Name <email>. Required for deb.",
