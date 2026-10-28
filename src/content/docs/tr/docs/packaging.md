@@ -20,7 +20,7 @@ npm run lepton package
 
 | Biçim | |
 | --- | --- |
-| `tar.gz` | Kurulum öneki; her yere açılabilir. |
+| `tar.gz` | Bir AppDir *0.1.9-beta.3*; açıldığı her yerden çalışır: `./AppRun` uygulamayı başlatır ve AppImage düzeni korunur (`<identifier>.desktop`, simgesi ve `.DirIcon` en üstte, uygulama `usr/` altında). `./install.sh` onu sizin için `~/.local`'a, `--system` ile herkes için `/usr/local`'a kurar (`sudo` ile çalıştırın); masaüstü girdisi kurulan programı tam yoluyla adlandırır. `./uninstall.sh` (aynı bayrakla) kurulumun yazdığı dosya ve dizinleri tam olarak kaldırır; uygulamanızın verisine, `~/.local/share/<identifier>`'a dokunmaz. |
 | `arch` | Arch Linux paketi (`.pkg.tar.zst`). Bağımlılıklar ikilinin bağlı kütüphanelerinden çıkarılır. |
 | `deb` | Debian paketi. `bundle.maintainer`, ayrıca Debian kuralının istediği copyright dosyası için `bundle.copyright` ve `bundle.license` *0.1.9-beta.3* gerekir. Bağımlılık adları `dpkg-query`'den ya da onun olmadığı makinede `bundle.deb.depends`'ten gelir; asla tahmin edilmez. |
 | `zip` | Windows *0.1.9-beta.0*: kurulum öneki, `bin\<ad>.exe` ve yanında ön yüz. |

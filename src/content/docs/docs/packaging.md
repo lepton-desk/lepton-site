@@ -20,7 +20,7 @@ npm run lepton package
 
 | Format | |
 | --- | --- |
-| `tar.gz` | The install prefix, unpackable anywhere. |
+| `tar.gz` | An AppDir *0.1.9-beta.3*, runnable from wherever it is unpacked: `./AppRun` starts the app, and the AppImage layout is kept (`<identifier>.desktop`, its icon and `.DirIcon` at the top, the app under `usr/`). `./install.sh` installs it for you into `~/.local`, or for everyone with `--system` into `/usr/local` (run with `sudo`); the desktop entry then names the installed program by its full path. `./uninstall.sh` (with the same flag) removes exactly the files and directories the install wrote and leaves your app's data, `~/.local/share/<identifier>`. |
 | `arch` | An Arch Linux package (`.pkg.tar.zst`). Dependencies come from the binary's linked libraries. |
 | `deb` | A Debian package. Needs `bundle.maintainer`, and `bundle.copyright` and `bundle.license` *0.1.9-beta.3* for the copyright file Debian policy requires. Dependency names come from `dpkg-query`, or from `bundle.deb.depends` on a machine without it — never guessed. |
 | `zip` | Windows *0.1.9-beta.0*: the install prefix, `bin\<name>.exe` and the front end beside it. |
