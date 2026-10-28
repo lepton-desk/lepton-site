@@ -281,6 +281,47 @@
 						"System",
 						"Utility"
 					]
+				},
+				"contentRating": {
+					"description": "OARS 1.1 answers for the AppStream file's age rating (https://hughsie.github.io/oars/). Without it the rating is empty: no age restrictions.",
+					"type": "object",
+					"additionalProperties": false,
+					"properties": {
+						"drugs-alcohol": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"drugs-narcotics": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"drugs-tobacco": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"language-discrimination": {
+							"enum": ["unknown", "none", "mild", "moderate", "intense"]
+						},
+						"language-humor": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"language-profanity": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"money-gambling": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"money-purchasing": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"sex-nudity": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"sex-themes": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"social-audio": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"social-chat": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"social-contacts": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"social-info": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"social-location": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-bloodshed": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-cartoon": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-desecration": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-fantasy": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-realistic": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-sexual": { "enum": ["unknown", "none", "mild", "moderate", "intense"] },
+						"violence-slavery": { "enum": ["unknown", "none", "mild", "moderate", "intense"] }
+					}
+				},
+				"releaseDate": {
+					"description": "The AppStream release's day, YYYY-MM-DD, when SOURCE_DATE_EPOCH gives none. With neither, the metainfo has no releases.",
+					"type": "string",
+					"pattern": "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$"
+				},
+				"metadataLicense": {
+					"description": "The licence of the AppStream metainfo file itself (not the app's): one of AppStream's SPDX ids, or ids joined by AND or OR. Without it, CC0-1.0.",
+					"type": "string",
+					"pattern": "^(?:(?!WITH(?: |$))[A-Za-z0-9.+-]+)(?: (?:AND|OR) (?!WITH(?: |$))[A-Za-z0-9.+-]+)*$"
 				}
 			}
 		},
