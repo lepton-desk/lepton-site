@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist", "!!**/.astro", "!!**/.vercel"]
+		"includes": ["**", "!!**/dist", "!!**/.astro", "!!**/.vercel", "!!**/pnpm-lock.yaml"]
 	},
 	"formatter": {
 		"enabled": true,
@@ -29,7 +29,7 @@
 	"assist": {
 		"actions": {
 			"source": {
-				"recommended": true
+				"preset": "recommended"
 			}
 		}
 	},
