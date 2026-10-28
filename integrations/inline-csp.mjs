@@ -8,8 +8,8 @@
 // effect in a <meta> CSP, so it and the other headers are in vercel.json.
 import { createHash } from 'node:crypto';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const fixed = [
 	"default-src 'self'",
@@ -47,7 +47,8 @@ export function policyFor(html) {
 		if (/\ssrc\s*=/.test(attrs) || dataBlock.test(attrs)) continue;
 		scripts.add(hash(body));
 	}
-	for (const [, body] of html.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/gi)) styles.add(hash(body));
+	for (const [, body] of html.matchAll(/<style(?:\s[^>]*)?>([\s\S]*?)<\/style>/gi))
+		styles.add(hash(body));
 	return [
 		...fixed,
 		// Pagefind (the docs search) compiles WebAssembly.
@@ -69,7 +70,8 @@ export default function inlineCsp() {
 						throw new Error(`${file} already has a CSP; two policies would both apply`);
 					}
 					const charset = html.match(/<meta charset="[^"]*"\s*\/?>/i);
-					if (!charset || charset.index === undefined) throw new Error(`${file} has no <meta charset>`);
+					if (!charset || charset.index === undefined)
+						throw new Error(`${file} has no <meta charset>`);
 					const at = charset.index + charset[0].length;
 					const meta = `<meta http-equiv="content-security-policy" content="${policyFor(html)}">`;
 					await writeFile(file, html.slice(0, at) + meta + html.slice(at));

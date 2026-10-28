@@ -7,22 +7,22 @@
    Chrome on Linux resolved the system fallback once per font description, ~100 ms of the first
    layout and ~150 ms later first paint (measured in traces). */
 @font-face {
-	font-family: 'Archivo';
-	src: url('/fonts/archivo-latin.woff2') format('woff2');
+	font-family: "Archivo";
+	src: url("/fonts/archivo-latin.woff2") format("woff2");
 	font-weight: 400 850;
 	font-stretch: 62% 100%;
 	font-display: optional;
 }
 @font-face {
-	font-family: 'Kalam';
-	src: url('/fonts/kalam.woff2') format('woff2');
+	font-family: "Kalam";
+	src: url("/fonts/kalam.woff2") format("woff2");
 	font-weight: 700;
 	font-display: optional;
 }
 /* JetBrains Mono, weights 400–700 and only the characters the site's code and CLI output use. */
 @font-face {
-	font-family: 'JetBrains Mono';
-	src: url('/fonts/jbmono.woff2') format('woff2');
+	font-family: "JetBrains Mono";
+	src: url("/fonts/jbmono.woff2") format("woff2");
 	font-weight: 400 700;
 	font-display: optional;
 }

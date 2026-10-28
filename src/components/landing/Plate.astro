@@ -2,10 +2,11 @@
 // The first viewport: one bubble-chamber plate. The tracks are drawn on a canvas as rows of
 // bubbles from a single vertex, the core; grease-pencil notes name what each track is, each
 // placed beside its track and tied to it with a short leader.
-import Logo from '../Logo.astro';
-import Actions from './Actions.astro';
-import ThemeToggle from '../site/ThemeToggle.astro';
+
 import { githubUrl, type LandingText } from '../../i18n/landing';
+import Logo from '../Logo.astro';
+import ThemeToggle from '../site/ThemeToggle.astro';
+import Actions from './Actions.astro';
 
 interface Props {
 	text: LandingText;
@@ -309,7 +310,7 @@ const isTr = text.htmlLang === 'tr';
 				}
 				const progress = Math.min(1, elapsed / track.duration);
 				if (progress < 1) busy = true;
-				const target = Math.floor(dots.length * (1 - Math.pow(1 - progress, 3)));
+				const target = Math.floor(dots.length * (1 - (1 - progress) ** 3));
 				const from = track.drawn ?? 0;
 				if (target <= from) continue;
 				context.fillStyle = `rgba(${ink}, ${track.weight < 0.7 ? 0.38 : 0.88})`;
@@ -489,7 +490,7 @@ const isTr = text.htmlLang === 'tr';
 		text-decoration: none;
 	}
 	.brand {
-		font-family: 'Archivo', 'Plate Condensed Fallback';
+		font-family: 'Archivo', 'Plate Condensed Fallback', sans-serif;
 		font-stretch: 70%;
 		font-weight: 800;
 		font-size: 1.35rem;
@@ -507,6 +508,26 @@ const isTr = text.htmlLang === 'tr';
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--ink-soft);
+	}
+	.langs {
+		display: flex;
+		margin: 0;
+		border: 1.5px solid var(--ink);
+		font-size: var(--step--1);
+		font-weight: 650;
+		letter-spacing: 0.06em;
+	}
+	.langs a {
+		padding: 0.3em 0.6em;
+		text-decoration: none;
+		transition: background-color 240ms var(--ease-out);
+	}
+	.langs a:hover {
+		background: var(--plate-hi);
+	}
+	.langs a[aria-current] {
+		background: var(--ink);
+		color: var(--paper);
 	}
 	.index ul {
 		display: flex;
@@ -531,26 +552,6 @@ const isTr = text.htmlLang === 'tr';
 		display: flex;
 		gap: var(--space-2);
 	}
-	.langs {
-		display: flex;
-		margin: 0;
-		border: 1.5px solid var(--ink);
-		font-size: var(--step--1);
-		font-weight: 650;
-		letter-spacing: 0.06em;
-	}
-	.langs a {
-		padding: 0.3em 0.6em;
-		text-decoration: none;
-		transition: background-color 240ms var(--ease-out);
-	}
-	.langs a:hover {
-		background: var(--plate-hi);
-	}
-	.langs a[aria-current] {
-		background: var(--ink);
-		color: var(--paper);
-	}
 
 	.event {
 		align-self: center;
@@ -570,7 +571,7 @@ const isTr = text.htmlLang === 'tr';
 	.offer {
 		margin: 0 0 var(--space-4);
 		/* Its fallback is set at Archivo's width, so it wraps the same before the font arrives (tokens.css). */
-		font-family: 'Archivo', 'Plate Narrow Fallback';
+		font-family: 'Archivo', 'Plate Narrow Fallback', sans-serif;
 		font-size: var(--step-2);
 		font-stretch: 88%;
 		line-height: 1.22;
@@ -580,7 +581,7 @@ const isTr = text.htmlLang === 'tr';
 		max-width: 15.44em;
 	}
 	.offer:lang(tr) {
-		font-family: 'Archivo', 'Plate Narrow Fallback TR';
+		font-family: 'Archivo', 'Plate Narrow Fallback TR', sans-serif;
 	}
 
 	.notes {

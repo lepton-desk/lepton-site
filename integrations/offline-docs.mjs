@@ -2,8 +2,8 @@
 // language, every font those pages reference, every build file (136 KB in all, measured; the docs'
 // scripts also import modules no page names) and the manifests and icons, so the docs read offline.
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 async function htmlFiles(dir) {
 	const out = [];
@@ -26,14 +26,24 @@ export default function offlineDocs() {
 				for (const lang of ['en', 'tr']) {
 					const base = path.join(root, lang === 'tr' ? 'tr/docs' : 'docs');
 					for (const file of await htmlFiles(base)) {
-						pages[lang].push(`/${path.relative(root, path.dirname(file)).split(path.sep).join('/')}/`);
+						pages[lang].push(
+							`/${path.relative(root, path.dirname(file)).split(path.sep).join('/')}/`,
+						);
 						const html = await readFile(file, 'utf8');
-						for (const [, ref] of html.matchAll(/(?:href|src)="(\/(?:_astro|fonts)\/[^"#?]+)"/g)) files.add(ref);
+						for (const [, ref] of html.matchAll(/(?:href|src)="(\/(?:_astro|fonts)\/[^"#?]+)"/g))
+							files.add(ref);
 					}
 					pages[lang].sort();
 				}
 				for (const name of await readdir(path.join(root, '_astro'))) files.add(`/_astro/${name}`);
-				for (const extra of ['/manifest.webmanifest', '/tr/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/maskable-512.png']) files.add(extra);
+				for (const extra of [
+					'/manifest.webmanifest',
+					'/tr/manifest.webmanifest',
+					'/icons/icon-192.png',
+					'/icons/icon-512.png',
+					'/icons/maskable-512.png',
+				])
+					files.add(extra);
 				const list = { pages, files: [...files].sort() };
 				await writeFile(path.join(root, 'offline-docs.json'), JSON.stringify(list));
 				for (const name of await readdir(root)) {
@@ -42,7 +52,9 @@ export default function offlineDocs() {
 					const xml = await readFile(file, 'utf8');
 					await writeFile(file, xml.replace(/<url><loc>[^<]*\/offline\/<\/loc>.*?<\/url>/g, ''));
 				}
-				logger.info(`${pages.en.length} + ${pages.tr.length} docs pages, ${list.files.length} files`);
+				logger.info(
+					`${pages.en.length} + ${pages.tr.length} docs pages, ${list.files.length} files`,
+				);
 			},
 		},
 	};

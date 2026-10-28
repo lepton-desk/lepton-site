@@ -8,8 +8,26 @@ export interface Run {
 	bold: boolean;
 }
 
-const basic = ['#000000', '#cd3131', '#0dbc79', '#e5e510', '#2472c8', '#bc3fbc', '#11a8cd', '#e5e5e5'];
-const bright = ['#666666', '#f14c4c', '#23d18b', '#f5f543', '#3b8eea', '#d670d6', '#29b8db', '#ffffff'];
+const basic = [
+	'#000000',
+	'#cd3131',
+	'#0dbc79',
+	'#e5e510',
+	'#2472c8',
+	'#bc3fbc',
+	'#11a8cd',
+	'#e5e5e5',
+];
+const bright = [
+	'#666666',
+	'#f14c4c',
+	'#23d18b',
+	'#f5f543',
+	'#3b8eea',
+	'#d670d6',
+	'#29b8db',
+	'#ffffff',
+];
 
 /** The xterm 256-colour palette entry `n` as a CSS colour. */
 function extended(n: number): string | undefined {
@@ -37,6 +55,7 @@ export function runs(input: string): Run[] {
 		if (last && last.color === color && last.bold === bold) last.text += text;
 		else out.push({ text, color, bold });
 	};
+	// biome-ignore lint/suspicious/noControlCharactersInRegex: ESC is the escape sequence being parsed.
 	const pattern = /\x1b\[([0-9;]*)([A-Za-z])/g;
 	let at = 0;
 	for (const match of input.matchAll(pattern)) {

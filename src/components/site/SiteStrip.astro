@@ -1,10 +1,11 @@
 ---
 // The index strip outside the landing page's plate: brand, Docs / Blog / GitHub, and the
 // language switch, which leads to the same page in the other language when there is one.
+
+import { githubUrl } from '../../i18n/landing';
+import { type Lang, site } from '../../i18n/site';
 import Logo from '../Logo.astro';
 import ThemeToggle from './ThemeToggle.astro';
-import { githubUrl } from '../../i18n/landing';
-import { site, type Lang } from '../../i18n/site';
 
 interface Props {
 	lang: Lang;

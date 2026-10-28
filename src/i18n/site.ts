@@ -12,7 +12,8 @@ export const site = {
 		home: '/',
 		blogTitle: 'Blog',
 		blogDescription: 'What we measured, what broke and what shipped while building Lepton.',
-		blogLead: 'What we measured, what broke and what shipped. Every number comes from a command we ran.',
+		blogLead:
+			'What we measured, what broke and what shipped. Every number comes from a command we ran.',
 		minutes: (n: number) => `${n} min read`,
 		readInTr: 'Bu yazı Türkçe de var',
 		by: 'By',
@@ -21,10 +22,18 @@ export const site = {
 		rss: 'RSS feed',
 		offlineTitle: 'Offline',
 		offlineClaim: 'No signal on this plate.',
-		offlineBody: 'This page appears when you are offline and the page you asked for is not saved on this device. The docs read offline: open any docs page once while online, and every docs page in that language stays on the device.',
-		offlineDescription: 'Lepton’s docs read offline: open one docs page while online and every docs page in that language stays on your device.',
+		offlineBody:
+			'This page appears when you are offline and the page you asked for is not saved on this device. The docs read offline: open any docs page once while online, and every docs page in that language stays on the device.',
+		offlineDescription:
+			'Lepton’s docs read offline: open one docs page while online and every docs page in that language stays on your device.',
 		offlineDocs: 'Open the docs',
-		date: (d: Date) => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+		date: (d: Date) =>
+			d.toLocaleDateString('en-GB', {
+				day: 'numeric',
+				month: 'long',
+				year: 'numeric',
+				timeZone: 'UTC',
+			}),
 	},
 	tr: {
 		docs: 'Belgeler',
@@ -36,7 +45,8 @@ export const site = {
 		home: '/tr/',
 		blogTitle: 'Blog',
 		blogDescription: 'Lepton’ı yaparken ne ölçtük, ne bozuldu, ne yayımlandı.',
-		blogLead: 'Ne ölçtük, ne bozuldu, ne yayımlandı. Her sayı çalıştırdığımız bir komuttan geliyor.',
+		blogLead:
+			'Ne ölçtük, ne bozuldu, ne yayımlandı. Her sayı çalıştırdığımız bir komuttan geliyor.',
 		minutes: (n: number) => `${n} dk okuma`,
 		readInTr: 'This post is in English too',
 		by: 'Yazan:',
@@ -45,9 +55,17 @@ export const site = {
 		rss: 'RSS akışı',
 		offlineTitle: 'Çevrimdışı',
 		offlineClaim: 'Bu plakada sinyal yok.',
-		offlineBody: 'Bu sayfa, çevrimdışıyken istediğiniz sayfa bu cihazda kayıtlı değilse görünür. Belgeler çevrimdışı okunur: çevrimiçiyken herhangi bir belge sayfasını bir kez açın, o dildeki tüm belge sayfaları cihazda kalır.',
-		offlineDescription: 'Lepton belgeleri çevrimdışı okunur: çevrimiçiyken bir belge sayfası açın, o dildeki tüm belge sayfaları cihazınızda kalır.',
+		offlineBody:
+			'Bu sayfa, çevrimdışıyken istediğiniz sayfa bu cihazda kayıtlı değilse görünür. Belgeler çevrimdışı okunur: çevrimiçiyken herhangi bir belge sayfasını bir kez açın, o dildeki tüm belge sayfaları cihazda kalır.',
+		offlineDescription:
+			'Lepton belgeleri çevrimdışı okunur: çevrimiçiyken bir belge sayfası açın, o dildeki tüm belge sayfaları cihazınızda kalır.',
 		offlineDocs: 'Belgeleri açın',
-		date: (d: Date) => d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }),
+		date: (d: Date) =>
+			d.toLocaleDateString('tr-TR', {
+				day: 'numeric',
+				month: 'long',
+				year: 'numeric',
+				timeZone: 'UTC',
+			}),
 	},
 } as const;

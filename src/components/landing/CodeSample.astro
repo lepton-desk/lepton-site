@@ -127,16 +127,19 @@ const config = `{
 		font-family: var(--font-mono);
 		font-size: 0.86rem;
 		line-height: 1.6;
+		/* biome-ignore lint/complexity/noImportantStyles: Shiki writes its colours as inline styles; only !important overrides them. */
 		background: transparent !important;
 		scrollbar-color: var(--ink-faint) transparent;
 	}
 	/* The dark theme's inks: Shiki writes them beside the light ones as --shiki-dark. */
 	@media (prefers-color-scheme: dark) {
 		:global(:root:not([data-theme='light'])) .print :global(:is(pre, span)) {
+			/* biome-ignore lint/complexity/noImportantStyles: Shiki writes its colours as inline styles; only !important overrides them. */
 			color: var(--shiki-dark) !important;
 		}
 	}
 	:global(:root[data-theme='dark']) .print :global(:is(pre, span)) {
+		/* biome-ignore lint/complexity/noImportantStyles: Shiki writes its colours as inline styles; only !important overrides them. */
 		color: var(--shiki-dark) !important;
 	}
 	@media (max-width: 60rem) {

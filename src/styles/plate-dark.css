@@ -5,7 +5,7 @@
    toggle in the index strip, which shares Starlight's stored choice with the docs. Both selectors:
    the head script always sets data-theme; without scripting the system setting decides. */
 @media (prefers-color-scheme: dark) {
-	:root:not([data-theme='light']) {
+	:root:not([data-theme="light"]) {
 		color-scheme: dark;
 		--plate: #1e2120;
 		--plate-hi: #272b29;
@@ -21,7 +21,7 @@
 		--negative-hover: #262a28;
 	}
 }
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
 	color-scheme: dark;
 	--plate: #1e2120;
 	--plate-hi: #272b29;

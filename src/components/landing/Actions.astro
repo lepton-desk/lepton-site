@@ -1,8 +1,9 @@
 ---
 // The three things a visitor came to do, at equal weight: copy the command, open the docs,
 // open the source. One row, one height, one frame language.
-import CommandStrip from './CommandStrip.astro';
+
 import { githubUrl } from '../../i18n/landing';
+import CommandStrip from './CommandStrip.astro';
 
 interface Props {
 	copy: string;
@@ -46,7 +47,7 @@ const { copy, copied, docs, docsHref, github } = Astro.props;
 		border: 2px solid var(--ink);
 		background: var(--paper);
 		color: var(--ink);
-		font-family: 'Archivo', 'Plate Button Fallback';
+		font-family: 'Archivo', 'Plate Button Fallback', sans-serif;
 		font-weight: 650;
 		font-stretch: 88%;
 		font-size: var(--step-0);

@@ -1,8 +1,8 @@
 import { defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
-import { z } from 'astro/zod';
 import { docsLoader, i18nLoader } from '@astrojs/starlight/loaders';
 import { docsSchema, i18nSchema } from '@astrojs/starlight/schema';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 import { authorIds } from './data/authors';
 
 export const collections = {

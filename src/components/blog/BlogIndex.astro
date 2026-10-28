@@ -1,9 +1,10 @@
 ---
 // The blog's index: one claim, then the posts as a track list, newest first.
+
+import { type Lang, site } from '../../i18n/site';
 import ReadLayout from '../../layouts/ReadLayout.astro';
 import Fiducials from '../landing/Fiducials.astro';
-import { site, type Lang } from '../../i18n/site';
-import { postsIn, slugOf, hrefOf, minutesOf } from './posts';
+import { hrefOf, minutesOf, postsIn, slugOf } from './posts';
 
 interface Props {
 	lang: Lang;

@@ -1,11 +1,11 @@
 ---
 // One post: a framed plate header (date, claim, lead, a grease-pencil note), then the text.
 import { render } from 'astro:content';
+import { authors } from '../../data/authors';
+import { site } from '../../i18n/site';
 import ReadLayout from '../../layouts/ReadLayout.astro';
 import Fiducials from '../landing/Fiducials.astro';
-import { site } from '../../i18n/site';
-import { authors } from '../../data/authors';
-import { type Post, langOf, slugOf, hrefOf, minutesOf } from './posts';
+import { hrefOf, langOf, minutesOf, type Post, slugOf } from './posts';
 
 interface Props {
 	post: Post;

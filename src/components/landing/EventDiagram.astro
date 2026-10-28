@@ -16,7 +16,7 @@ function lines(note: string, max: number): string[] {
 	const out: string[] = [];
 	let line = '';
 	for (const word of note.split(' ')) {
-		if (line && (line + ' ' + word).length > max) {
+		if (line && `${line} ${word}`.length > max) {
 			out.push(line);
 			line = word;
 		} else {
@@ -93,7 +93,8 @@ const plates = [
 	<figure class="reconstruction">
 		{
 			plates.map((plate) => (
-				<svg class:list={['plate-svg', plate.id]} viewBox={plate.view} role="img" aria-labelledby={`event-desc-${plate.id}`}>
+				<svg class:list={['plate-svg', plate.id]} viewBox={plate.view} role="img" aria-labelledby={`event-name-${plate.id} event-desc-${plate.id}`}>
+					<title id={`event-name-${plate.id}`}>{e.claim}</title>
 					<desc id={`event-desc-${plate.id}`}>
 						{e.core}: {e.coreNote}. {e.page}: {e.pageNote}. {e.engine}: {e.engineNote}. {e.system}: {e.systemNote}. {e.frames}: {e.framesNote}.
 					</desc>
@@ -102,6 +103,7 @@ const plates = [
 					))}
 					<circle cx={plate.vertex[0]} cy={plate.vertex[1]} r="13" class="vertex" />
 					{plate.labels.map((label) => (
+						// biome-ignore lint/a11y/noAriaHiddenOnFocusable: a <g> of lines and text, no link or tabindex: nothing in it takes focus; the plate's <title> and <desc> say what it shows.
 						<g class:list={['label', label.core && 'core']} aria-hidden="true">
 							{label.leader && <line x1={label.leader[0]} y1={label.leader[1]} x2={label.leader[2]} y2={label.leader[3]} class="leader" />}
 							<text x={label.x} y={label.y} text-anchor={label.anchor} class="name">

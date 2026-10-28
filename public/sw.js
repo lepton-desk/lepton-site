@@ -14,14 +14,23 @@ const START = ['/', '/tr/'];
 const MATCH = { ignoreVary: true };
 
 self.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(PAGES).then((cache) => cache.addAll([...Object.values(OFFLINE), ...START])).then(() => self.skipWaiting()));
+	event.waitUntil(
+		caches
+			.open(PAGES)
+			.then((cache) => cache.addAll([...Object.values(OFFLINE), ...START]))
+			.then(() => self.skipWaiting()),
+	);
 });
 
 self.addEventListener('activate', (event) => {
 	event.waitUntil(
 		caches
 			.keys()
-			.then((keys) => Promise.all(keys.filter((key) => key !== PAGES && key !== FILES).map((key) => caches.delete(key))))
+			.then((keys) =>
+				Promise.all(
+					keys.filter((key) => key !== PAGES && key !== FILES).map((key) => caches.delete(key)),
+				),
+			)
 			.then(() => self.clients.claim()),
 	);
 });
@@ -35,8 +44,10 @@ self.addEventListener('message', (event) => {
 			.then(async (list) => {
 				const pages = await caches.open(PAGES);
 				const files = await caches.open(FILES);
-				for (const url of list.pages[lang]) if (!(await pages.match(url, MATCH))) await pages.add(url).catch(() => {});
-				for (const url of list.files) if (!(await files.match(url, MATCH))) await files.add(url).catch(() => {});
+				for (const url of list.pages[lang])
+					if (!(await pages.match(url, MATCH))) await pages.add(url).catch(() => {});
+				for (const url of list.files)
+					if (!(await files.match(url, MATCH))) await files.add(url).catch(() => {});
 			})
 			.catch(() => {}),
 	);
@@ -58,7 +69,11 @@ self.addEventListener('fetch', (event) => {
 					}
 					return response;
 				})
-				.catch(async () => (await caches.match(request, { ignoreSearch: true, ignoreVary: true })) ?? (await caches.match(url.pathname.startsWith('/tr/') ? OFFLINE.tr : OFFLINE.en, MATCH))),
+				.catch(
+					async () =>
+						(await caches.match(request, { ignoreSearch: true, ignoreVary: true })) ??
+						(await caches.match(url.pathname.startsWith('/tr/') ? OFFLINE.tr : OFFLINE.en, MATCH)),
+				),
 		);
 		return;
 	}

@@ -1,9 +1,10 @@
 ---
 // What the service worker answers with when a page was never saved and the network is gone. Its
 // text is true when visited online too, so it is an ordinary, indexable page.
+
+import { type Lang, site } from '../../i18n/site';
 import ReadLayout from '../../layouts/ReadLayout.astro';
 import Fiducials from '../landing/Fiducials.astro';
-import { site, type Lang } from '../../i18n/site';
 
 interface Props {
 	lang: Lang;

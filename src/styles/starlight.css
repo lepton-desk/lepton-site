@@ -1,12 +1,12 @@
 /* The docs in the plate world. Light: a print on paper, plate-grey chrome. Dark: the film
    negative — graphite ground, pale tracks, the grease pencil lifted for contrast. */
-@import './faces-docs.css';
-@import './tokens.css';
+@import "./faces-docs.css";
+@import "./tokens.css";
 
 /* Code waits for JetBrains Mono with 'Plate Mono Fallback' (tokens.css). */
 :root {
 	--sl-font: var(--font-sans);
-	--sl-font-mono: 'JetBrains Mono', 'Plate Mono Fallback';
+	--sl-font-mono: "JetBrains Mono", "Plate Mono Fallback";
 	--sl-content-width: 46rem;
 
 	/* dark (Starlight's default theme) */
@@ -23,7 +23,7 @@
 	--sl-color-black: #1b1d1c;
 }
 
-:root[data-theme='light'] {
+:root[data-theme="light"] {
 	--sl-color-accent-low: #f0d2c9;
 	--sl-color-accent: #a32b17;
 	--sl-color-accent-high: #6f1d10;
