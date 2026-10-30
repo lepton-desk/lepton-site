@@ -32,6 +32,7 @@ description: lepton.config.json, alan alan.
 | `deepLinks` | Uygulamanın açtığı URL şemaları; ör. `myapp://…` için `["myapp"]` *0.1.9-beta.2*; aşağıda. |
 | `webPermissions` | Web motorunun kendi istekleri (bildirim, kamera…) için yanıtlar: `allow`, `deny` ya da `ask`. Listelenmeyenler reddedilir. *0.1.5* |
 | `wasm` | `"threads": true` sayfaya WebAssembly thread'leri verir *0.1.9-beta.3*; aşağıda. |
+| `servo` | `"webgl2": true` Servo derlemesinde WebGL 2'yi açar, deneysel *0.1.9-beta.3*; aşağıda. |
 | `bundle` | Paket biçimleri ve bilgileri; [Paketleme](/tr/docs/packaging/) sayfasına bakın. |
 | `frontend` | Derlemenin nereye gittiği ve dev sunucusunun nasıl başlatıldığı *0.1.9-beta.0*; aşağıda. Yoksa proje bir Vite projesidir. |
 | `sdkScope`, `channel` | `lepton new` yazar (`@lepton-desk`; paylaşımlı bellek kanalı `/lepton-<identifier>` ve boyutu). Kanal adı bir kez `src-lepton/main.zig`'e yazılır; burada değiştirmek etkisizdir. |
@@ -71,6 +72,24 @@ WebAssembly thread'leri `SharedArrayBuffer` ister; tarayıcı motorları onu yal
 Linux'ta WPE WebKit 2.54'te ve Windows'ta WebView2'de ölçüldü: ayar açıkken sayfa yalıtılmış ve bir Worker paylaşımlı `WebAssembly.Memory`'yi okuyup yazıyor; kapalıyken `SharedArrayBuffer` yok. Servo'da ayar açık da olsa kapalı da olsa WebAssembly thread'i yok (`SharedArrayBuffer` yok); `lepton build --servo` bunu söyler ve uygulamayı thread'siz derler.
 
 0.1.9-beta.3'ten önceki bir proje: `lepton update`, `lepton new`'in yazdığı haliyle duran dev ayarını yenisiyle değiştirir, düzenlediğiniz bir dosyaya eklenecek satırları yazar ve Angular projesinin bayraklarına `{isolation}` ekler.
+
+## `servo.webgl2` *0.1.9-beta.3*
+
+Servo 0.6 sayfalara WebGL 2 vermez: motorun kendi ayarı kapalı gelir. `"servo": { "webgl2": true }` onu yalnız `--servo` derlemelerinde açar. WPE WebKit'te ve WebView2'de WebGL 2 bu ayardan bağımsız olarak vardır; ayar onlara dokunmaz.
+
+```json
+{ "servo": { "webgl2": true } }
+```
+
+Servo'da WebGL 2 deneyseldir. Bir Babylon.js oyununda ölçülenler:
+
+- Açıldığında Servo'nun WebGL iş parçacığı sRGB bir görüntü dokusunu yüklerken çöküyordu. Lepton'ın Servo'su bunu yamalar.
+- Bundan sonra oyun çimi siyah çizdi; WebGL 1'de doğru çiziyordu. Nedeni henüz bilinmiyor.
+- WebGL 1'e göre kare süresinde bir kazanç görülmedi; karşılaştırılan iki çalıştırmanın sahnesi aynı değildi.
+
+Sayfanız için WebGL 2 şartsa Linux'ta WPE WebKit'i (varsayılan motor), Windows'ta WebView2'yi kullanın.
+
+Ayar, aynı sürümün Servo kitaplığını (`@lepton-desk/servo-linux-x64`) ister. 0.1.9-beta.3'ten önceki bir proje: `lepton update`; o zamana kadar `lepton build --servo` ayarın okunmadığını söyler ve WebGL 2 kapalı kalır.
 
 ## `deepLinks` ve tek çalışan kopya *0.1.9-beta.2*
 

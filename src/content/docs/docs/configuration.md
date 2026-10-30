@@ -32,6 +32,7 @@ description: lepton.config.json, field by field.
 | `deepLinks` | URL schemes the app opens, e.g. `["myapp"]` for `myapp://…` *0.1.9-beta.2*; see below. |
 | `webPermissions` | Answers for the web engine's own requests (notifications, camera…): `allow`, `deny` or `ask`. Unlisted kinds are denied. *0.1.5* |
 | `wasm` | `"threads": true` gives the page WebAssembly threads *0.1.9-beta.3*; see below. |
+| `servo` | `"webgl2": true` turns WebGL 2 on in a Servo build, experimental *0.1.9-beta.3*; see below. |
 | `bundle` | Package formats and metadata; see [Packaging](/docs/packaging/). |
 | `frontend` | Where the build goes and how the dev server is started *0.1.9-beta.0*; see below. Without it a project is a Vite project. |
 | `sdkScope`, `channel` | Written by `lepton new` (`@lepton-desk`; the shared-memory channel `/lepton-<identifier>` and its size). The channel name goes into `src-lepton/main.zig` once; changing either here has no effect. |
@@ -71,6 +72,24 @@ WebAssembly threads need `SharedArrayBuffer`, which a browser engine gives only 
 Measured on Linux in WPE WebKit 2.54 and on Windows in WebView2: with the setting on, the page is isolated and a worker reads and writes a shared `WebAssembly.Memory`; with it off, it has no `SharedArrayBuffer`. Servo has no WebAssembly threads with the setting or without it (no `SharedArrayBuffer`); `lepton build --servo` says so and builds the app without them.
 
 A project from before 0.1.9-beta.3: `lepton update` replaces a dev configuration that is still the one `lepton new` wrote, prints the lines to add to one you edited, and adds `{isolation}` to an Angular project's flags.
+
+## `servo.webgl2` *0.1.9-beta.3*
+
+Servo 0.6 gives pages no WebGL 2: the engine's own setting ships off. `"servo": { "webgl2": true }` turns it on, in `--servo` builds only. WPE WebKit and WebView2 have WebGL 2 regardless of this setting; it does not touch them.
+
+```json
+{ "servo": { "webgl2": true } }
+```
+
+In Servo, WebGL 2 is experimental. Measured with a Babylon.js game:
+
+- Turned on, Servo's WebGL thread crashed uploading an sRGB image texture. Lepton's Servo patches that.
+- After that the game drew its grass black, where WebGL 1 draws it right. The cause is not known yet.
+- No frame-time gain over WebGL 1 was seen; the two runs compared did not show the same scene.
+
+If your page needs WebGL 2, use WPE WebKit on Linux (the default engine) and WebView2 on Windows.
+
+The setting needs the Servo library of the same version (`@lepton-desk/servo-linux-x64`). A project from before 0.1.9-beta.3: `lepton update`; until then `lepton build --servo` says the setting is not read, and WebGL 2 stays off.
 
 ## `deepLinks` and the single running copy *0.1.9-beta.2*
 

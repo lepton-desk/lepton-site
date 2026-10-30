@@ -141,6 +141,17 @@
 				}
 			}
 		},
+		"servo": {
+			"description": "Servo, the experimental Linux engine (--servo builds).",
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"webgl2": {
+					"description": "true: WebGL 2 in a Servo build's pages; Servo 0.6 ships it off. Experimental: measured with a Babylon.js game, it drew the grass black where WebGL 1 draws it right (cause not known). WPE WebKit and WebView2 have WebGL 2 regardless. Default false.",
+					"type": "boolean"
+				}
+			}
+		},
 		"deepLinks": {
 			"description": "URL schemes the application opens (\"myapp\" for myapp://…). A link starts the app, or reaches the running copy as the app.opened event (@lepton-desk/api/app); list app.args under permissions to read it.",
 			"type": "array",
