@@ -29,6 +29,11 @@
 			"enum": ["webview", "native"],
 			"default": "webview"
 		},
+		"engine": {
+			"description": "The engine that draws the page on Linux: wpe (WPE WebKit, the default) or servo (experimental; build, run, dev and package behave as with --servo). No effect on Windows (WebView2) or with renderPath native.",
+			"enum": ["wpe", "servo"],
+			"default": "wpe"
+		},
 		"target": {
 			"description": "The frontend framework the project was created with.",
 			"enum": [

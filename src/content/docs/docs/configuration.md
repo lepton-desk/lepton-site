@@ -25,6 +25,7 @@ description: lepton.config.json, field by field.
 | `identifier` | The application id, reverse-DNS: `com.<owner>.<app>`, where the owner is who publishes it (a domain's name or yours; `lepton new` asks, defaulting to Git's `user.name`) *0.1.9-beta.2*. It names the desktop entry, window `app_id`, data and state directories (`~/.local/share/<identifier>`, grants in `~/.local/state/<identifier>`), the shared-memory channel and the single running copy, so two apps must never share one. Letters, digits, `.`, `_` and `-`. Changed after `lepton new`, only the desktop entry and package names follow; the window `app_id`, data directories and systemd scope keep the id written into `src-lepton/main.zig`. |
 | `version` | Used in package names. Default `0.1.0`. |
 | `renderPath` | `webview` (your page in WPE WebKit on Linux, WebView2 on Windows; the default) or `native` (drawn by the core, no web engine). |
+| `engine` | The engine that draws the page on Linux: `wpe` (the default) or `servo` (experimental) *0.1.9-beta.3*; see below. |
 | `target` | The framework `lepton new` scaffolded: `vanilla-ts`, `react`, `vue`, `svelte`, `solid`, `preact`, `lit`, `angular`, `astro` or `next`. A record; changing it changes nothing. |
 | `window` | Title and initial size. The size is read on every build *0.1.7*; the title is written into `src-lepton/main.zig` and the page by `lepton new`, and at run time the window follows the page's `<title>`. Default 1200×800, titled with `productName`. `"decorations": false` leaves the title bar to the page *0.1.9-beta.2* ([Commands](/docs/commands/#your-own-title-bar-and-menus-019-beta2)). `"frameRate": "unlimited"` lets the native path draw as fast as the machine can instead of at the display's refresh (`"display"`, the default) *0.1.9-beta.2*; `LEPTON_FRAME_RATE=display|unlimited` overrides it when the program runs. `"contextMenu": false` turns off the default right-click menu *0.1.9-beta.3*: Cut, Copy, Paste and Select All (Inspect in a developer's build) wherever the page does not take the click with `preventDefault()`; on WebView2 it is WebView2's own menu kept to those items. On a screen too small for the size, the window is fitted to the work area and centred. |
 | `permissions` | The commands the page may call, each by name. No wildcards. |
@@ -72,6 +73,16 @@ WebAssembly threads need `SharedArrayBuffer`, which a browser engine gives only 
 Measured on Linux in WPE WebKit 2.54 and on Windows in WebView2: with the setting on, the page is isolated and a worker reads and writes a shared `WebAssembly.Memory`; with it off, it has no `SharedArrayBuffer`. Servo has no WebAssembly threads with the setting or without it (no `SharedArrayBuffer`); `lepton build --servo` says so and builds the app without them.
 
 A project from before 0.1.9-beta.3: `lepton update` replaces a dev configuration that is still the one `lepton new` wrote, prints the lines to add to one you edited, and adds `{isolation}` to an Angular project's flags.
+
+## `engine` *0.1.9-beta.3*
+
+On Linux, WPE WebKit draws the page by default. `"engine": "servo"` makes Servo the project's engine: `lepton build`, `run`, `dev` and `package` behave as if `--servo` were given every time, and a Linux package carries the Servo library. On Windows, WebView2 always draws the page, and a `renderPath: "native"` project has no web engine; the setting has no effect on either.
+
+```json
+{ "engine": "servo" }
+```
+
+Servo is experimental. What WPE WebKit has and Servo does not: dead keys, compose and input methods; WebAssembly threads; WebGL 2 by default ([`servo.webgl2`](#servowebgl2-019-beta3)). Servo is for x86_64 Linux only and needs GStreamer from the system. Its library installs with `npm install -D @lepton-desk/servo-linux-x64`.
 
 ## `servo.webgl2` *0.1.9-beta.3*
 

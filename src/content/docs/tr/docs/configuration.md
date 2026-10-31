@@ -25,6 +25,7 @@ description: lepton.config.json, alan alan.
 | `identifier` | Uygulama kimliği, ters DNS: `com.<sahip>.<uygulama>`; sahip uygulamayı yayımlayan (bir alan adının ya da sizin adınız; `lepton new` sorar, varsayılanı Git'in `user.name`'i) *0.1.9-beta.2*. Masaüstü girdisini, pencerenin `app_id`'sini, veri ve durum dizinlerini (`~/.local/share/<identifier>`, izinler `~/.local/state/<identifier>`'da), paylaşılan bellek kanalını ve tek çalışan kopyayı adlandırır; iki uygulama asla aynısını paylaşmamalı. Harf, rakam, `.`, `_` ve `-`. `lepton new`'den sonra değişirse yalnız masaüstü girdisi ve paket adları izler; pencerenin `app_id`'si, veri dizinleri ve systemd kapsamı `src-lepton/main.zig`'e yazılan kimlikte kalır. |
 | `version` | Paket adlarında kullanılır. Varsayılan `0.1.0`. |
 | `renderPath` | `webview` (sayfanız Linux'ta WPE WebKit'te, Windows'ta WebView2'de; varsayılan) ya da `native` (çekirdek çizer, web motoru yok). |
+| `engine` | Linux'ta sayfayı çizen motor: `wpe` (varsayılan) ya da `servo` (deneysel) *0.1.9-beta.3*; aşağıda. |
 | `target` | `lepton new`'in kurduğu çatı: `vanilla-ts`, `react`, `vue`, `svelte`, `solid`, `preact`, `lit`, `angular`, `astro` ya da `next`. Yalnız kayıt; değiştirmek bir şey değiştirmez. |
 | `window` | Başlık ve ilk boyut. Boyut her derlemede okunur *0.1.7*; başlığı `lepton new` `src-lepton/main.zig`'e ve sayfaya yazar, çalışırken pencere sayfanın `<title>`'ını izler. Varsayılan 1200×800, başlık `productName`. `"decorations": false` başlık çubuğunu sayfaya bırakır *0.1.9-beta.2* ([Komutlar](/tr/docs/commands/#kendi-başlık-çubuğunuz-ve-menüleriniz-019-beta2)). `"frameRate": "unlimited"` native yolun ekranın tazelemesi yerine makinenin yetebildiği kadar hızlı çizmesini sağlar (`"display"` varsayılan) *0.1.9-beta.2*; `LEPTON_FRAME_RATE=display|unlimited` çalışırken bunu ezer. `"contextMenu": false` varsayılan sağ tık menüsünü kapatır *0.1.9-beta.3*: sayfanın `preventDefault()` ile almadığı her sağ tıkta Kes, Kopyala, Yapıştır ve Tümünü seç (geliştirici derlemesinde İncele de); WebView2'de bu, WebView2'nin kendi menüsünün bu öğelere süzülmüş halidir. Boyuta yetmeyen küçük ekranda pencere çalışma alanına sığdırılıp ortalanır. |
 | `permissions` | Sayfanın çağırabileceği komutlar, her biri adıyla. Joker karakter yok. |
@@ -72,6 +73,16 @@ WebAssembly thread'leri `SharedArrayBuffer` ister; tarayıcı motorları onu yal
 Linux'ta WPE WebKit 2.54'te ve Windows'ta WebView2'de ölçüldü: ayar açıkken sayfa yalıtılmış ve bir Worker paylaşımlı `WebAssembly.Memory`'yi okuyup yazıyor; kapalıyken `SharedArrayBuffer` yok. Servo'da ayar açık da olsa kapalı da olsa WebAssembly thread'i yok (`SharedArrayBuffer` yok); `lepton build --servo` bunu söyler ve uygulamayı thread'siz derler.
 
 0.1.9-beta.3'ten önceki bir proje: `lepton update`, `lepton new`'in yazdığı haliyle duran dev ayarını yenisiyle değiştirir, düzenlediğiniz bir dosyaya eklenecek satırları yazar ve Angular projesinin bayraklarına `{isolation}` ekler.
+
+## `engine` *0.1.9-beta.3*
+
+Linux'ta sayfayı varsayılan olarak WPE WebKit çizer. `"engine": "servo"` projenin motorunu Servo yapar: `lepton build`, `run`, `dev` ve `package` her seferinde `--servo` verilmiş gibi davranır, Linux paketi Servo kitaplığını yanında taşır. Windows'ta sayfayı her zaman WebView2 çizer; `renderPath: "native"` bir projede de web motoru yoktur. İkisinde de ayarın etkisi yoktur.
+
+```json
+{ "engine": "servo" }
+```
+
+Servo deneyseldir. WPE WebKit'te olup Servo'da olmayanlar: dead key, compose ve giriş yöntemleri; WebAssembly thread'leri; varsayılan olarak WebGL 2 ([`servo.webgl2`](#servowebgl2-019-beta3)). Servo yalnız x86_64 Linux içindir ve GStreamer'ı sistemden ister. Kitaplığı `npm install -D @lepton-desk/servo-linux-x64` ile kurulur.
 
 ## `servo.webgl2` *0.1.9-beta.3*
 
